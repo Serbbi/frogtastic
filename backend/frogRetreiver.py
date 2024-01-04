@@ -28,6 +28,6 @@ def retrieveFrog(image_path):
                 predictions = '\n'.join([f' {pred_labels[x]}'
                                          f' {pred_y["top_values"][x]}'
                                          for x in range(len(pred_y['top_predictions']))])
-                print(f'Top three predictions for "{true_filename}":\n{predictions}')
+                # print(f'Top three predictions for "{true_filename}":\n{predictions}')
     
     return predictions

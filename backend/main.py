@@ -29,7 +29,7 @@ def read_root():
     return {"Hello": "World"}
 
 @app.post("/image")
-async def upload_image(file: UploadFile = File(...)):
+async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
     # Check if the uploaded file is an image (optional)
     if not file.content_type.endswith(("jpg", "jpeg", "png")):
         return {"error": "Only images are allowed"}
@@ -42,7 +42,17 @@ async def upload_image(file: UploadFile = File(...)):
     # Delete image after processing
     os.remove(f"uploaded images/{file.filename}")
 
-    return {"filename": file.filename, "message": "Image uploaded successfully", "predictions": result}
+    first_line = result.split('\n')[0]
+    print(first_line)
+    frog_id = first_line.split('_')[0][-1]
+    tank_id = first_line.split(' ')[1][-1]
+
+    db_frog = db.query(models.Frog).filter_by(id=frog_id, tank_id=tank_id).first()
+
+    if db_frog is None:
+        return {"error": "Frog not found"}
+    
+    return db_frog
 
 @app.post("/frog")
 async def create_frog(frog: FrogBase, db: Session = Depends(get_db)):
@@ -64,3 +74,8 @@ async def create_tank(tank: TankBase, db: Session = Depends(get_db)):
 async def get_frog(frog_id: int, db: Session = Depends(get_db)):
     db_frog = db.query(models.Frog).filter(models.Frog.id == frog_id).first()
     return db_frog
+
+@app.get("/tank/{tank_id}/frogs")
+async def get_tank_frogs(tank_id: int, db: Session = Depends(get_db)):
+    db_frogs = db.query(models.Frog).filter(models.Frog.tank_id == tank_id).all()
+    return db_frogs
