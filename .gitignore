@@ -32,7 +32,7 @@ yarn.lock
 .env.production.local
 
 # Ignore pycache
-/backend/__pycache__/
+__pycache__/
 
 # Ignore image dataset
 /backend/CORF3D-ACF/data/Frogs/RGB

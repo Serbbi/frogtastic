@@ -1,0 +1,20 @@
+from fastapi import APIRouter, Depends, File, UploadFile
+from crud.frog import FrogController
+
+router = APIRouter(
+    prefix="/image",
+    tags=["image"],
+    responses={
+        404: {"description": "Not found"},
+        400: {"description": "Request was not well-formed, see error details"},
+    },
+)
+
+@router.post("")
+async def upload_image(file: UploadFile = File(...), controller: FrogController = Depends(FrogController)):
+    db_frog = controller.get_frog_by_image(file)
+
+    if db_frog is None:
+        return {"error": "Frog not found"}
+    
+    return db_frog
