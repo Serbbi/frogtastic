@@ -5,7 +5,10 @@ privilegesConfig = {
     "canEditFrogs": False,
     "canDeleteFrogs": False,
     "canRetrainModel": False,
+    "canGetUsers": False,
+    "canCreateUsers": False,
     "canEditUsers": False,
+    "canDeleteUsers": False,
 }
 
 class UserBase(BaseModel):

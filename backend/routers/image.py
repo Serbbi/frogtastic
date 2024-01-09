@@ -1,3 +1,4 @@
+# The router that is used from all "/image/*" endpoints.
 from fastapi import APIRouter, Depends, File, UploadFile
 from crud.frog import FrogController
 

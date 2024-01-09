@@ -1,6 +1,7 @@
 from typing_extensions import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from models.user import User
 from crud.user import UserController
 from jose import JWTError, jwt
 from schemas.tokendata import TokenData
@@ -37,7 +38,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], contro
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, os.getenv("SECRET_KEY") , algorithms=[os.getenv("ALGORITHM")])
+        payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -49,3 +50,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], contro
         raise credentials_exception
     return user
 
+
+def get_access_right(privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
+    if current_user.privileges[privilege] == True:
+        return True
+    return False
