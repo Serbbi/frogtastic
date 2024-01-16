@@ -2,6 +2,7 @@ from crud.controller import Controller
 from models.frog import Frog
 import os
 from frogRetreiver import retrieveFrog
+from util.frogUtil import verify_frog_details
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -14,15 +15,18 @@ class FrogController(Controller):
     
 
     def create_frog(self, frog: Frog):
-        db_frog = Frog(name=frog.name, age=frog.age, tank_id=frog.tank_id)
+        if(verify_frog_details(frog)):
+            return {"error": "Invalid frog details"}
+        db_frog = Frog(last_injection=frog.last_injection, last_priming=frog.last_priming, notes=frog.notes,
+                       sex=frog.sex, egg_quality=frog.egg_quality, tank_id=frog.tank_id, actual_tank_id=frog.actual_tank_id)
         self.db.add(db_frog)
         self.db.commit()
         self.db.refresh(db_frog)
         return db_frog
     
 
-    def get_tank_frogs(self, tank_id: int):
-        return self.db.query(Frog).filter(Frog.tank_id == tank_id).all()
+    def get_tank_frogs(self, actual_tank_id: int):
+        return self.db.query(Frog).filter(Frog.actual_tank_id == actual_tank_id).all()
     
 
     def get_frog_by_image(self, file):
@@ -45,8 +49,15 @@ class FrogController(Controller):
 
     def update_frog(self, frog_id: int, frog: Frog):
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
-        db_frog.name = frog.name
-        db_frog.age = frog.age
+        if(verify_frog_details(frog)):
+            return {"error": "Invalid frog details"}
+        db_frog.last_injection = frog.last_injection
+        db_frog.last_priming = frog.last_priming
+        db_frog.notes = frog.notes
+        db_frog.sex = frog.sex
+        db_frog.egg_quality = frog.egg_quality
+        db_frog.tank_id = frog.tank_id
+        db_frog.actual_tank_id = frog.actual_tank_id
         self.db.commit()
         self.db.refresh(db_frog)
         return db_frog

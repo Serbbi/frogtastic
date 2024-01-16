@@ -6,7 +6,6 @@ import pickle
 
 def retrieveFrog(image_path):
     model = load_model('./CORF3D-ACF/output/models/RGB_1.h5')
-    # image_path = './data/Frogs/RGB/220728_frog9_tank1_DT_MiMix2_trip(2).jpg'
     img = cv2.imread(image_path, 3)
     img = cv2.resize(img, (224, 224))
     y_pred = model.predict(np.array([img]))

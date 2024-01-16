@@ -6,7 +6,6 @@ privilegesConfig = {
     "canDeleteFrogs": False,
     "canRetrainModel": False,
     "canGetUsers": False,
-    "canCreateUsers": False,
     "canEditUsers": False,
     "canDeleteUsers": False,
 }

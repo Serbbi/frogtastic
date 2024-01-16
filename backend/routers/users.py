@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from crud.user import UserController
 from util import util
-from util.userUtil import get_get_user_access_right, get_create_user_access_right, get_edit_user_access_right, get_delete_user_access_right
+from util.userUtil import get_get_user_access_right, get_edit_user_access_right, get_delete_user_access_right
 from schemas.user import UserBase
 
 
@@ -33,13 +33,9 @@ async def get_user(
 
 @router.post("")
 async def create_user(
-    user: UserBase, 
-    access_right: bool = Depends(get_create_user_access_right),
+    user: UserBase,
     controller: UserController = Depends(UserController)
 ):
-    if not access_right:
-        raise HTTPException(status_code=400, detail="User does not have access right")
-    
     user_db = controller.get_user_by_username(user.username)
     if user_db:
         raise HTTPException(status_code=400, detail="Username already registered")

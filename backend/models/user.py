@@ -2,9 +2,13 @@ from sqlalchemy import JSON, Column, Integer, String
 from database import Base
 
 privilegesConfig = {
+    "canCreateFrogs": False,
     "canEditFrogs": False,
+    "canDeleteFrogs": False,
     "canRetrainModel": False,
+    "canGetUsers": False,
     "canEditUsers": False,
+    "canDeleteUsers": False,
 }
 
 class User(Base):
