@@ -18,16 +18,16 @@ def get_delete_frog_access_right(current_user: User = Depends(get_current_user))
 
 def verify_frog_details(frog : Frog):
     if(frog.egg_quality < 0 or frog.egg_quality > 5):
-        print("egg quality")
+        # print("egg quality")
         return True
     if(frog.sex.lower() != "m" and frog.sex.lower() != "f"):
-        print("sex")
+        # print("sex")
         return True
     if(frog.tank_id < 0):
-        print("tank id")
+        # print("tank id")
         return True
     if(frog.actual_tank_id < 0):
-        print("actual tank id")
+        # print("actual tank id")
         return True
     return False
 
