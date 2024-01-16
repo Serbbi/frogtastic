@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from database import engine, Base
 from routers import frogs, image, login, users
 
+"""
+Main starting point for the application.
+"""
+
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
 

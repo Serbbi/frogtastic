@@ -2,6 +2,7 @@ from datetime import date
 from pydantic import BaseModel
 
 class FrogBase(BaseModel):
+    frog_number: int
     last_injection: date
     last_priming: date
     notes: str

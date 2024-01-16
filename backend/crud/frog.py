@@ -17,7 +17,10 @@ class FrogController(Controller):
     def create_frog(self, frog: Frog):
         if(verify_frog_details(frog)):
             return {"error": "Invalid frog details"}
-        db_frog = Frog(last_injection=frog.last_injection, last_priming=frog.last_priming, notes=frog.notes,
+        already_exists = self.db.query(Frog).filter_by(frog_number=frog.frog_number, tank_id=frog.tank_id).first()
+        if(already_exists):
+            return {"error": "Frog already exists"}
+        db_frog = Frog(frog_number=frog.frog_number, last_injection=frog.last_injection, last_priming=frog.last_priming, notes=frog.notes,
                        sex=frog.sex, egg_quality=frog.egg_quality, tank_id=frog.tank_id, actual_tank_id=frog.actual_tank_id)
         self.db.add(db_frog)
         self.db.commit()
@@ -40,17 +43,17 @@ class FrogController(Controller):
         os.remove(f"uploaded images/{file.filename}")
 
         first_line = result.split('\n')[0]
-        print(first_line)
-        frog_id = first_line.split('_')[0][-1]
+        frog_number = first_line.split('_')[0][-1]
         tank_id = first_line.split(' ')[1][-1]
 
-        return self.db.query(Frog).filter_by(id=frog_id, tank_id=tank_id).first()
+        return self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id).first()
     
 
     def update_frog(self, frog_id: int, frog: Frog):
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
         if(verify_frog_details(frog)):
             return {"error": "Invalid frog details"}
+        db_frog.frog_number = frog.frog_number
         db_frog.last_injection = frog.last_injection
         db_frog.last_priming = frog.last_priming
         db_frog.notes = frog.notes

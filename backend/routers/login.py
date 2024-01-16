@@ -1,3 +1,4 @@
+# The router that is used for the login endpoint.
 from datetime import datetime, timedelta
 from typing import Union
 from typing_extensions import Annotated

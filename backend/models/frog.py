@@ -5,6 +5,7 @@ class Frog(Base):
     __tablename__ = "frogs"
 
     id = Column(Integer, primary_key=True, index=True)
+    frog_number = Column(Integer, index=True)
     last_injection = Column(Date, index=True)
     last_priming = Column(Date, index=True)
     notes = Column(String, index=True)

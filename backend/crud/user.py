@@ -1,6 +1,11 @@
 from crud.controller import Controller
 from models.user import User
 
+"""
+In this file we have the methods that will perform the CRUD actions for the User on the database.
+These methods will be used by the endpoints in the `routers` folder. 
+"""
+
 class UserController(Controller):
     def get_user_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
