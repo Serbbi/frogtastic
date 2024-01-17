@@ -4,6 +4,7 @@ from crud.user import UserController
 from util import util
 from util.userUtil import get_get_user_access_right, get_edit_user_access_right, get_delete_user_access_right
 from schemas.user import UserBase
+from util.exceptions import raise_access_right_exception
 
 
 router = APIRouter(
@@ -18,7 +19,7 @@ async def get_users(
 ):
     if access_right:
         return controller.get_users()
-    raise HTTPException(status_code=400, detail="User does not have access right")
+    raise_access_right_exception()
 
 
 @router.get("/{user_id}")
@@ -29,7 +30,7 @@ async def get_user(
 ):
     if access_right:
         return controller.get_user_by_id(user_id)
-    raise HTTPException(status_code=400, detail="User does not have access right")
+    raise_access_right_exception()
 
 @router.post("")
 async def create_user(
@@ -54,7 +55,7 @@ async def update_user(
 ):
     if access_right:
         return controller.update_user(user_id, user)
-    raise HTTPException(status_code=400, detail="User does not have access right")
+    raise_access_right_exception()
 
 
 @router.delete("/{user_id}")
@@ -65,4 +66,4 @@ async def delete_user(
 ):
     if access_right:
         return controller.delete_user(user_id)
-    raise HTTPException(status_code=400, detail="User does not have access right")
+    raise_access_right_exception()

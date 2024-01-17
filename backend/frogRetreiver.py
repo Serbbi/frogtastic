@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 
 
-def retrieveFrog(image_path):
+def retrieve_frog(image_path):
     model = load_model('./CORF3D-ACF/output/models/RGB_1.h5')
     img = cv2.imread(image_path, 3)
     img = cv2.resize(img, (224, 224))
@@ -22,11 +22,10 @@ def retrieveFrog(image_path):
     with open('./CORF3D-ACF/labeler.pkl', 'rb') as file:
         label_binarizer = pickle.load(file)
     for pred_y in pred_false:
-                true_filename = image_path
                 pred_labels = label_binarizer.inverse_transform(pred_y['top_predictions'])
                 predictions = '\n'.join([f' {pred_labels[x]}'
                                          f' {pred_y["top_values"][x]}'
                                          for x in range(len(pred_y['top_predictions']))])
-                # print(f'Top three predictions for "{true_filename}":\n{predictions}')
+                # print(f'Top three predictions for "{image_path}":\n{predictions}')
     
     return predictions

@@ -1,7 +1,7 @@
 from crud.controller import Controller
 from models.frog import Frog
 import os
-from frogRetreiver import retrieveFrog
+from frogRetreiver import retrieve_frog
 from util.frogUtil import verify_frog_details
 
 """
@@ -38,7 +38,7 @@ class FrogController(Controller):
 
         with open(f"uploaded images/{file.filename}", "wb") as image:
             image.write(file.file.read())
-        result = retrieveFrog(f"uploaded images/{file.filename}")
+        result = retrieve_frog(f"uploaded images/{file.filename}")
 
         os.remove(f"uploaded images/{file.filename}")
 

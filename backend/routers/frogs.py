@@ -1,9 +1,9 @@
 # The router that is used from all "/frogs/*" endpoints.
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from crud.frog import FrogController
 from schemas.frog import FrogBase
 from util.frogUtil import get_create_frog_access_right, get_edit_frog_access_right, get_delete_frog_access_right
-
+from util.exceptions import raise_access_right_exception
 
 router = APIRouter(
     prefix="/frogs",
@@ -27,8 +27,7 @@ async def create_frog(
 ):
     if access_right:
         return controller.create_frog(frog)
-    raise HTTPException(status_code=400, detail="User does not have access right")
-
+    raise_access_right_exception()
 
 @router.get("/tank/{tank_id}")
 async def get_tank_frogs(tank_id: int, controller: FrogController = Depends(FrogController)):
@@ -44,8 +43,7 @@ async def update_frog(
 ):
     if access_right:
         return controller.update_frog(frog_id, frog)
-    raise HTTPException(status_code=400, detail="User does not have access right")
-
+    raise_access_right_exception()
 
 @router.delete("/{frog_id}")
 async def delete_frog(
@@ -55,4 +53,4 @@ async def delete_frog(
 ):
     if access_right:
         return controller.delete_frog(frog_id)
-    raise HTTPException(status_code=400, detail="User does not have access right")
+    raise_access_right_exception()
