@@ -1,0 +1,87 @@
+.mainContainerLogin {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.leftContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    height: 100%;
+    background-image: url('../../../public/swamp.png');
+    background-size: cover;
+}
+
+.rightContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    height: 100%;
+    background-color: #ebebeb;
+    color: black;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 100px;
+    /* background-color: whitesmoke; */
+}
+
+.inputField {
+    width: 60%;
+    height: 30px;
+    padding: 10px;
+    margin-top: 15px;
+
+    background-color: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 10px;
+}
+
+.inputField:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.submitButton {
+    width: 40%;
+    height: 40px;
+    /* padding: 10px; */
+    margin-top: 15px;
+
+    background-color: #3d9349;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.submitButton:hover {
+    background-color: #4eb75c;
+    cursor: pointer;
+}
+
+.rotate {
+    animation: rotation 8s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}

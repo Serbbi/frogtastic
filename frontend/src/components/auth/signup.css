@@ -1,0 +1,78 @@
+.mainContainerSignup{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('../../../public/Designer.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.formContainerSignup {
+    width: 40%;
+    background-color: whitesmoke;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.inputContainer {
+    width: 100%;
+}
+
+.inputField {
+    width: 60%;
+    height: 30px;
+    padding: 10px;
+    margin-top: 15px;
+    margin-right: 10px;
+
+    background-color: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 10px;
+}
+
+.inputField:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.submitButton {
+    width: 40%;
+    height: 40px;
+    margin-top: 15px;
+
+    background-color: #3d9349;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.submitButton:hover {
+    background-color: #4eb75c;
+    cursor: pointer;
+}
+
+.icon {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.icon .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgb(39, 39, 39);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+  
+    position: absolute;
+    z-index: 1;
+  }
+  
+  .icon:hover .tooltiptext {
+    visibility: visible;
+  }
