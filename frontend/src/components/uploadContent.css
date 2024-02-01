@@ -1,0 +1,106 @@
+.uploadContainer {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: scroll;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
+
+.drop-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px dashed #555;
+  color: #444;
+  cursor: pointer;
+  transition: background .2s ease-in-out, border .2s ease-in-out;
+}
+
+.drop-container:hover {
+  background: #eee;
+  border-color: #111;
+}
+
+.drop-container:hover .drop-title {
+  color: #222;
+}
+
+.drop-title {
+  color: #444;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: color .2s ease-in-out;
+}
+
+.uploadDefaultElements {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 40%;
+  /* height: 100%; */
+}
+
+.inputField[type="file"] {
+  display: none;
+}
+
+.browseFilesButton {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background: #555;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+.browseFilesButton:hover {
+  background: #333;
+}
+
+.uploadButton {
+  width: 100%;
+  height: 2.5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bolder;
+}
+
+.uploadButton:hover {
+  background-color: #45a049;
+  cursor: pointer;
+}
+
+.goBackButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 20px;
+}
+
+.goBackButton:hover {
+  color: #45a049;
+  cursor: pointer;
+}

@@ -1,0 +1,30 @@
+.leftNav {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+    height: 95%;
+    background-color: #ffffff;
+    margin: 15px 0 15px 15px;
+    border-radius: 20px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menuOption {
+    padding: 5px 7px;
+}
+
+.menuOption:hover {
+    background-color: #e7e7e7;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.menuOption.logOut {
+    font-weight: bold;
+}

@@ -7,6 +7,7 @@ const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(localStorage.getItem("site") || "");
 	const [errorMessage, setErrorMessage] = useState("");
+	const [privileges, setPrivileges] = useState(localStorage.getItem("privileges") || "");
 	const navigate = useNavigate();
 
 	const signUpAction = async (data) => {
@@ -44,7 +45,9 @@ const AuthProvider = ({ children }) => {
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
+				setPrivileges(res.privileges);
 				localStorage.setItem("site", res.access_token);
+				localStorage.setItem("privileges", JSON.stringify(res.privileges));
 				navigate("/home");
 			} else {
 				setErrorMessage(res.detail);
@@ -65,8 +68,12 @@ const AuthProvider = ({ children }) => {
 		return errorMessage;
 	};
 
+	const getPrivileges = () => {
+		return privileges;
+	}
+
 	return (
-		<AuthContext.Provider value={{ token, user, loginAction, logOut, signUpAction, getErrorMessage }}>
+		<AuthContext.Provider value={{ token, user, loginAction, logOut, signUpAction, getErrorMessage, getPrivileges }}>
 			{children}
 		</AuthContext.Provider>
 	);

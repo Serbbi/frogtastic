@@ -1,0 +1,107 @@
+import FrogDetailsContent from "./frogDetailsContent";
+import { useState, useRef, useEffect } from "react";
+import Loading from "./loading";
+import "./uploadContent.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+export default function UploadContent() {
+    const [success, setSuccess] = useState("default");
+    const [fileName, setFileName] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [frog, setFrog] = useState({});
+    const dropContainer = useRef(null);
+
+    function uploadImage() {
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append('file', document.querySelector('input[type="file"]').files[0]);
+        fetch('http://localhost:8000/image', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.error) {
+                    setSuccess("error");
+                    return;
+                }
+                setSuccess("success");
+                setFrog(data);
+                document.querySelector(".uploadContainer").style.display = "block";
+            })
+            .catch((error) => {
+                setSuccess("error");
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
+    useEffect(() => {
+        const onDragOver = (e) => {
+            e.preventDefault();
+        };
+
+        const onDragEnter = () => {
+            dropContainer.current.classList.add("drag-active");
+        };
+
+        const onDragLeave = () => {
+            dropContainer.current.classList.remove("drag-active");
+        };
+
+        const onDrop = (e) => {
+            e.preventDefault();
+            dropContainer.current.classList.remove("drag-active");
+            document.getElementById("image").files = e.dataTransfer.files;
+        };
+
+        const dropElem = dropContainer.current;
+        dropElem.addEventListener("dragover", onDragOver);
+        dropElem.addEventListener("dragenter", onDragEnter);
+        dropElem.addEventListener("dragleave", onDragLeave);
+        dropElem.addEventListener("drop", onDrop);
+
+        return () => {
+            dropElem.removeEventListener("dragover", onDragOver);
+            dropElem.removeEventListener("dragenter", onDragEnter);
+            dropElem.removeEventListener("dragleave", onDragLeave);
+            dropElem.removeEventListener("drop", onDrop);
+        };
+    }, []);
+
+    function saveImageName(e) {
+        const image = e.target.files[0].name;
+        setFileName(image);
+    }
+
+    function goBackToDefault() {
+        setSuccess("default");
+        setFileName("");
+        document.querySelector(".uploadContainer").style.display = "flex";
+    }
+
+    if(isLoading) return (<div className="uploadContainer"><Loading /></div>);
+
+    return (
+        <div className="uploadContainer">
+            <FontAwesomeIcon icon="fa-solid fa-arrow-left" onClick={goBackToDefault} className="goBackButton"/>
+            {success === "success" ? <FrogDetailsContent frog={frog} /> : null}
+            {success === "error" ? <div>There was an error uploading the image.</div> : null}
+            {success === "default" ?
+                <div className="uploadDefaultElements">
+                    <label ref={dropContainer} className="drop-container" id="dropcontainer">
+                        <span className="drop-title">Drop files here</span>
+                        or
+                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName}/>
+                        <span className="browseFilesButton">Browse files</span>
+                        <span className="file-name">{fileName}</span>
+                    </label>
+                    <button onClick={uploadImage} className="uploadButton">Upload</button>
+                </div>
+                : null}
+        </div>
+    );
+}
