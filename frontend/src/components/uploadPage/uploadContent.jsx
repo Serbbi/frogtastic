@@ -1,6 +1,6 @@
-import FrogDetailsContent from "./frogDetailsContent";
+import FrogDetailsContent from "../miniComponents/frogDetailsContent";
 import { useState, useRef, useEffect } from "react";
-import Loading from "./loading";
+import Loading from "../miniComponents/loading";
 import "./uploadContent.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

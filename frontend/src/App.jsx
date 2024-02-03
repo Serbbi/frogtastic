@@ -3,7 +3,7 @@ import Home from './components/home';
 import Login from './components/auth/login';
 import Signup from './components/auth/signup';
 import AuthProvider from './hooks/AuthProvider';
-import Admin from './components/admin';
+import Admin from './components/admin/admin';
 import PrivateRoute from './components/auth/PrivateRoute';
 import { initializeIcons } from './icons/iconLibrary';
 import './App.css';

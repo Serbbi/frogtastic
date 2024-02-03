@@ -1,10 +1,10 @@
 import { useState } from "react"
-import UploadContent from "./uploadContent";
+import UploadContent from "./uploadPage/uploadContent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "./home.css";
 import LeftNavBar from "./LeftNavBar";
-import AllFrogsContent from "./AllFrogsContent";
-import TankFrogsContent from "./TankFrogsContent";
+import AllFrogsContent from "./allFrogsPage/AllFrogsContent";
+import TankFrogsContent from "./tankFrogsPage/TankFrogsContent";
 
 export default function Home() {
     const [content, setContent] = useState({
