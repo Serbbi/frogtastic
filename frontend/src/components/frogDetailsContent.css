@@ -50,3 +50,15 @@ label {
     background-color: #45a049;
     cursor: pointer;
 }
+
+.goBackButton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+}
+
+.goBackButton:hover {
+    color: #45a049;
+    cursor: pointer;
+}

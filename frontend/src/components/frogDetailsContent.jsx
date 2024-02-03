@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./frogDetailsContent.css";
 
-export default function FrogDetailsContent({ frog: initialFrog }) {
+export default function FrogDetailsContent({ frog: initialFrog, goBackAction: goBackAction }) {
     const token = localStorage.getItem('site');
     const [frog, setFrog] = useState(initialFrog);
 
@@ -35,6 +36,7 @@ export default function FrogDetailsContent({ frog: initialFrog }) {
 
     return (
         <div className="frogDetailsContainer">
+            <FontAwesomeIcon icon="fa-solid fa-arrow-left" onClick={goBackAction} className="goBackButton"/>
             <h1>Frog-{frog.frog_number} Tank-{frog.tank_id}</h1>
             <div className="frogField">
                 <label>Last Injection</label>

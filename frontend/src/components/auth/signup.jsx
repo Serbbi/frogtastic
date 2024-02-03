@@ -47,7 +47,8 @@ export default function Signup() {
                         className='inputField'
                         placeholder="Password"
                         onChange={handleInput}
-                        name="password" />
+                        name="password" 
+                        type="password" />
                     <div className='icon'>
                         <FontAwesomeIcon icon="fa-solid fa-circle-question" />
                         <span className='tooltiptext'>Whatever password you like</span>

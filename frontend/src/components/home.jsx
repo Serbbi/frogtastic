@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "./home.css";
 import LeftNavBar from "./LeftNavBar";
 import AllFrogsContent from "./AllFrogsContent";
+import TankFrogsContent from "./TankFrogsContent";
 
 export default function Home() {
     const [content, setContent] = useState({
@@ -15,7 +16,7 @@ export default function Home() {
     const [angleButton, setAngleButton] = useState("fa-solid fa-angle-left");
 
     function hideNavPanel() {
-        if(navPanelVisibility) {
+        if (navPanelVisibility) {
             setAngleButton("fa-solid fa-angle-right");
         } else {
             setAngleButton("fa-solid fa-angle-left");
@@ -26,9 +27,9 @@ export default function Home() {
     return <div className="homeContainer">
         {navPanelVisibility ? <LeftNavBar setContent={setContent} /> : null}
         <div className="mainContent">
-            <FontAwesomeIcon icon={angleButton} className="hideNavButton" onClick={hideNavPanel}/>
+            <FontAwesomeIcon icon={angleButton} className="hideNavButton" onClick={hideNavPanel} />
             {content.allFrogs ? <AllFrogsContent /> : null}
-            {content.tankFrogs ? <div>Tank frogs</div> : null}
+            {content.tankFrogs ? <TankFrogsContent /> : null}
             {content.uploadImage ? <UploadContent /> : null}
         </div>
     </div>

@@ -87,8 +87,7 @@ export default function UploadContent() {
 
     return (
         <div className="uploadContainer">
-            <FontAwesomeIcon icon="fa-solid fa-arrow-left" onClick={goBackToDefault} className="goBackButton"/>
-            {success === "success" ? <FrogDetailsContent frog={frog} /> : null}
+            {success === "success" ? <FrogDetailsContent frog={frog} goBackAction={goBackToDefault}/> : null}
             {success === "error" ? <div>There was an error uploading the image.</div> : null}
             {success === "default" ?
                 <div className="uploadDefaultElements">

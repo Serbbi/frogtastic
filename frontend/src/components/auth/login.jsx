@@ -7,7 +7,6 @@ function Login() {
         username: "",
         password: "",
     });
-    // const navigate = useNavigate();
 
     const auth = useAuth();
     const handleSubmitEvent = (e) => {
@@ -45,7 +44,8 @@ function Login() {
                     className={"inputField"}
                     placeholder="Password"
                     onChange={handleInput}
-                    name="password" />
+                    name="password" 
+                    type="password"/>
                 <label className="errorLabel">{auth.getErrorMessage()}</label>
 
                 <button type="submit" className={"submitButton"}>Log In</button>
