@@ -10,6 +10,10 @@ These methods will be used by the endpoints in the `routers` folder.
 """
 
 class FrogController(Controller):
+    def get_frogs(self):
+        return self.db.query(Frog).all()
+
+
     def get_frog(self, frog_id: int):
         return self.db.query(Frog).filter(Frog.id == frog_id).first()
     

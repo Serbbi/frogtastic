@@ -23,17 +23,6 @@ export default function TankFrogsContent() {
             .catch(error => console.log(error));
     };
 
-    function handleClickFrog(event) {
-        const frogNumber = event.target.parentElement.firstChild.innerText;
-        fetch(`http://localhost:8000/frogs/${frogNumber}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setShowingFrog(data);
-            })
-            .catch(error => console.log(error));
-    }
-
     function goBackAction() {
         setShowingFrog(null);
     }
@@ -50,7 +39,7 @@ export default function TankFrogsContent() {
                     <option key={index} value={index + 1}>{index + 1}</option>
                 ))}
             </select>
-            {frogs.length !== 0 && <FrogTable frogs={frogs} handleClickFrog={handleClickFrog} />}
+            {frogs.length !== 0 && <FrogTable frogs={frogs} setShowingFrog={setShowingFrog} />}
         </div>
     );
 }

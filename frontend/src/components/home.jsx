@@ -5,12 +5,14 @@ import "./home.css";
 import LeftNavBar from "./LeftNavBar";
 import AllFrogsContent from "./allFrogsPage/AllFrogsContent";
 import TankFrogsContent from "./tankFrogsPage/TankFrogsContent";
+import CreateFrogContent from "./createFrogPage/CreateFrogContent";
 
 export default function Home() {
     const [content, setContent] = useState({
         allFrogs: false,
         tankFrogs: false,
-        uploadImage: true
+        uploadImage: true,
+        createFrog: false
     });
     const [navPanelVisibility, setNavPanelVisibility] = useState(true);
     const [angleButton, setAngleButton] = useState("fa-solid fa-angle-left");
@@ -31,6 +33,7 @@ export default function Home() {
             {content.allFrogs ? <AllFrogsContent /> : null}
             {content.tankFrogs ? <TankFrogsContent /> : null}
             {content.uploadImage ? <UploadContent /> : null}
+            {content.createFrog ? <CreateFrogContent /> : null}
         </div>
     </div>
 }

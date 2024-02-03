@@ -14,6 +14,10 @@ router = APIRouter(
     },
 )
 
+@router.get("")
+async def get_frogs(controller: FrogController = Depends(FrogController)):
+    return controller.get_frogs()
+
 @router.get("/{frog_id}")
 async def get_frog(frog_id: int, controller: FrogController = Depends(FrogController)):
     return controller.get_frog(frog_id)

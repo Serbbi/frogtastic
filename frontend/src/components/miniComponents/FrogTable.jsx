@@ -1,6 +1,16 @@
 import './FrogTable.css';
 
-export default function FrogTable({ frogs:frogs, handleClickFrog:handleClickFrog }) {
+export default function FrogTable({ frogs: frogs, setShowingFrog: setShowingFrog }) {
+    function handleClickFrog(frogId) {
+        fetch(`http://localhost:8000/frogs/${frogId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setShowingFrog(data);
+            })
+            .catch(error => console.log(error));
+    }
+
     return (
         <table className='frogTable'>
             <thead className='tableHead'>
@@ -16,11 +26,11 @@ export default function FrogTable({ frogs:frogs, handleClickFrog:handleClickFrog
             <tbody>
                 {frogs.map(frog => {
                     return (
-                        <tr key={frog.frog_number} className='tableRow' onClick={handleClickFrog}>
+                        <tr key={frog.id} className='tableRow' onClick={() => handleClickFrog(frog.id)}>
                             <td>{frog.frog_number}</td>
                             <td>{frog.last_injection}</td>
                             <td>{frog.last_priming}</td>
-                            <td>{frog.notes}</td>
+                            <td>{frog.notes.length > 15 ? frog.notes.substring(0, 15) + '...' : frog.notes}</td>
                             <td>{frog.sex}</td>
                             <td>{frog.egg_quality}</td>
                         </tr>

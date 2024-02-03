@@ -1,0 +1,6 @@
+.createFrogContainer {
+    display: block;
+    width: 60%;
+
+    overflow: scroll;
+}
