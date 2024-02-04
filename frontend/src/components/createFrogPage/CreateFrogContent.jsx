@@ -46,36 +46,36 @@ export default function CreateFrogContent() {
         <div className="createFrogContainer">
             <h1>Create Frog</h1>
             <div className="frogField">
-                <label>Frog Number</label>
-                <input type="text" name="frog_number" onChange={updateField} />
+                <label htmlFor="frogNumberInput">Frog Number</label>
+                <input type="text" id="frogNumberInput" name="frog_number" onChange={updateField} />
             </div>
             <div className="frogField">
-                <label>Tank</label>
-                <input type="text" name="tank_id" onChange={updateField} />
+                <label htmlFor="tankIdInput">Tank</label>
+                <input type="text" id="tankIdInput" name="tank_id" onChange={updateField} />
             </div>
             <div className="frogField">
-                <label>Last Injection</label>
-                <input type="text" name="last_injection" onChange={updateField} />
+                <label htmlFor="lastInjectionInput">Last Injection</label>
+                <input type="text" id="lastInjectionInput" name="last_injection" onChange={updateField} />
             </div>
             <div className="frogField">
-                <label>Last Priming</label>
-                <input type="text" name="last_priming" onChange={updateField} />
+                <label htmlFor="lastPrimingInput">Last Priming</label>
+                <input type="text" id="lastPrimingInput" name="last_priming" onChange={updateField} />
             </div>
             <div className="frogField">
-                <label>Notes</label>
-                <input type="text" name="notes" onChange={updateField} />
+                <label htmlFor="notesInput">Notes</label>
+                <input type="text" id="notesInput" name="notes" onChange={updateField} />
             </div>
             <div className="frogField">
-                <label>Gender</label>
-                <input type="text" name="sex" onChange={updateField} />
+                <label htmlFor="genderInput">Gender</label>
+                <input type="text" id="genderInput" name="sex" onChange={updateField} />
             </div>
             <div className="frogField">
-                <label>Egg Quality</label>
-                <input type="text" name="egg_quality"  onChange={updateField} />
+                <label htmlFor="eggQualityInput">Egg Quality</label>
+                <input type="text" id="eggQualityInput" name="egg_quality" onChange={updateField} />
             </div>
             <div className="frogField">
-                <label>Current Tank</label>
-                <input type="text" name="actual_tank_id" onChange={updateField} />
+                <label htmlFor="actualTankIdInput">Current Tank</label>
+                <input type="text" id="actualTankIdInput" name="actual_tank_id" onChange={updateField} />
             </div>
             <button className="saveButton" onClick={saveFrog}>Save</button>
         </div>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./frogDetailsContent.css";
 
-export default function FrogDetailsContent({ frog: initialFrog, goBackAction: goBackAction }) {
+export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) {
     const token = localStorage.getItem('site');
     const [frog, setFrog] = useState(initialFrog);
 
@@ -39,30 +40,35 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction: go
             <FontAwesomeIcon icon="fa-solid fa-arrow-left" onClick={goBackAction} className="goBackButton"/>
             <h1>Frog-{frog.frog_number} Tank-{frog.tank_id}</h1>
             <div className="frogField">
-                <label>Last Injection</label>
-                <input type="text" name="last_injection" value={frog.last_injection} onChange={updateField}/>
+                <label htmlFor="last_injection">Last Injection</label>
+                <input type="text" id="last_injection" name="last_injection" value={frog.last_injection} onChange={updateField}/>
             </div>
             <div className="frogField">
-                <label>Last Priming</label>
-                <input type="text" name="last_priming" value={frog.last_priming} onChange={updateField}/>
+                <label htmlFor="last_priming">Last Priming</label>
+                <input type="text" id="last_priming" name="last_priming" value={frog.last_priming} onChange={updateField}/>
             </div>
             <div className="frogField">
-                <label>Notes</label>
-                <input type="text" name="notes" value={frog.notes} onChange={updateField}/>
+                <label htmlFor="notes">Notes</label>
+                <input type="text" id="notes" name="notes" value={frog.notes} onChange={updateField}/>
             </div>
             <div className="frogField">
-                <label>Gender</label>
-                <input type="text" name="sex" value={frog.sex} onChange={updateField}/>
+                <label htmlFor="sex">Gender</label>
+                <input type="text" id="sex" name="sex" value={frog.sex} onChange={updateField}/>
             </div>
             <div className="frogField">
-                <label>Egg Quality</label>
-                <input type="text" name="egg_quality" value={frog.egg_quality} onChange={updateField}/>
+                <label htmlFor="egg_quality">Egg Quality</label>
+                <input type="text" id="egg_quality" name="egg_quality" value={frog.egg_quality} onChange={updateField}/>
             </div>
             <div className="frogField">
-                <label>Actual Tank</label>
-                <input type="text" name="actual_tank_id" value={frog.actual_tank_id} onChange={updateField}/>
+                <label htmlFor="actual_tank_id">Actual Tank</label>
+                <input type="text" name="actual_tank_id" id="actual_tank_id" value={frog.actual_tank_id} onChange={updateField}/>
             </div>
             <button className="saveButton" onClick={saveFrog}>Save</button>
         </div>
     );
 }
+
+FrogDetailsContent.propTypes = {
+    frog: PropTypes.object.isRequired,
+    goBackAction: PropTypes.func.isRequired
+};

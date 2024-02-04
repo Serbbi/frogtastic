@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import "./LeftNavBar.css";
 
@@ -31,14 +32,18 @@ export default function LeftNavBar({ setContent }) {
     return (
         <div className="leftNav">
             <ul className="menu">
-                <li className="menuOption" onClick={changeContent("allFrogs")}>All Frogs</li>
-                <li className="menuOption" onClick={changeContent("tankFrogs")}>Tank Frogs</li>
-                <li className="menuOption" onClick={changeContent("uploadImage")}>Upload Image</li>
-                <li className="menuOption" onClick={changeContent("createFrog")}>Create Frog</li>
-                {admin ? <li className="menuOption" onClick={goToAdminPage}>Admin Page</li> : null}
+                <button className="menuOption" onClick={changeContent("allFrogs")}>All Frogs</button>
+                <button className="menuOption" onClick={changeContent("tankFrogs")}>Tank Frogs</button>
+                <button className="menuOption" onClick={changeContent("uploadImage")}>Upload Image</button>
+                <button className="menuOption" onClick={changeContent("createFrog")}>Create Frog</button>
+                {admin ? <button className="menuOption" onClick={goToAdminPage}>Admin Page</button> : null}
             </ul>
 
-            <p className="menuOption logOut" onClick={logOut}>Log Out</p>
+            <button className="menuOption logOut" onClick={logOut}>Log Out</button>
         </div>
     );
 }
+
+LeftNavBar.propTypes = {
+    setContent: PropTypes.func.isRequired,
+};

@@ -1,9 +1,10 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(localStorage.getItem("site") || "");
 	const [errorMessage, setErrorMessage] = useState("");
@@ -64,24 +65,35 @@ const AuthProvider = ({ children }) => {
 		navigate("/login");
 	};
 
-	const getErrorMessage = () => {
+	function getErrorMessage() {
 		return errorMessage;
-	};
+	}
 
-	const getPrivileges = () => {
+	function getPrivileges() {
 		return privileges;
 	}
 
+	const value = useMemo(() => ({
+		token, 
+		user, 
+		loginAction, 
+		logOut, 
+		signUpAction, 
+		getErrorMessage, 
+		getPrivileges
+	}), [token, user, loginAction, logOut, signUpAction, getErrorMessage, getPrivileges]);
+	
 	return (
-		<AuthContext.Provider value={{ token, user, loginAction, logOut, signUpAction, getErrorMessage, getPrivileges }}>
+		<AuthContext.Provider value={value}>
 			{children}
 		</AuthContext.Provider>
 	);
-
 };
-
-export default AuthProvider;
 
 export const useAuth = () => {
 	return useContext(AuthContext);
+};
+
+AuthProvider.propTypes = {
+	children: PropTypes.node.isRequired,
 };

@@ -2,7 +2,6 @@ import FrogDetailsContent from "../miniComponents/frogDetailsContent";
 import { useState, useRef, useEffect } from "react";
 import Loading from "../miniComponents/loading";
 import "./uploadContent.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function UploadContent() {
     const [success, setSuccess] = useState("default");
@@ -93,7 +92,7 @@ export default function UploadContent() {
                 <div className="uploadDefaultElements">
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
-                        or
+                        <p className="orWord">or</p>
                         <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName}/>
                         <span className="browseFilesButton">Browse files</span>
                         <span className="file-name">{fileName}</span>
