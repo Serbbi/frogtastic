@@ -1,26 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import FrogTable from "../miniComponents/FrogTable";
 import FrogDetailsContent from "../miniComponents/frogDetailsContent";
 import Loading from "../miniComponents/loading";
+import useAllFrogs from "../../hooks/useAllFrogs";
+import './AllFrogsContent.css';
 
 export default function AllFrogsContent() {
-    const [frogs, setFrogs] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [showingFrog, setShowingFrog] = useState(null);
-
-    useEffect(() => {
-        async function fetchAllFrogs() {
-            fetch("http://localhost:8000/frogs")
-            .then(response => response.json())
-            .then(data => {
-                setFrogs(data);
-                console.log(data);
-            })
-            .catch(error => console.log(error))
-            .finally(() => setIsLoading(false));
-        }
-        fetchAllFrogs();
-    }, []);
+    const { frogs, isLoading } = useAllFrogs();
 
     function goBackAction() {
         setShowingFrog(null);

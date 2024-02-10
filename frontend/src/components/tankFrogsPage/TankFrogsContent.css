@@ -7,6 +7,15 @@
     display: block;
 }
 
+.tankFrogsContent {
+    width: 90%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: scroll;
+
+    display: block;
+}
+
 .selectButton {
     background-color: #c9c9c9;
     color: rgb(52, 52, 52);
@@ -16,4 +25,11 @@
     border-radius: 5px;
     cursor: pointer;
     float: right;
+}
+
+@media screen and (max-width: 768px) {
+    .tankFrogsContent {
+        width: 85%;
+    }
+    
 }

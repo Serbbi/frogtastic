@@ -1,0 +1,72 @@
+.notifications {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1em;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    max-width: 400px;
+    transform: translateX(-20%);
+}
+
+.notification {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    background: linear-gradient(90deg, #626262 0%, #dedede 40%);
+    padding: 1em;
+    border-radius: 10px;
+    width: 100%;
+    animation: fadeOut 5s ease-out 2s forwards;
+}
+
+.notification.success {
+    background: linear-gradient(90deg, #76e876 0%, #dedede 40%);
+}
+
+.notification.success > svg {
+    color: #12b312;
+}
+
+.notification.error, .notification.trash {
+    background: linear-gradient(90deg, #d56e6e 0%, #dedede 40%);
+}
+
+.notification.error > svg, .notification.trash > svg {
+    color: #f33838;
+}
+
+.notification > svg {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    padding: 0.3em;
+}
+
+.notification > p {
+    margin: 0;
+    padding: 0;
+    color: #343434;
+}
+
+.notification > button {
+    border: none;
+    background: none;
+    font-weight: bold;
+}
+
+.notification > button:hover {
+    cursor: pointer;
+    color: white;
+}
+
+@keyframes fadeOut {
+    100% {
+        opacity: 0;
+    }
+}

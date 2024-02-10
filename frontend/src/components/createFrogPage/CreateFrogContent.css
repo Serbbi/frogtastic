@@ -4,3 +4,9 @@
 
     overflow: scroll;
 }
+
+@media screen and (max-width: 768px) {
+    .createFrogContainer {
+        width: 90%;
+    }
+}

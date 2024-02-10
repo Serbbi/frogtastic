@@ -25,7 +25,8 @@ class FrogController(Controller):
         if(already_exists):
             return {"error": "Frog already exists"}
         db_frog = Frog(frog_number=frog.frog_number, last_injection=frog.last_injection, last_priming=frog.last_priming, notes=frog.notes,
-                       sex=frog.sex, egg_quality=frog.egg_quality, tank_id=frog.tank_id, actual_tank_id=frog.actual_tank_id)
+                       sex=frog.sex, egg_quality=frog.egg_quality, tank_id=frog.tank_id, actual_tank_id=frog.actual_tank_id,
+                       is_sick=frog.is_sick, is_laying_eggs=frog.is_laying_eggs)
         self.db.add(db_frog)
         self.db.commit()
         self.db.refresh(db_frog)
@@ -57,14 +58,14 @@ class FrogController(Controller):
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
         if(verify_frog_details(frog)):
             return {"error": "Invalid frog details"}
-        db_frog.frog_number = frog.frog_number
         db_frog.last_injection = frog.last_injection
         db_frog.last_priming = frog.last_priming
         db_frog.notes = frog.notes
         db_frog.sex = frog.sex
         db_frog.egg_quality = frog.egg_quality
-        db_frog.tank_id = frog.tank_id
         db_frog.actual_tank_id = frog.actual_tank_id
+        db_frog.is_sick = frog.is_sick
+        db_frog.is_laying_eggs = frog.is_laying_eggs
         self.db.commit()
         self.db.refresh(db_frog)
         return db_frog

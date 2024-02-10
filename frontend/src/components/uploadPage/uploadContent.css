@@ -95,3 +95,10 @@
 .orWord {
   margin: 5px;
 }
+
+video {
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  margin: 10px 0;
+}

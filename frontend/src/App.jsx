@@ -7,6 +7,8 @@ import Admin from './components/admin/admin';
 import PrivateRoute from './components/auth/PrivateRoute';
 import { initializeIcons } from './icons/iconLibrary';
 import './App.css';
+import NotificationProvider from './hooks/NotificationProvider';
+import NotificationList from './components/miniComponents/NotificationList';
 
 
 function App() {
@@ -15,16 +17,19 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route element={<PrivateRoute />}>
-              <Route path="/home" element={<Home />} />
-              <Route path="/admin" element={<Admin />} />
-            </Route>
-          </Routes>
-        </AuthProvider>
+        <NotificationProvider>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route element={<PrivateRoute />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/admin" element={<Admin />} />
+              </Route>
+            </Routes>
+          </AuthProvider>
+          <NotificationList />
+        </NotificationProvider>
       </BrowserRouter>
     </div>
   );

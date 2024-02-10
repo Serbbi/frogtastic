@@ -36,3 +36,12 @@
 .menuOption.logOut {
     font-weight: bold;
 }
+
+@media screen and (max-width: 768px) {
+    .leftNav {
+        width: 250px;
+        z-index: 1;
+        position: fixed;
+        box-shadow: 1rem 3rem 4rem rgba(0, 0, 0, 0.2);
+    }
+}

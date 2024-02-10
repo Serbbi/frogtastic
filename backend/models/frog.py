@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, Boolean
 from database import Base
 
 class Frog(Base):
@@ -13,3 +13,5 @@ class Frog(Base):
     egg_quality = Column(Integer, index=True)
     tank_id = Column(Integer, index=True)
     actual_tank_id = Column(Integer, index=True)
+    is_sick = Column(Boolean, index=True)
+    is_laying_eggs = Column(Boolean, index=True)

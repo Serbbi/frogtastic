@@ -2,18 +2,25 @@ import FrogDetailsContent from "../miniComponents/frogDetailsContent";
 import { useState, useRef, useEffect } from "react";
 import Loading from "../miniComponents/loading";
 import "./uploadContent.css";
+import Camera from "../miniComponents/Camera";
 
 export default function UploadContent() {
     const [success, setSuccess] = useState("default");
     const [fileName, setFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isActiveCamera, setIsActiveCamera] = useState(false);
+    const [blob, setBlob] = useState(null);
     const [frog, setFrog] = useState({});
     const dropContainer = useRef(null);
 
     function uploadImage() {
-        setIsLoading(true);
         const formData = new FormData();
-        formData.append('file', document.querySelector('input[type="file"]').files[0]);
+        if(blob) {
+            formData.append('file', blob);
+        } else {
+            formData.append('file', document.querySelector('input[type="file"]').files[0]);
+        }
+        setIsLoading(true);
         fetch('http://localhost:8000/image', {
             method: 'POST',
             body: formData
@@ -78,11 +85,16 @@ export default function UploadContent() {
 
     function goBackToDefault() {
         setSuccess("default");
+        setIsActiveCamera(false);
         setFileName("");
         document.querySelector(".uploadContainer").style.display = "flex";
     }
 
     if(isLoading) return (<div className="uploadContainer"><Loading /></div>);
+
+    if(isActiveCamera) return (<div className="uploadContainer"><Camera goBackToDefault={goBackToDefault} 
+                                                                        setBlob={setBlob} 
+                                                                        setFileName={setFileName} /></div>);
 
     return (
         <div className="uploadContainer">
@@ -98,6 +110,7 @@ export default function UploadContent() {
                         <span className="file-name">{fileName}</span>
                     </label>
                     <button onClick={uploadImage} className="uploadButton">Upload</button>
+                    <button onClick={() => setIsActiveCamera(true)} className="uploadButton">Take photo</button>
                 </div>
                 : null}
         </div>

@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import './CreateFrogContent.css';
+import { useNotification } from '../../hooks/NotificationProvider';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function CreateFrogContent() {
     const token = localStorage.getItem('site');
+    const { addNotification } = useNotification();
     const [frog, setFrog] = useState({
         frog_number: 0,
         tank_id: 0,
@@ -23,8 +26,12 @@ export default function CreateFrogContent() {
         setFrog(prevFrog => ({ ...prevFrog, [name]: value }));
     }
 
+    function resetAllFields() {
+        const fields = document.querySelectorAll('input');
+        fields.forEach(field => field.value = "");
+    }
+
     function saveFrog() {
-        console.log(frog);
         fetch('http://localhost:8000/frogs/', {
             method: 'POST',
             headers: {
@@ -36,9 +43,12 @@ export default function CreateFrogContent() {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
+                addNotification({id: uuidv4() ,text: 'Frog created', type: 'success' });
+                resetAllFields();
             })
             .catch((error) => {
                 console.error('Error:', error);
+                addNotification({id: uuidv4() ,text: 'Error creating frog', type: 'error' });
             });
     }
 

@@ -85,3 +85,28 @@ label {
     align-items: center;
     justify-content: center;
 }
+
+.okStatus {
+    color: green;
+    margin-left: 20px;
+}
+
+.sickStatus {
+    color: rgb(255, 238, 0);
+    margin-left: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .leftRightContainer {
+        flex-direction: column;
+    }
+
+    .leftDetailsContainer {
+        width: 100%;
+    }
+
+    .rightDetailsContainer {
+        width: 100%;
+    }
+    
+}

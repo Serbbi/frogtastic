@@ -20,9 +20,6 @@ def verify_frog_details(frog : Frog):
     if(frog.egg_quality < 0 or frog.egg_quality > 5):
         # print("egg quality")
         return True
-    if(frog.sex.lower() != "m" and frog.sex.lower() != "f"):
-        # print("sex")
-        return True
     if(frog.tank_id < 0):
         # print("tank id")
         return True

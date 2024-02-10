@@ -29,9 +29,13 @@
 
     background-color: #c0c0c0;
     padding: 10px;
-}   
+}
 
 .hideNavButton:hover {
     cursor: pointer;
     background-color: #a0a0a0;
+}
+
+@media screen and (max-width: 768px) {
+    .mainContent {}
 }

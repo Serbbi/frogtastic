@@ -23,3 +23,10 @@ td {
     color: white;
     cursor: pointer;
 }
+
+@media screen and (max-width: 768px) {
+    .frogTable th:nth-child(n+3):not(:last-child),
+    .frogTable td:nth-child(n+3):not(:last-child) {
+        display: none;
+    }
+}
