@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import './CreateFrogContent.css';
 import { useNotification } from '../../hooks/NotificationProvider';
 import { v4 as uuidv4 } from 'uuid';
+import { throwIfNotOk } from '../../util/errorThrower';
+import './CreateFrogContent.css';
 
 export default function CreateFrogContent() {
     const token = localStorage.getItem('site');
@@ -31,25 +32,31 @@ export default function CreateFrogContent() {
         fields.forEach(field => field.value = "");
     }
 
-    function saveFrog() {
-        fetch('http://localhost:8000/frogs/', {
+    async function postRequest(frog) {
+        const response = await fetch('http://localhost:8000/frogs/', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(frog)
+        });
+
+        throwIfNotOk(response);
+
+        return await response.json();
+    }
+
+    function saveFrog() {
+        postRequest(frog)
+        .then(data => {
+            if(data.error) throw new Error(data.error);
+            addNotification({id: uuidv4() ,text: 'Frog created', type: 'success' });
+            resetAllFields();
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                addNotification({id: uuidv4() ,text: 'Frog created', type: 'success' });
-                resetAllFields();
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                addNotification({id: uuidv4() ,text: 'Error creating frog', type: 'error' });
-            });
+        .catch(error => {
+            addNotification({id: uuidv4() ,text: error.message, type: 'error' });
+        });
     }
 
     return (
@@ -65,11 +72,11 @@ export default function CreateFrogContent() {
             </div>
             <div className="frogField">
                 <label htmlFor="lastInjectionInput">Last Injection</label>
-                <input type="text" id="lastInjectionInput" name="last_injection" onChange={updateField} />
+                <input type="date" id="lastInjectionInput" name="last_injection" onChange={updateField} />
             </div>
             <div className="frogField">
                 <label htmlFor="lastPrimingInput">Last Priming</label>
-                <input type="text" id="lastPrimingInput" name="last_priming" onChange={updateField} />
+                <input type="date" id="lastPrimingInput" name="last_priming" onChange={updateField} />
             </div>
             <div className="frogField">
                 <label htmlFor="notesInput">Notes</label>

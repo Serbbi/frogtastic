@@ -1,0 +1,9 @@
+./frontend/node_modules
+
+./backend/_pycache_
+
+./backend/.env
+
+.vscode
+
+.scannerwork

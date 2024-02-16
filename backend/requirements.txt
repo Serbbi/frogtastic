@@ -1,0 +1,15 @@
+h5py
+keras
+numpy
+opencv-python
+scikit-learn
+tensorflow
+fastapi
+uvicorn
+sqlalchemy
+python-dotenv
+psycopg2
+typing-extensions
+python-jose
+passlib
+python-multipart

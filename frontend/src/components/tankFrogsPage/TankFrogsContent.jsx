@@ -1,26 +1,18 @@
 import { useState } from 'react';
 import Loading from '../miniComponents/loading';
-import './TankFrogsContent.css';
 import FrogDetailsContent from '../miniComponents/frogDetailsContent';
 import FrogTable from '../miniComponents/FrogTable';
+import useTankFrogs from '../../hooks/useTankFrogs';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './TankFrogsContent.css';
 
 export default function TankFrogsContent() {
     const [selectedNumber, setSelectedNumber] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
     const [showingFrog, setShowingFrog] = useState(null);
-    const [frogs, setFrogs] = useState([]);
+    const { frogs, tankStatus, isLoading } = useTankFrogs({ tankId: selectedNumber });
 
     function handleNumberChange(event) {
         setSelectedNumber(parseInt(event.target.value));
-        setIsLoading(true);
-        fetch(`http://localhost:8000/frogs/tank/${event.target.value}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setFrogs(data);
-                setIsLoading(false);
-            })
-            .catch(error => console.log(error));
     };
 
     function goBackAction() {
@@ -33,7 +25,10 @@ export default function TankFrogsContent() {
 
     return (
         <div className="tankFrogsContent">
-            <h1>Tank Frogs</h1>
+            <h1>Tank Frogs
+                {!tankStatus ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
+                    : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
+            </h1>
             <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
                 {[...Array(11)].map((_, index) => (
                     <option key={index} value={index + 1}>{index + 1}</option>

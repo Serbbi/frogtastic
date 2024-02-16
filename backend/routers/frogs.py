@@ -33,6 +33,7 @@ async def create_frog(
         return controller.create_frog(frog)
     raise_access_right_exception()
 
+
 @router.get("/tank/{tank_id}")
 async def get_tank_frogs(tank_id: int, controller: FrogController = Depends(FrogController)):
     return controller.get_tank_frogs(tank_id)

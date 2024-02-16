@@ -1,34 +1,15 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
 import Loading from '../miniComponents/loading';
 import './UserDetailsContent.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useUser from '../../hooks/useUser';
 
 export default function UserDetailsContent({ id, goBackAction }) {
     const token = localStorage.getItem('site');
-    const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        fetch(`http://localhost:8000/users/${id}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                setUser(data);
-                setIsLoading(false);
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }, [id]);
+    const { user, isLoading, mutate } = useUser({ id });
 
     function changePrivileges(privilege) {
-        setUser({ ...user, privileges: { ...user.privileges, [privilege]: !user.privileges[privilege] } });
+        mutate({ ...user, privileges: { ...user.privileges, [privilege]: !user.privileges[privilege] }}, false);
     }
 
     function saveUser() {

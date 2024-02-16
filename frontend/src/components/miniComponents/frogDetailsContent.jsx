@@ -1,84 +1,96 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./frogDetailsContent.css";
 import { useNotification } from "../../hooks/NotificationProvider";
 import { v4 as uuidv4 } from "uuid";
+import { throwIfNotOk } from "../../util/errorThrower";
+import "./frogDetailsContent.css";
 
 export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) {
     const { addNotification } = useNotification();
     const token = localStorage.getItem('site');
     const [frog, setFrog] = useState(initialFrog);
-
-    useEffect(() => {
-        setFrog(initialFrog);
-    }, [initialFrog]);
+    const [ saved, setSaved ] = useState(true);
 
     function updateField(event) {
         const name = event.target.name;
         const value = event.target.value;
         setFrog(prevFrog => ({ ...prevFrog, [name]: value }));
+        setSaved(false);
     }
 
-    function saveFrog() {
-        fetch(`http://localhost:8000/frogs/${frog.id}`, {
+    async function updateRequest(frog) {
+        const response = await fetch(`http://localhost:8000/frogs/${frog.id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(frog)
-        })
-            .then(response => response.json())
+        });
+
+        throwIfNotOk(response);
+
+        return await response.json();
+    }
+
+    function saveFrog() {
+        updateRequest(frog)
             .then(data => {
-                console.log(data);
-                initialFrog = frog;
-                addNotification({id: uuidv4(), text: "Frog saved", type: "success" });
+                setSaved(true);
+                addNotification({ id: uuidv4(), text: "Frog saved", type: "success" });
             })
             .catch((error) => {
-                console.error('Error:', error);
-                addNotification({id: uuidv4(), text: "Error saving frog", type: "error" });
+                addNotification({ id: uuidv4(), text: error.message, type: "error" });
             });
+    }
+
+    async function deleteRequest(frog) {
+        const response = await fetch(`http://localhost:8000/frogs/${frog.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            }
+        });
+            
+        throwIfNotOk(response);
+
+        return await response.json();
     }
 
     function deleteFrog() {
         const confirmDelete = window.confirm("Are you sure you want to delete this frog?");
         if (!confirmDelete) return;
 
-        fetch(`http://localhost:8000/frogs/${frog.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-            }
-        })
-            .then(response => response.json())
+        deleteRequest(frog)
             .then(data => {
-                console.log(data);
-                addNotification({id: uuidv4(), text: "Frog deleted", type: "trash" });
+                addNotification({ id: uuidv4(), text: "Frog deleted", type: "trash" });
                 goBackAction();
             })
             .catch((error) => {
-                console.error('Error:', error);
+                addNotification({ id: uuidv4(), text: error.message, type: "error" });
             });
     }
 
     function injectFrog() {
-        if(frog.is_laying_eggs) {
+        if (frog.is_laying_eggs) {
             setFrog(prevFrog => ({ ...prevFrog, is_laying_eggs: false }));
             return;
         }
-        setFrog(prevFrog => ({ 
-            ...prevFrog, 
+        setFrog(prevFrog => ({
+            ...prevFrog,
             last_injection: new Date().toISOString().slice(0, 10), // this is to prevent long date format
             is_laying_eggs: true
         }));
+        setSaved(false);
     }
 
     function toggleFrogSickness() {
-        setFrog(prevFrog => ({ 
-            ...prevFrog, 
+        setFrog(prevFrog => ({
+            ...prevFrog,
             is_sick: !prevFrog.is_sick
         }));
+        setSaved(false);
     }
 
     function getActualTank() {
@@ -88,12 +100,9 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
     }
 
     function checkForChanges() {
-        for(let key in frog) {
-            if(frog[key] !== initialFrog[key]) {
-                const confirmBack = window.confirm("Are you sure you want to go back? You have unsaved changes.");
-                if(confirmBack) break;
-                return;
-            }
+        if (!saved) {
+            const confirmLeave = window.confirm("You have unsaved changes. Are you sure you want to leave?");
+            if (!confirmLeave) return;
         }
         goBackAction();
     }
@@ -103,7 +112,7 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
             <FontAwesomeIcon icon="fa-solid fa-arrow-left" onClick={checkForChanges} className="goBackButton" />
             <h1>Frog-{frog.frog_number} Tank-{frog.tank_id}
                 {!frog.is_sick ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
-                      : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus"/>}
+                    : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
             </h1>
             <div className="leftRightContainer">
                 <div className="leftDetailsContainer">

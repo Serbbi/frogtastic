@@ -35,7 +35,7 @@ export default function FrogTable({ frogs, setShowingFrog }) {
                             <td>{frog.tank_id}</td>
                             <td>{frog.actual_tank_id}</td>
                             <td>{frog.last_injection}</td>
-                            <td>{frog.notes.length > 15 ? frog.notes.substring(0, 15) + '...' : frog.notes}</td>
+                            <td>{(frog.notes && frog.notes.length > 15) ? frog.notes.substring(0, 15) + '...' : frog.notes}</td>
                             <td>{frog.is_sick ? <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus"/>
                                               : <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />}
                             </td>

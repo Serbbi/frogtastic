@@ -1,32 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Loading from "../miniComponents/loading";
 import './AllUsersContent.css';
 import UserDetailsContent from "./UserDetailsContent";
+import useAllUsers from "../../hooks/useAllUsers";
 
 export default function AllUsersContent() {
-    const [users, setUsers] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [chosenUser, setChosenUser] = useState(null);
-    const token = localStorage.getItem('site');
-
-    useEffect(() => {
-        fetch('http://localhost:8000/users', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                setUsers(data);
-                setIsLoading(false);
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }, []);
+    const { users, isLoading } = useAllUsers();
 
     function handleUserClick(id) {
         setChosenUser(id);
@@ -41,8 +21,10 @@ export default function AllUsersContent() {
     if (isLoading) return <Loading />;
 
     const userRows = [];
-    for (let i = 0; i < users.length; i += 3) {
-        userRows.push(users.slice(i, i + 3));
+    if(users) {
+        for (let i = 0; i < users.length; i += 3) {
+            userRows.push(users.slice(i, i + 3));
+        }
     }
 
     return (

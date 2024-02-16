@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import Loading from "../miniComponents/loading";
 import "./uploadContent.css";
 import Camera from "../miniComponents/Camera";
+import { throwIfNotOk } from "../../util/errorThrower";
+import ErrorContent from "../miniComponents/ErrorContent";
 
 export default function UploadContent() {
     const [success, setSuccess] = useState("default");
@@ -11,7 +13,19 @@ export default function UploadContent() {
     const [isActiveCamera, setIsActiveCamera] = useState(false);
     const [blob, setBlob] = useState(null);
     const [frog, setFrog] = useState({});
+    const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
     const dropContainer = useRef(null);
+
+    async function postRequest(formData) {
+        const response = await fetch('http://localhost:8000/image', {
+            method: 'POST',
+            body: formData
+        });
+        
+        throwIfNotOk(response);
+
+        return await response.json();
+    }
 
     function uploadImage() {
         const formData = new FormData();
@@ -21,28 +35,23 @@ export default function UploadContent() {
             formData.append('file', document.querySelector('input[type="file"]').files[0]);
         }
         setIsLoading(true);
-        fetch('http://localhost:8000/image', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
+
+        postRequest(formData)
             .then(data => {
-                console.log(data);
-                if (data.error) {
+                if(data.error) {
                     setSuccess("error");
+                    setErrorMessage(data.error);
                     return;
                 }
                 setSuccess("success");
                 setFrog(data);
                 document.querySelector(".uploadContainer").style.display = "block";
             })
-            .catch((error) => {
+            .catch(error => {
                 setSuccess("error");
-                console.error('Error:', error);
+                setErrorMessage(error.message);
             })
-            .finally(() => {
-                setIsLoading(false);
-            });
+            .finally(() => setIsLoading(false));
     }
 
     useEffect(() => {
@@ -99,7 +108,7 @@ export default function UploadContent() {
     return (
         <div className="uploadContainer">
             {success === "success" ? <FrogDetailsContent frog={frog} goBackAction={goBackToDefault}/> : null}
-            {success === "error" ? <div>There was an error uploading the image.</div> : null}
+            {success === "error" ? <ErrorContent errorMessage={errorMessage} goBack={goBackToDefault}/> : null}
             {success === "default" ?
                 <div className="uploadDefaultElements">
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
@@ -110,7 +119,7 @@ export default function UploadContent() {
                         <span className="file-name">{fileName}</span>
                     </label>
                     <button onClick={uploadImage} className="uploadButton">Upload</button>
-                    <button onClick={() => setIsActiveCamera(true)} className="uploadButton">Take photo</button>
+                    {/* <button onClick={() => setIsActiveCamera(true)} className="uploadButton">Take photo</button> */}
                 </div>
                 : null}
         </div>
