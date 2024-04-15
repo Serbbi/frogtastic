@@ -4,12 +4,17 @@ from typing import Optional
 
 class FrogBase(BaseModel):
     frog_number: int
-    last_injection: Optional[date] = None
-    last_priming: Optional[date] = None
-    notes: Optional[str] = None
-    sex: Optional[str] = None
-    egg_quality: Optional[int] = None 
     tank_id: int
-    actual_tank_id: Optional[int] = None
-    is_sick: bool = False
-    is_laying_eggs: bool = False
+    current_tank_id: Optional[int] = None
+    dict: dict
+    organization_id: int
+
+
+    # last_injection: Optional[date] = None
+    # last_priming: Optional[date] = None
+    # notes: Optional[str] = None
+    # sex: Optional[str] = None
+    # egg_quality: Optional[int] = None 
+    # actual_tank_id: Optional[int] = None
+    # is_sick: bool = False
+    # is_laying_eggs: bool = False

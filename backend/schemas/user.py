@@ -13,4 +13,7 @@ privilegesConfig = {
 class UserBase(BaseModel):
     username: str
     hashed_password: str
-    privileges: dict = privilegesConfig
+    dict: dict
+    organizations: list
+
+    # privileges: dict = privilegesConfig

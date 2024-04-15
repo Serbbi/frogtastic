@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Column, Integer, String
+from sqlalchemy import JSON, Column, Integer, String, ARRAY
 from database import Base
 
 privilegesConfig = {
@@ -17,4 +17,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String, index=True)
-    privileges = Column(JSON, default=lambda: privilegesConfig)
+    dict = Column(JSON, default=lambda: {})
+    organizations = Column(ARRAY(Integer), index=True)
+
+    # privileges = Column(JSON, default=lambda: privilegesConfig)

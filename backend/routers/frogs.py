@@ -1,5 +1,5 @@
 # The router that is used from all "/frogs/*" endpoints.
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from crud.frog import FrogController
 from schemas.frog import FrogBase
 from util.frogUtil import get_create_frog_access_right, get_edit_frog_access_right, get_delete_frog_access_right
@@ -59,3 +59,10 @@ async def delete_frog(
     if access_right:
         return controller.delete_frog(frog_id)
     raise_access_right_exception()
+
+@router.post("/train")
+async def train_model(
+    file: UploadFile = File(...),
+    controller: FrogController = Depends(FrogController)
+):
+    return controller.train_model(file)
