@@ -18,7 +18,7 @@ export default function AuthProvider({ children }) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ username: data.username, hashed_password: data.password }),
+				body: JSON.stringify({ username: data.username, hashed_password: data.password, dict: {}, organizations: []}),
 			});
 			const res = await response.json();
 			console.log(res);
@@ -46,9 +46,11 @@ export default function AuthProvider({ children }) {
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
-				setPrivileges(res.privileges);
+				setPrivileges(res.dict);
 				localStorage.setItem("site", res.access_token);
-				localStorage.setItem("privileges", JSON.stringify(res.privileges));
+				localStorage.setItem("privileges", JSON.stringify(res.dict));
+				localStorage.setItem("orgs", res.organizations);
+				localStorage.setItem("userId", res.id);
 				navigate("/home");
 			} else {
 				setErrorMessage(res.detail);

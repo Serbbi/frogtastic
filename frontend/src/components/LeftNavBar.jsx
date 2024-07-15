@@ -12,7 +12,9 @@ export default function LeftNavBar({ setContent }) {
                 allFrogs: false,
                 tankFrogs: false,
                 uploadImage: false,
-                createFrog: false
+                createFrog: false,
+                createOrganization: false,
+                joinOrganization: false
             };
             newContent[name] = true;
             setContent(newContent);

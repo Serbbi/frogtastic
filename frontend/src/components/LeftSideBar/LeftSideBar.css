@@ -1,0 +1,36 @@
+.leftBar {
+    background-color: rgb(229, 229, 229);
+    width: 20%;
+    max-width: 200px;
+    min-width: 100px;
+    border-right: 1px solid #818181;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.menuList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menuList li {
+    padding: 10px;
+    /* border-bottom: 1px solid #c0c0c0; */
+    font-size: small;
+}
+
+.menuList li:hover {
+    background-color: #c0c0c0;
+    cursor: pointer;
+}
+
+hr {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid #c0c0c0;
+
+    width: 80%;
+}

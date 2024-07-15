@@ -1,9 +1,10 @@
 from crud.controller import Controller
 from models.frog import Frog
 import os
-from frogRetreiver import retrieve_frog
+from frogRetreiver import retrieve_frog, extract_image
 from util.frogUtil import verify_frog_details
 import zipfile
+import cv2
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -42,9 +43,14 @@ class FrogController(Controller):
 
         with open(f"uploaded images/{file.filename}", "wb") as image:
             image.write(file.file.read())
-        result = retrieve_frog(f"uploaded images/{file.filename}")
+
+        extract_image(file.filename)
+        # return None
+
+        result = retrieve_frog("uploaded images/extraction.png")
 
         os.remove(f"uploaded images/{file.filename}")
+        os.remove("uploaded images/extraction.png")
 
         first_line = result.split('\n')[0]
         frog_number = first_line.split('_')[0][-1]

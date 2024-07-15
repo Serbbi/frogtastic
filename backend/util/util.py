@@ -56,6 +56,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], contro
 
 
 def get_access_right(privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
-    if current_user.privileges[privilege] == True:
+    # print(current_user.dict['privileges'])
+    if current_user.dict['privileges'][privilege] == True:
         return True
     return False

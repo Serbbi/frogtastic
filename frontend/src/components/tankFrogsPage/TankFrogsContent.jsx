@@ -34,7 +34,7 @@ export default function TankFrogsContent() {
                     <option key={index} value={index + 1}>{index + 1}</option>
                 ))}
             </select>
-            {frogs.length !== 0 && <FrogTable frogs={frogs} setShowingFrog={setShowingFrog} />}
+            {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} setShowingFrog={setShowingFrog} />}
         </div>
     );
 }

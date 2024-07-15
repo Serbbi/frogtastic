@@ -1,0 +1,52 @@
+* {
+    color: white;
+    margin: 0;
+}
+
+.appHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: #003908;
+    width: 100%;
+    /* border-bottom: 1px solid #e9ecef; */
+}
+
+.leftSide {
+    display: flex;
+    align-items: center;
+    /* padding: 0 1rem 1rem 0; */
+
+    
+}
+
+.rightSide {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    border-radius: 50%;
+    height: 30px;
+}
+
+.userIcon {
+    border-radius: 50%;
+    height: 30px;
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
+
+.dropdownMenu {
+    position: absolute;
+    z-index: 1;
+    top: 3rem;
+    right: 1rem;
+    background-color: #003908;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 0.5rem;
+}

@@ -6,13 +6,19 @@ import AllFrogsContent from "./allFrogsPage/AllFrogsContent";
 import TankFrogsContent from "./tankFrogsPage/TankFrogsContent";
 import CreateFrogContent from "./createFrogPage/CreateFrogContent";
 import "./home.css";
+import AppHeader from "./AppHeader/AppHeader";
+import LeftSideBar from "./LeftSideBar/LeftSideBar";
+import CreateOrganizationMenu from "./organizationComponents/CreateOrganizationMenu";
+import JoinOrganizationMenu from "./organizationComponents/JoinOrganizationMenu";
 
 export default function Home() {
     const [content, setContent] = useState({
         allFrogs: false,
         tankFrogs: false,
         uploadImage: true,
-        createFrog: false
+        createFrog: false,
+        createOrganization: false,
+        joinOrganization: false
     });
     const [navPanelVisibility, setNavPanelVisibility] = useState(true);
     const [angleButton, setAngleButton] = useState("fa-solid fa-angle-left");
@@ -28,13 +34,23 @@ export default function Home() {
 
 
     return <div className="homeContainer">
-        {navPanelVisibility ? <LeftNavBar setContent={setContent} /> : null}
-        <div className="mainContent">
+        <AppHeader />
+        <div className="sidebarAndMainContent">
+            <LeftSideBar setContent={setContent} />
+            {content.allFrogs ? <AllFrogsContent /> : null}
+            {content.tankFrogs ? <TankFrogsContent /> : null}
+            {content.uploadImage ? <UploadContent /> : null}
+            {content.createFrog ? <CreateFrogContent /> : null}
+            {content.createOrganization ? <CreateOrganizationMenu /> : null}
+            {content.joinOrganization ? <JoinOrganizationMenu /> : null}
+        </div>
+        {/* {navPanelVisibility ? <LeftNavBar setContent={setContent} /> : null} */}
+        {/* <div className="mainContent">
             <FontAwesomeIcon icon={angleButton} className="hideNavButton" onClick={hideNavPanel} />
             {content.allFrogs ? <AllFrogsContent /> : null}
             {content.tankFrogs ? <TankFrogsContent /> : null}
             {content.uploadImage ? <UploadContent /> : null}
             {content.createFrog ? <CreateFrogContent /> : null}
-        </div>
+        </div> */}
     </div>
 }

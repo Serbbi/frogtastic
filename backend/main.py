@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from database import engine, Base
-from routers import frogs, image, login, users, organizations, tanks
+from routers import frogs, image, login, users, organizations, tanks, notifications
 from fastapi.middleware.cors import CORSMiddleware
 
 """
@@ -16,6 +16,7 @@ app.include_router(login.router)
 app.include_router(users.router)
 app.include_router(organizations.router)
 app.include_router(tanks.router)
+app.include_router(notifications.router)
 
 
 origins = [

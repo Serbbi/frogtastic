@@ -35,11 +35,15 @@ yarn.lock
 __pycache__/
 
 # Ignore image dataset
-/backend/CORF3D-ACF/data/Frogs/RGB
+/backend/CORF3D_ACF/data
 
 # Ignore model output
-/backend/CORF3D-ACF/output
-/backend/CORF3D-ACF/labeler.pkl
+/backend/CORF3D_ACF/output
+/backend/CORF3D_ACF/labeler.pkl
 
 # Ignore sonarqube file
 /.scannerwork/
+
+
+CORFpushpull
+Preprocessing
