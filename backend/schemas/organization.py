@@ -4,3 +4,4 @@ class OrganizationBase(BaseModel):
     name: str
     participants: list
     admins: list
+    table_columns: list

@@ -6,8 +6,9 @@ class FrogBase(BaseModel):
     frog_number: int
     tank_id: int
     current_tank_id: Optional[int] = None
-    dict: dict
+    attributes: dict
     organization_id: int
+    history: dict
 
 
     # last_injection: Optional[date] = None

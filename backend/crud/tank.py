@@ -1,5 +1,6 @@
 from crud.controller import Controller
 from models.tank import Tank
+from sqlalchemy.orm.attributes import flag_modified
 
 
 class TankController(Controller):
@@ -10,7 +11,7 @@ class TankController(Controller):
         return self.db.query(Tank).filter(Tank.id == tank_id).first()
     
     def create_tank(self, tank: Tank):
-        db_tank = Tank(tank_name=tank.tank_name, organization_id=tank.organization_id, frog_ids=tank.frog_ids, dict=tank.dict)
+        db_tank = Tank(tank_name=tank.tank_name, organization_id=tank.organization_id, frog_ids=tank.frog_ids, attributes=tank.attributes)
         self.db.add(db_tank)
         self.db.commit()
         self.db.refresh(db_tank)
@@ -21,7 +22,7 @@ class TankController(Controller):
         db_tank.tank_name = tank.tank_name
         db_tank.organization_id = tank.organization_id
         db_tank.frog_ids = tank.frog_ids
-        db_tank.dict = tank.dict
+        db_tank.attributes = tank.attributes
         self.db.commit()
         self.db.refresh(db_tank)
         return db_tank
@@ -31,3 +32,30 @@ class TankController(Controller):
         self.db.delete(db_tank)
         self.db.commit()
         return db_tank
+    
+    def get_tanks_by_organization(self, organization_id: int):
+        return self.db.query(Tank).filter(Tank.organization_id == organization_id).all()
+    
+    def create_tank_attributes(self, organization_id: int, attributes: list):
+        tanks = self.db.query(Tank).filter(Tank.organization_id == organization_id).all()
+        for tank in tanks:
+            for attribute in attributes:
+                tank.attributes[attribute] = ""
+            
+            flag_modified(tank, "attributes")
+            self.db.commit()
+            self.db.refresh(tank)
+
+        return tanks
+    
+    def delete_tank_attributes(self, organization_id: int, attributes: list):
+        tanks = self.db.query(Tank).filter(Tank.organization_id == organization_id).all()
+        for tank in tanks:
+            for attribute in attributes:
+                tank.attributes.pop(attribute, None)
+
+            flag_modified(tank, "attributes")
+            self.db.commit()
+            self.db.refresh(tank)
+
+        return tanks

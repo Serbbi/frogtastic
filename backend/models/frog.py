@@ -8,8 +8,9 @@ class Frog(Base):
     frog_number = Column(Integer, index=True)
     tank_id = Column(Integer, index=True)
     current_tank_id = Column(Integer, ForeignKey('tanks.id'), index=True)
-    dict = Column(JSON, default=lambda: {})
+    attributes = Column(JSON, default=lambda: {})
     organization_id = Column(Integer, ForeignKey('organizations.id'), index=True)
+    history = Column(JSON, default=lambda: {})
 
     # last_injection = Column(Date, index=True, nullable=True)
     # last_priming = Column(Date, index=True, nullable=True)

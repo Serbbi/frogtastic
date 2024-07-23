@@ -27,6 +27,7 @@ export default function LeftSideBar({ setContent }) {
             <ul className='menuList'>
                 <li onClick={changeContent("joinOrganization")}>Join Organization</li>
                 <li onClick={changeContent("createOrganization")}>Create Organization</li>
+                <li onClick={changeContent("organizationSettings")}>Organization Settings</li>
             </ul>
         </div>
     );

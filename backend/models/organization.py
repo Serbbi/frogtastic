@@ -8,4 +8,5 @@ class Organization(Base):
     name = Column(String, unique=True, index=True)
     participants = Column(ARRAY(Integer, ForeignKey('users.id')), index=True)
     admins = Column(ARRAY(Integer, ForeignKey('users.id')), index=True)
+    table_columns = Column(ARRAY(String), index=True)
 

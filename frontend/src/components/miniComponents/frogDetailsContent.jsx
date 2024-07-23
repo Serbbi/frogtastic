@@ -12,10 +12,15 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
     const [frog, setFrog] = useState(initialFrog);
     const [ saved, setSaved ] = useState(true);
 
+    console.log(frog);
+
     function updateField(event) {
         const name = event.target.name;
         const value = event.target.value;
-        setFrog(prevFrog => ({ ...prevFrog, [name]: value }));
+
+        const newDict = { ...frog.dict, [name]: value };
+
+        setFrog(prevFrog => ({ ...prevFrog, dict: newDict }));
         setSaved(false);
     }
 
@@ -116,30 +121,12 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
             </h1>
             <div className="leftRightContainer">
                 <div className="leftDetailsContainer">
-                    <div className="frogField">
-                        <label htmlFor="last_injection">Last Injection</label>
-                        <input type="date" id="last_injection" name="last_injection" value={frog.last_injection ? frog.last_injection : ""} onChange={updateField} />
-                    </div>
-                    <div className="frogField">
-                        <label htmlFor="last_priming">Last Priming</label>
-                        <input type="date" id="last_priming" name="last_priming" value={frog.last_priming ? frog.last_priming : ""} onChange={updateField} />
-                    </div>
-                    <div className="frogField">
-                        <label htmlFor="notes">Notes</label>
-                        <input type="text" id="notes" name="notes" value={frog.notes ? frog.notes : ""} onChange={updateField} />
-                    </div>
-                    <div className="frogField">
-                        <label htmlFor="sex">Gender</label>
-                        <input type="text" id="sex" name="sex" value={frog.sex ? frog.sex : ""} onChange={updateField} />
-                    </div>
-                    <div className="frogField">
-                        <label htmlFor="egg_quality">Egg Quality</label>
-                        <input type="text" id="egg_quality" name="egg_quality" value={frog.egg_quality ? frog.egg_quality : ""} onChange={updateField} />
-                    </div>
-                    <div className="frogField">
-                        <label htmlFor="actual_tank_id">Actual Tank</label>
-                        <input type="text" name="actual_tank_id" id="actual_tank_id" value={getActualTank()} onChange={updateField} />
-                    </div>
+                    {Object.entries(frog.attributes).map(([key, value]) => (
+                        <div className="frogField">
+                            <label>{key}</label>
+                            <input type="text" name={key} value={value} onChange={updateField} />
+                        </div>
+                    ))}
                 </div>
                 <div className="rightDetailsContainer">
                     <button className="saveButton" onClick={saveFrog}>Save</button>

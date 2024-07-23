@@ -4,6 +4,7 @@ from crud.frog import FrogController
 from schemas.frog import FrogBase
 from util.frogUtil import get_create_frog_access_right, get_edit_frog_access_right, get_delete_frog_access_right
 from util.exceptions import raise_access_right_exception
+from typing import List
 
 router = APIRouter(
     prefix="/frogs",
@@ -18,10 +19,33 @@ router = APIRouter(
 async def get_frogs(controller: FrogController = Depends(FrogController)):
     return controller.get_frogs()
 
+@router.get("/organization/{organization_id}")
+async def get_organization_frogs(organization_id: int, controller: FrogController = Depends(FrogController)):
+    return controller.get_organization_frogs(organization_id)
+
+@router.get("/organization/{organization_id}/one")
+async def get_organization_one_frog(organization_id: int, controller: FrogController = Depends(FrogController)):
+    return controller.get_organization_one_frog(organization_id)
+
 @router.get("/{frog_id}")
 async def get_frog(frog_id: int, controller: FrogController = Depends(FrogController)):
     return controller.get_frog(frog_id)
 
+@router.post("/organization/{organization_id}/attributes")
+async def post_attributes(
+    organization_id: int, 
+    attributes: List[str], 
+    controller: FrogController = Depends(FrogController)
+):
+    return controller.add_frog_attributes(attributes, organization_id)
+
+@router.delete("/organization/{organization_id}/attributes")
+async def delete_attributes(
+    organization_id: int, 
+    attributes: List[str], 
+    controller: FrogController = Depends(FrogController)
+):
+    return controller.delete_frog_attributes(attributes, organization_id)
 
 @router.post("")
 async def create_frog(

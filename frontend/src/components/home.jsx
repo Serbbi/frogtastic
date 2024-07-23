@@ -10,6 +10,7 @@ import AppHeader from "./AppHeader/AppHeader";
 import LeftSideBar from "./LeftSideBar/LeftSideBar";
 import CreateOrganizationMenu from "./organizationComponents/CreateOrganizationMenu";
 import JoinOrganizationMenu from "./organizationComponents/JoinOrganizationMenu";
+import SettingsMenu from "./Settings/SettingsMenu";
 
 export default function Home() {
     const [content, setContent] = useState({
@@ -18,7 +19,8 @@ export default function Home() {
         uploadImage: true,
         createFrog: false,
         createOrganization: false,
-        joinOrganization: false
+        joinOrganization: false,
+        organizationSettings: false
     });
     const [navPanelVisibility, setNavPanelVisibility] = useState(true);
     const [angleButton, setAngleButton] = useState("fa-solid fa-angle-left");
@@ -43,6 +45,7 @@ export default function Home() {
             {content.createFrog ? <CreateFrogContent /> : null}
             {content.createOrganization ? <CreateOrganizationMenu /> : null}
             {content.joinOrganization ? <JoinOrganizationMenu /> : null}
+            {content.organizationSettings ? <SettingsMenu /> : null}
         </div>
         {/* {navPanelVisibility ? <LeftNavBar setContent={setContent} /> : null} */}
         {/* <div className="mainContent">

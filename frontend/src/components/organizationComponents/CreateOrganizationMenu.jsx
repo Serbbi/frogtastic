@@ -1,3 +1,5 @@
+import './CreateOrganizationMenu.css';
+
 export default function CreateOrganizationMenu() {
     const token = localStorage.getItem('site');
 
@@ -36,11 +38,11 @@ export default function CreateOrganizationMenu() {
     }
 
     return (
-        <div>
+        <div className='createOrganizationMenu'>
             <h1>Create Organization</h1>
-            <form onSubmit={handleSubmit}>
+            <form className='createOrganizationForm' onSubmit={handleSubmit}>
                 <input type="text" placeholder="Organization Name" />
-                <input type="text" placeholder="Organization Description" />
+                <textarea type="text" placeholder="Organization Description" />
                 <input type="file" />
                 <button type="submit">Create</button>
             </form>

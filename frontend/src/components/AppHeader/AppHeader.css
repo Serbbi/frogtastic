@@ -1,8 +1,3 @@
-* {
-    color: white;
-    margin: 0;
-}
-
 .appHeader {
     display: flex;
     justify-content: space-between;
@@ -12,6 +7,8 @@
     padding-right: 0;
     background-color: #003908;
     width: 100%;
+    color: #e9ecef;
+    margin: 0;
     /* border-bottom: 1px solid #e9ecef; */
 }
 

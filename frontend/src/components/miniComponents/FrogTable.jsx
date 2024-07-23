@@ -33,7 +33,7 @@ export default function FrogTable({ frogs, setShowingFrog }) {
                         <tr key={frog.id} className='tableRow' onClick={() => setFrogId(frog.id)}>
                             <td>{frog.frog_number}</td>
                             <td>{frog.tank_id}</td>
-                            <td>{frog.actual_tank_id}</td>
+                            <td>{frog.current_tank_id}</td>
                             <td>{frog.last_injection}</td>
                             <td>{(frog.notes && frog.notes.length > 15) ? frog.notes.substring(0, 15) + '...' : frog.notes}</td>
                             <td>{frog.is_sick ? <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus"/>

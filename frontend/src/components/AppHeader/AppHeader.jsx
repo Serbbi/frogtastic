@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import UseAllNotifications from '../../hooks/useAllNotifications';
+import { useOrganization } from '../../hooks/OrganizationProvider';
 import './AppHeader.css';
 
 export default function AppHeader() {
     const [isOpen, setIsOpen] = useState(false);
     const { notifications } = UseAllNotifications();
+    const userOrgs = localStorage.getItem('orgs').split(',');
+    const { organization, setOrganization } = useOrganization();
+
+    useEffect(() => {
+        setOrganization(userOrgs[0]);
+    }, []);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -55,11 +62,12 @@ export default function AppHeader() {
         <nav className="appHeader">
             <div className="leftSide">
                 <img src="frog_logo.jpg" alt="logo" className='logo'/>
-                <p>Dashboard</p>
+                {organization ? <p>{organization.name}</p> : <p>Organization Name</p>}
             </div>
             <div className="rightSide">
                 <button>Help</button>
-                <button>Organizations</button>
+
+                {userOrgs.length > 1 ? <button>Organizations</button> : null}
                 <button onClick={toggleMenu}>Notifications</button>
                 {isOpen && (
                     <div className="dropdownMenu">

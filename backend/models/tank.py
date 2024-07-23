@@ -8,4 +8,4 @@ class Tank(Base):
     tank_name = Column(String, index=True)
     organization_id = Column(Integer, ForeignKey('organizations.id'), index=True)
     frog_ids = Column(ARRAY(Integer, ForeignKey('frogs.id')), index=True)
-    dict = Column(JSON, default=lambda: {})
+    attributes = Column(JSON, default=lambda: {})

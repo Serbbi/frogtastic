@@ -1,7 +1,7 @@
+from typing import List
 from fastapi import APIRouter, Depends
 from schemas.tank import TankBase
 from crud.tank import TankController
-
 
 router = APIRouter(
     prefix="/tanks",
@@ -32,3 +32,15 @@ async def update_tank(tank_id: int, tank: TankBase, controller: TankController =
 @router.delete("/{tank_id}")
 async def delete_tank(tank_id: int, controller: TankController = Depends(TankController)):
     return controller.delete_tank(tank_id)
+
+@router.get("/organization/{organization_id}")
+async def get_tanks_by_organization(organization_id: int, controller: TankController = Depends(TankController)):
+    return controller.get_tanks_by_organization(organization_id)
+
+@router.post("/organization/{organization_id}/attributes")
+async def create_tank_attributes(organization_id: int, attributes: List[str], controller: TankController = Depends(TankController)):
+    return controller.create_tank_attributes(organization_id, attributes)
+
+@router.delete("/organization/{organization_id}/attributes")
+async def delete_tank_attributes(organization_id: int, attributes: List[str], controller: TankController = Depends(TankController)):
+    return controller.delete_tank_attributes(organization_id, attributes)

@@ -1,0 +1,44 @@
+.createOrganizationMenu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    text-align: left;
+
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow-y: scroll;
+}
+
+.createOrganizationForm {
+    /* width: 100%; */
+
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #5a5a5a;
+    border-radius: 0.5rem;
+
+    padding: 0.5rem;
+}
+
+.createOrganizationForm input {
+    margin: 0.5rem;
+    padding: 0.4rem;
+
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+
+    width: 40%;
+}
+
+.createOrganizationForm textarea {
+    margin: 0.5rem;
+    padding: 0.4rem;
+
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+
+    width: 40%;
+    max-width: 80%;
+}
