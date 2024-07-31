@@ -8,7 +8,7 @@ export default function useTankFrogs({ tankId }) {
     let tankStatus = false;
 
     if(data) {
-        tankStatus = data.some(frog => frog.is_sick);
+        tankStatus = data.some(frog => frog.attributes["is_sick"]);
     }
 
     return {

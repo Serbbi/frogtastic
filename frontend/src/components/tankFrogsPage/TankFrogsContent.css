@@ -19,12 +19,14 @@
 .selectButton {
     background-color: #c9c9c9;
     color: rgb(52, 52, 52);
-    padding: 14px 20px;
-    margin: 8px 0;
+    padding: 7px 20px;
+    margin: 8px;
+    margin-right: 5%;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     float: right;
+    width: 20%;
 }
 
 @media screen and (max-width: 768px) {

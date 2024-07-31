@@ -8,6 +8,8 @@ import {
     , faCircleCheck
     , faTrashCan
     , faCheck
+    , faSquareXmark
+    , faSquareCheck
 } from '@fortawesome/free-solid-svg-icons';
 
 export function initializeIcons() {
@@ -18,5 +20,7 @@ export function initializeIcons() {
         faTriangleExclamation,
         faCircleCheck,
         faTrashCan,
-        faCheck);
+        faCheck,
+        faSquareXmark,
+        faSquareCheck);
 }

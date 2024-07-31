@@ -12,7 +12,7 @@ class UserController(Controller):
 
     
     def create_user(self, user: User):
-        db_user = User(username=user.username, hashed_password=user.hashed_password, dict=user.dict, organizations=user.organizations)
+        db_user = User(username=user.username, hashed_password=user.hashed_password, attributes={"privileges":{}}, organizations=user.organizations)
         self.db.add(db_user)
         self.db.commit()
         self.db.refresh(db_user)
@@ -31,7 +31,7 @@ class UserController(Controller):
         db_user = self.get_user_by_id(user_id)
         db_user.username = user.username
         db_user.hashed_password = user.hashed_password
-        db_user.privileges = user.privileges
+        db_user.attributes = user.attributes
         self.db.commit()
         self.db.refresh(db_user)
         return db_user

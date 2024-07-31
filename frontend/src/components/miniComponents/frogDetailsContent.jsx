@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNotification } from "../../hooks/NotificationProvider";
 import { v4 as uuidv4 } from "uuid";
 import { throwIfNotOk } from "../../util/errorThrower";
+import useAllTanks from "../../hooks/useAllTanks";
+import { useOrganization } from "../../hooks/OrganizationProvider";
+import HistoryTable from "./HistoryTable";
 import "./frogDetailsContent.css";
 
 export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) {
@@ -11,16 +14,24 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
     const token = localStorage.getItem('site');
     const [frog, setFrog] = useState(initialFrog);
     const [ saved, setSaved ] = useState(true);
-
-    console.log(frog);
+    const { organization } = useOrganization();
+    const { tanks } = useAllTanks(organization ? organization.id : -1);
+    const [ showHistory, setShowHistory ] = useState(false);
+    // console.log(frog);
 
     function updateField(event) {
         const name = event.target.name;
         const value = event.target.value;
 
-        const newDict = { ...frog.dict, [name]: value };
+        if (name === "current_tank_id") {
+            setFrog(prevFrog => ({ ...prevFrog, current_tank_id: Number(value) }));
+            setSaved(false);
+            return;
+        }
 
-        setFrog(prevFrog => ({ ...prevFrog, dict: newDict }));
+        const newAttributes = { ...frog.attributes, [name]: value };
+
+        setFrog(prevFrog => ({ ...prevFrog, attributes: newAttributes }));
         setSaved(false);
     }
 
@@ -91,10 +102,8 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
     }
 
     function toggleFrogSickness() {
-        setFrog(prevFrog => ({
-            ...prevFrog,
-            is_sick: !prevFrog.is_sick
-        }));
+        let attributes = { ...frog.attributes, is_sick: !frog.attributes.is_sick };
+        setFrog(prevFrog => ({ ...prevFrog, attributes }));
         setSaved(false);
     }
 
@@ -112,27 +121,77 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
         goBackAction();
     }
 
+    function formatLabel(label) {
+        return label.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
+    }
+
+    if (showHistory) {
+        return <HistoryTable id={frog.id} setShowHistory={setShowHistory} showHistory={showHistory} tanks={tanks}/>
+    }
+
     return (
         <div className="frogDetailsContainer">
             <FontAwesomeIcon icon="fa-solid fa-arrow-left" onClick={checkForChanges} className="goBackButton" />
             <h1>Frog-{frog.frog_number} Tank-{frog.tank_id}
-                {!frog.is_sick ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
+                {!frog.attributes["is_sick"] ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
                     : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
             </h1>
             <div className="leftRightContainer">
                 <div className="leftDetailsContainer">
-                    {Object.entries(frog.attributes).map(([key, value]) => (
+                    {Object.entries(frog.attributes).map(([key, value]) => {
+                        if (key === "notes") 
+                            return (
+                                <div className="frogField">
+                                    <label>{formatLabel(key)}</label>
+                                    <textarea name={key} value={value} onChange={updateField} />
+                                </div>
+                            );
+                        if (key === "is_sick") 
+                            return (
+                                <div className="frogField">
+                                    <label>{formatLabel(key)}</label>
+                                    <input type="checkbox" name={key} checked={value} onChange={toggleFrogSickness} />
+                                </div>
+                            );
+                        if (key === "last_injection")
+                            return (
+                                <div className="frogField">
+                                    <label>{formatLabel(key)}</label>
+                                    <input type="date" name={key} value={value} onChange={updateField} />
+                                </div>
+                            );
+                        return (
+                            <div className="frogField">
+                                <label>{formatLabel(key)}</label>
+                                <input type="text" name={key} value={value} onChange={updateField} />
+                            </div>
+                        );
+                    })}
+
+                    {/* {Object.entries(frog.attributes).map(([key, value]) => key === "notes" ?
+                     (
                         <div className="frogField">
-                            <label>{key}</label>
+                            <label>{formatLabel(key)}</label>
                             <input type="text" name={key} value={value} onChange={updateField} />
                         </div>
-                    ))}
+                    ) : (
+                        <></>
+                    ))} */}
+                    <div className="frogField">
+                        <label>Current Tank</label>
+                        <select name="current_tank_id" value={frog.current_tank_id} onChange={updateField}>
+                            {tanks && tanks.map(tank => (
+                                <option key={tank.id} value={tank.id}>{tank.tank_name}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
                 <div className="rightDetailsContainer">
                     <button className="saveButton" onClick={saveFrog}>Save</button>
                     <button className="saveButton" onClick={deleteFrog}>Delete</button>
-                    <button className="saveButton" onClick={injectFrog}>{frog.is_laying_eggs ? "Move" : "Inject"}</button>
-                    <button className="saveButton" onClick={toggleFrogSickness}>{frog.is_sick ? "Healthy" : "Sick"}</button>
+                    <button className="saveButton" onClick={() => setShowHistory(!showHistory)}>History</button>
+                    {/* <button className="saveButton" onClick={injectFrog}>{frog.is_laying_eggs ? "Move" : "Inject"}</button> */}
+                    {/* <button className="saveButton" onClick={toggleFrogSickness}>{frog.is_sick ? "Healthy" : "Sick"}</button> */}
                 </div>
             </div>
         </div>

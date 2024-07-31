@@ -6,6 +6,9 @@ export const OrganizationProvider = ({ children }) => {
     const [organization, setOrganization] = useState(null);
 
     async function fetchAndSetOrganization(id) {
+        if (!id) {
+            return;
+        }
         try {
             const response = await fetch(`http://localhost:8000/organizations/${id}`);
             const data = await response.json();

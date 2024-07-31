@@ -3,11 +3,13 @@ import FrogTable from "../miniComponents/FrogTable";
 import FrogDetailsContent from "../miniComponents/frogDetailsContent";
 import Loading from "../miniComponents/loading";
 import useAllFrogs from "../../hooks/useAllFrogs";
+import { useOrganization } from "../../hooks/OrganizationProvider"
 import './AllFrogsContent.css';
 
 export default function AllFrogsContent() {
     const [showingFrog, setShowingFrog] = useState(null);
-    const { frogs, isLoading } = useAllFrogs();
+    const { organization } = useOrganization();
+    const { frogs, isLoading } = useAllFrogs(organization ? organization.id : -1);
 
     function goBackAction() {
         setShowingFrog(null);
@@ -20,7 +22,8 @@ export default function AllFrogsContent() {
     return (
         <div className="allFrogsContainer">
             <h1>All Frogs</h1>
-            {frogs.length !== 0 && <FrogTable frogs={frogs} setShowingFrog={setShowingFrog} />}
+            {frogs.length === 0 && <h2>No Frogs</h2>}
+            {frogs.length !== 0 && <FrogTable frogs={frogs} setShowingFrog={setShowingFrog} organization={organization}/>}
         </div>
     );
 }

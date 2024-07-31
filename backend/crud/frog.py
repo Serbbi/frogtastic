@@ -63,7 +63,7 @@ class FrogController(Controller):
         already_exists = self.db.query(Frog).filter_by(frog_number=frog.frog_number, tank_id=frog.tank_id, organization_id=frog.organization_id).first()
         if(already_exists):
             return {"error": "Frog already exists"}
-        db_frog = Frog(frog_number=frog.frog_number, tank_id=frog.tank_id, current_tank_id=frog.current_tank_id, dict=frog.dict, organization_id=frog.organization_id, history=frog.history)
+        db_frog = Frog(frog_number=frog.frog_number, tank_id=frog.tank_id, current_tank_id=frog.current_tank_id, attributes=frog.attributes, organization_id=frog.organization_id, history=frog.history)
         self.db.add(db_frog)
         self.db.commit()
         self.db.refresh(db_frog)
@@ -75,6 +75,7 @@ class FrogController(Controller):
     
 
     def get_frog_by_image(self, file):
+        print(file.content_type)
         if not file.content_type.endswith(("jpg", "jpeg", "png")):
             return {"error": "Only images are allowed"}
 
@@ -100,8 +101,8 @@ class FrogController(Controller):
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
         # if(verify_frog_details(frog)):
             # return {"error": "Invalid frog details"}
-        db_frog.current_tank_id = frog.current_tank_id
         db_frog.history = dict(update_history(db_frog, frog))
+        db_frog.current_tank_id = frog.current_tank_id
         flag_modified(db_frog, "history")
         db_frog.attributes = frog.attributes
         db_frog.organization_id = frog.organization_id
@@ -127,6 +128,9 @@ class FrogController(Controller):
 def update_history(db_frog, frog):
     history = db_frog.history
     status_string = ""
+
+    if db_frog.current_tank_id != frog.current_tank_id:
+        status_string += f"current_tank_id changed from '{db_frog.current_tank_id}' to '{frog.current_tank_id}'\n"
     for key, value in frog.attributes.items():
         if value != db_frog.attributes.get(key):
             status_string += f"{key} changed from '{db_frog.attributes.get(key)}' to '{value}'\n"

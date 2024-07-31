@@ -51,6 +51,7 @@ export default function AuthProvider({ children }) {
 				localStorage.setItem("privileges", JSON.stringify(res.dict));
 				localStorage.setItem("orgs", res.organizations);
 				localStorage.setItem("userId", res.id);
+				localStorage.setItem("username", data.username);
 				navigate("/home");
 			} else {
 				setErrorMessage(res.detail);

@@ -11,7 +11,7 @@ services:
     ports:
       - 8000:8000
     environment:
-      DATABASE_URL: postgresql://postgres@database:5432/postgres
+      DATABASE_URL: postgresql://postgres:frog4life@database:5432/postgres
       SECRET_KEY: 3e01bf5381e2c4d794f42e8c23ad8aa268056109f03a5e5582cd5ba105ccc567
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 30

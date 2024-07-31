@@ -17,7 +17,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String, index=True)
-    dict = Column(JSON, default=lambda: {})
+    attributes = Column(JSON, default=lambda: {})
     organizations = Column(ARRAY(Integer), index=True)
 
     # privileges = Column(JSON, default=lambda: privilegesConfig)

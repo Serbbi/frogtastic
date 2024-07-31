@@ -1,7 +1,8 @@
 ./frontend/node_modules
 
 ./backend/_pycache_
-
+./backend/CORF3D_ACF/data
+./backend/CORF3D_ACF/outputCorf
 ./backend/.env
 
 .vscode

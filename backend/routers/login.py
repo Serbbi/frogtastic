@@ -38,4 +38,4 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], cont
     access_token = create_access_token(
         data={"sub": user_db.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer", "dict": user_db.dict, "organizations": user_db.organizations, "id": user_db.id}
+    return {"access_token": access_token, "token_type": "bearer", "dict": user_db.attributes, "organizations": user_db.organizations, "id": user_db.id, "username": user_db.username}

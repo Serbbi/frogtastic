@@ -62,7 +62,7 @@
 
 .icon .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: fit-content;
     background-color: rgb(39, 39, 39);
     color: #fff;
     text-align: center;

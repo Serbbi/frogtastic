@@ -2,11 +2,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.5rem;
     padding-left: 0;
     padding-right: 0;
     background-color: #003908;
     width: 100%;
+    height: 10vh;
     color: #e9ecef;
     margin: 0;
     /* border-bottom: 1px solid #e9ecef; */
@@ -37,13 +38,84 @@
     margin-left: 1rem;
 }
 
+.headerButton {
+    background-color: #003908;
+    color: #e9ecef;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    cursor: pointer;
+}
+
+.headerButton:hover {
+    background-color: #e9ecef;
+    color: #003908;
+}
+
 .dropdownMenu {
     position: absolute;
     z-index: 1;
     top: 3rem;
     right: 1rem;
-    background-color: #003908;
+    background-color: #6c9471;
     border: 1px solid #e9ecef;
     border-radius: 5px;
+    padding: 0 0.5rem;
+}
+
+.notificationList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notificationList li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.notificationList li:last-child {
+    border-bottom: none;
+}
+
+.notificationDown {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.notificationDownRight {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-left: 20px;
+    width: 20%;
+}
+
+.notificationButton {
+    cursor: pointer;
+    height: 30px;
+    /* max-height: 30px; */
+}
+
+.notificationButton.check{
+    color: #018b13;
+}
+
+.notificationButton.check:hover{
+    color: #01b519;
+}
+
+.notificationButton.xmark{
+    color: #a10000;
+    margin-left: 15%;
+}
+
+.notificationButton.xmark:hover{
+    color: #ff0000;
 }

@@ -39,7 +39,6 @@ async def update_organization(organization_id: int, organization: OrganizationBa
 
 @router.put("/{organization_name}/join/{user_id}")
 async def join_organization(organization_name: str, user_id: int, controller: OrganizationController = Depends(OrganizationController)):
-    
     return controller.join_organization(organization_name, user_id)
 
 @router.delete("/{organization_id}")
@@ -49,3 +48,7 @@ async def delete_organization(organization_id: int, controller: OrganizationCont
 @router.post("/{organization_id}/table-columns")
 async def create_table_columns(organization_id: int, table_columns: List[str], controller: OrganizationController = Depends(OrganizationController)):
     return controller.create_table_columns(organization_id, table_columns)
+
+@router.delete("/{organization_id}/table-columns")
+async def delete_table_columns(organization_id: int, table_columns: List[str], controller: OrganizationController = Depends(OrganizationController)):
+    return controller.delete_table_columns(organization_id, table_columns)
