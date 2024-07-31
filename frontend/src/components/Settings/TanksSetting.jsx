@@ -10,7 +10,7 @@ export default function TanksSetting({ organization }) {
     const inputRef = useRef(null);
 
     async function putRequest(tank) {
-        const response = await fetch(`http://localhost:8000/tanks/${tank.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/tanks/${tank.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -22,7 +22,7 @@ export default function TanksSetting({ organization }) {
     }
 
     async function deleteRequest(tankId) {
-        const response = await fetch(`http://localhost:8000/tanks/${tankId}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/tanks/${tankId}`, {
             method: 'DELETE'
         });
 
@@ -30,7 +30,7 @@ export default function TanksSetting({ organization }) {
     }
 
     async function postRequest(tank) {
-        const response = await fetch(`http://localhost:8000/tanks`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/tanks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,16 +1,15 @@
+from CORF3D_ACF.extraction import extract_square
 from keras.models import load_model
 import cv2
 import numpy as np
 import pickle
-import os
 import sys
-from CORF3D_ACF.extraction import extract_square
+import re
 
 
-def retrieve_frog(image_path):
+def retrieve_frog(image):
     model = load_model('./CORF3D_ACF/output/models/RGB_5.h5')
-    img = cv2.imread(image_path, 3)
-    img = cv2.resize(img, (224, 224))
+    img = cv2.resize(image, (224, 224))
     y_pred = model.predict(np.array([img]))
 
     pred_false = []
@@ -29,7 +28,7 @@ def retrieve_frog(image_path):
                 predictions = '\n'.join([f' {pred_labels[x]}'
                                          f' {pred_y["top_values"][x]}'
                                          for x in range(len(pred_y['top_predictions']))])
-                print(f'Top three predictions for "{image_path}":\n{predictions}')
+                print(f'Top three predictions:\n{predictions}')
     
     return predictions
 
@@ -38,11 +37,26 @@ def extract_image(image):
     needs_flipping = {}
     folder = "./uploaded images"
 
-    full_path = os.path.join(folder, image)
     try:
-        extraction_image, flip = extract_square(full_path, progress_path='./progress')
-        needs_flipping[image] = flip
-        cv2.imwrite(os.path.join(folder, "extraction.png"), extraction_image)
+        extraction_image, flip = extract_square(folder, image=image)
+        needs_flipping["image_name"] = flip # changed from image which was before the name of the image
+        return extraction_image
     except (ValueError, cv2.error) as e:
-        print(f'Encountered an exception during extraction of \"{full_path}\":\n{e}', file=sys.stderr)
-        
+        print(f'Encountered an exception during extraction of previous image:\n{e}', file=sys.stderr)
+
+    return None
+
+
+def extract_frog_and_tank(prediction_string):
+    pattern = r"frog(\d+)_tank(\d+)"
+    match = re.search(pattern, prediction_string)
+
+    if match:
+        frog_number = int(match.group(1))
+        tank_number = int(match.group(2))
+    else:
+        frog_number = 0
+        tank_number = 0
+
+    return frog_number, tank_number
+            

@@ -34,7 +34,7 @@ export default function TankFrogsContent() {
                     : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
             </h1>
             <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
-                {tanks.map(tank => {
+                {tanks && tanks.map(tank => {
                     return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
                 })}
             </select>

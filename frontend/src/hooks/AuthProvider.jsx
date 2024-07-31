@@ -13,7 +13,7 @@ export default function AuthProvider({ children }) {
 
 	const signUpAction = async (data) => {
 		try {
-			const response = await fetch("http://localhost:8000/users", {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -34,7 +34,7 @@ export default function AuthProvider({ children }) {
 
 	const loginAction = async (data) => {
 		try {
-			const response = await fetch("http://localhost:8000/token", {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/token`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",

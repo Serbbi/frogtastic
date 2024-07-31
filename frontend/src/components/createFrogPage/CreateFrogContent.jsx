@@ -33,7 +33,7 @@ export default function CreateFrogContent() {
     }
 
     async function postRequest(frog) {
-        const response = await fetch('http://localhost:8000/frogs/', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

@@ -4,7 +4,7 @@ export default function CreateOrganizationMenu() {
     const token = localStorage.getItem('site');
 
     async function postRequest(organization) {
-        const response = await fetch('http://localhost:8000/organizations/', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

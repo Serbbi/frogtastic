@@ -341,11 +341,13 @@ def extract_square_symimage_path(image_path: str, min_threshold=80, max_threshol
     else:
         return img_eq_100p.astype(np.uint8)
 
-
-def extract_square(image_path: str, threshold=80, progress_path=None, greyscale=False):
+def extract_square(image_path: str, image=None, threshold=80, progress_path=None, greyscale=False):
     # print(image_path)
     # Read and resize the image
-    img = cv2.imread(image_path)
+    if image is None:
+        img = cv2.imread(image_path)
+    else:
+        img = image
     height_full, width_full = img.shape[:2]
     img_small = cv2.resize(img, (0, 0), fx=0.2, fy=0.2)
     # scale_factor = 800 / float(height_full)

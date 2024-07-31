@@ -11,7 +11,7 @@ export default function FrogAttributeSettings({ frog, organization }) {
     const [listOfAttributesToRemove, setListOfAttributesToRemove] = useState([]);
 
     async function deleteRequest() {
-        const response = await fetch(`http://localhost:8000/frogs/organization/${organization.id}/attributes`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/organization/${organization.id}/attributes`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export default function FrogAttributeSettings({ frog, organization }) {
     }
 
     async function postRequest() {
-        const response = await fetch(`http://localhost:8000/frogs/organization/${organization.id}/attributes`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/organization/${organization.id}/attributes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

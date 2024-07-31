@@ -22,7 +22,7 @@ export default function AppHeader() {
     async function putRequest(organizationName, userId) {
         const token = localStorage.getItem('site');
 
-        const response = await fetch(`http://localhost:8000/organizations/${organizationName}/join/${userId}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organizationName}/join/${userId}`, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -33,7 +33,7 @@ export default function AppHeader() {
     }
 
     async function deleteRequest(notificationId) {
-        const response = await fetch(`http://localhost:8000/notifications/${notificationId}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/notifications/${notificationId}`, {
             method: 'DELETE'
         });
             

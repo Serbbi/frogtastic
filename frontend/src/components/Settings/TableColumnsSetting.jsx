@@ -7,7 +7,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     const [listOfTableColumnsToRemove, setListOfTableColumnsToRemove] = useState([]);
 
     async function deleteRequest() {
-        const response = await fetch(`http://localhost:8000/organizations/${organization.id}/table-columns`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organization.id}/table-columns`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     }
 
     async function postRequest() {
-        const response = await fetch(`http://localhost:8000/organizations/${organization.id}/table-columns`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organization.id}/table-columns`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

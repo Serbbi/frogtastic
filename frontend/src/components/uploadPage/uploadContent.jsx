@@ -17,7 +17,7 @@ export default function UploadContent() {
     const dropContainer = useRef(null);
 
     async function postRequest(formData) {
-        const response = await fetch('http://localhost:8000/image', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/image`, {
             method: 'POST',
             body: formData
         });

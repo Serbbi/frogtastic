@@ -8,7 +8,7 @@ const fetcher = (url, token) => fetch(url, {
 
 export default function useAllUsers() {
     const token = localStorage.getItem('site');
-    const { data, error, isLoading } = useSWR(['http://localhost:8000/users/', token], ([url, token]) => fetcher(url, token));
+    const { data, error, isLoading } = useSWR([`${process.env.REACT_APP_BACKEND_URL}/users/`, token], ([url, token]) => fetcher(url, token));
 
     return {
         users: data,

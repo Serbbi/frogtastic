@@ -4,7 +4,7 @@ import useSWR from 'swr';
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function useTankFrogs({ tankId }) {
-    const { data, error, isLoading } = useSWR(tankId ? `http://localhost:8000/frogs/tank/${tankId}` : null, fetcher);
+    const { data, error, isLoading } = useSWR(tankId ? `${process.env.REACT_APP_BACKEND_URL}/frogs/tank/${tankId}` : null, fetcher);
     let tankStatus = false;
 
     if(data) {

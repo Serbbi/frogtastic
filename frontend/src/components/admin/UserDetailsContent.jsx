@@ -13,7 +13,7 @@ export default function UserDetailsContent({ id, goBackAction }) {
     }
 
     function saveUser() {
-        fetch(`http://localhost:8000/users/${id}`, {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -34,7 +34,7 @@ export default function UserDetailsContent({ id, goBackAction }) {
         const confirmDelete = window.confirm("Are you sure you want to delete this user?");
         if (!confirmDelete) return;
 
-        fetch(`http://localhost:8000/users/${id}`, {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer ' + token

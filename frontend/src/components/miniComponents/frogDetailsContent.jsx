@@ -36,7 +36,7 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
     }
 
     async function updateRequest(frog) {
-        const response = await fetch(`http://localhost:8000/frogs/${frog.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -62,7 +62,7 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
     }
 
     async function deleteRequest(frog) {
-        const response = await fetch(`http://localhost:8000/frogs/${frog.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -141,45 +141,35 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
                     {Object.entries(frog.attributes).map(([key, value]) => {
                         if (key === "notes") 
                             return (
-                                <div className="frogField">
+                                <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
                                     <textarea name={key} value={value} onChange={updateField} />
                                 </div>
                             );
                         if (key === "is_sick") 
                             return (
-                                <div className="frogField">
+                                <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
                                     <input type="checkbox" name={key} checked={value} onChange={toggleFrogSickness} />
                                 </div>
                             );
                         if (key === "last_injection")
                             return (
-                                <div className="frogField">
+                                <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
                                     <input type="date" name={key} value={value} onChange={updateField} />
                                 </div>
                             );
                         return (
-                            <div className="frogField">
+                            <div className="frogField" key={key}>
                                 <label>{formatLabel(key)}</label>
                                 <input type="text" name={key} value={value} onChange={updateField} />
                             </div>
                         );
                     })}
-
-                    {/* {Object.entries(frog.attributes).map(([key, value]) => key === "notes" ?
-                     (
-                        <div className="frogField">
-                            <label>{formatLabel(key)}</label>
-                            <input type="text" name={key} value={value} onChange={updateField} />
-                        </div>
-                    ) : (
-                        <></>
-                    ))} */}
-                    <div className="frogField">
+                    <div className="frogField" key="current_tank_id">
                         <label>Current Tank</label>
-                        <select name="current_tank_id" value={frog.current_tank_id} onChange={updateField}>
+                        <select name="current_tank_id" value={frog ? frog.current_tank_id : -1} onChange={updateField}>
                             {tanks && tanks.map(tank => (
                                 <option key={tank.id} value={tank.id}>{tank.tank_name}</option>
                             ))}

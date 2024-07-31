@@ -1,8 +1,9 @@
 import datetime
+
+import numpy as np
 from crud.controller import Controller
 from models.frog import Frog
-import os
-from frogRetreiver import retrieve_frog, extract_image
+from frogRetreiver import retrieve_frog, extract_image, extract_frog_and_tank
 from util.frogUtil import verify_frog_details
 import zipfile
 from sqlalchemy.orm.attributes import flag_modified
@@ -75,24 +76,15 @@ class FrogController(Controller):
     
 
     def get_frog_by_image(self, file):
-        print(file.content_type)
         if not file.content_type.endswith(("jpg", "jpeg", "png")):
             return {"error": "Only images are allowed"}
 
-        with open(f"uploaded images/{file.filename}", "wb") as image:
-            image.write(file.file.read())
+        nparr = np.frombuffer(file.file.read(), np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        extract_image(file.filename)
-        # return None
-
-        result = retrieve_frog("uploaded images/extraction.png")
-
-        os.remove(f"uploaded images/{file.filename}")
-        os.remove("uploaded images/extraction.png")
-
-        first_line = result.split('\n')[0]
-        frog_number = first_line.split('_')[0][-1]
-        tank_id = first_line.split(' ')[1][-1] # TODO: this needs to be fixed
+        extraction_image = extract_image(img)
+        result = retrieve_frog(extraction_image)
+        frog_number, tank_id = extract_frog_and_tank(result.split('\n')[0])
 
         return self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id).first()
     

@@ -4,7 +4,7 @@ import UseAllOrganizations from './useAllOrganizations';
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function useAllNotifications() {
-    const { data, error, isLoading } = useSWR("http://localhost:8000/notifications", fetcher);
+    const { data, error, isLoading } = useSWR(`${process.env.REACT_APP_BACKEND_URL}/notifications`, fetcher);
     const { organizations } = UseAllOrganizations();
     const userId = localStorage.getItem("userId");
 
