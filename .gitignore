@@ -39,7 +39,6 @@ __pycache__/
 
 # Ignore model output
 /backend/CORF3D_ACF/output/plots
-/backend/CORF3D_ACF/labeler.pkl
 
 # Ignore sonarqube file
 /.scannerwork/
