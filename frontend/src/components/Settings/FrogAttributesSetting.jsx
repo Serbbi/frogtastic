@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './SettingsMenu.css';
 
@@ -9,6 +9,7 @@ export default function FrogAttributeSettings({ frog, organization }) {
     const predefinedOptions = ["is_sick", "notes", "last_injection", "egg_quality", "weight"];
     const [listOfAttributesToAdd, setListOfAttributesToAdd] = useState([]);
     const [listOfAttributesToRemove, setListOfAttributesToRemove] = useState([]);
+    const inputRef = useRef(null);
 
     async function deleteRequest() {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/organization/${organization.id}/attributes`, {
@@ -90,6 +91,18 @@ export default function FrogAttributeSettings({ frog, organization }) {
         }
     }
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (inputRef.current && !inputRef.current.contains(event.target))
+                setAddPredefinedAttribute(false);
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [inputRef]);
+
     return (
         <div className='settingContainer'>
                 <h3>Frog Attributes</h3>
@@ -104,10 +117,13 @@ export default function FrogAttributeSettings({ frog, organization }) {
                     })}
                 </ul>
                 <button onClick={() => setAddPredefinedAttribute(!addPredefinedAttribute)}>Add Predefined Attribute</button>
-                <button onClick={() => setAddCustomAttribute(!addCustomAttribute)}>Add Custom Attribute</button>
+                {!addCustomAttribute && <button onClick={() => setAddCustomAttribute(!addCustomAttribute)}>Add Custom Attribute</button>}
                 {addPredefinedAttribute && 
                     <div className='predefinedAttributesContainer'>
-                        <ul className='predefinedAttributes'>
+                        <ul className='predefinedAttributes' ref={inputRef}>
+                            {frog && new Set([...predefinedOptions].filter(x => !new Set([...Object.keys(frog.attributes)]).has(x))).size === 0 &&
+                                <li>No more predefined attributes to add</li>
+                            }
                             {frog && predefinedOptions.map((option) => {
                                 if (![...Object.keys(frog.attributes), ...listOfAttributesToAdd].includes(option))
                                     return <li key={option} onClick={() => addToAttributeList(option)}>{option}</li>
@@ -127,6 +143,8 @@ export default function FrogAttributeSettings({ frog, organization }) {
                             <FontAwesomeIcon icon="fa-solid fa-circle-question" />
                             <span className='tooltiptext'>Works best if attribute is formated like: "custom_attribute"</span>
                         </div>
+                        <button onClick={() => {addToAttributeList(customAttribute); setCustomAttribute("");}}>Add</button>
+                        <button onClick={() => setAddCustomAttribute(!addCustomAttribute)}>Close</button>
                     </div>}
                 <button onClick={handleSave}>Save</button>
             </div>

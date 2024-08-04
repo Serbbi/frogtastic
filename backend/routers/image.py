@@ -12,9 +12,9 @@ router = APIRouter(
     },
 )
 
-@router.post("")
-async def upload_image(file: UploadFile = File(...), controller: FrogController = Depends(FrogController)):
-    db_frog = controller.get_frog_by_image(file)
+@router.post("/{organization_id}")
+async def upload_image(organization_id: int, file: UploadFile = File(...), controller: FrogController = Depends(FrogController)):
+    db_frog = controller.get_frog_by_image(file, organization_id)
 
     if db_frog:
         return db_frog

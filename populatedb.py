@@ -1,34 +1,26 @@
 import psycopg2
+from config import load_config
 
-# Database connection parameters
-conn = psycopg2.connect(
-    dbname="frogexp1",
-    user="postgres",
-    password="frog4life",
-    host="localhost"
-)
-cur = conn.cursor()
+def insert_many_vendors(vendor_list):
+    """ Insert multiple vendors into the vendors table  """
 
-# Define the same attribute values for all entities
-name = 'John Doe'
-position = 'Software Engineer'
-salary = 75000
-hire_date = '2023-01-15'
-# frog_number = 
+    sql = "INSERT INTO vendors(vendor_name) VALUES(%s) RETURNING *"
+    config = load_config()
+    try:
+        with  psycopg2.connect(**config) as conn:
+            with  conn.cursor() as cur:
+                # execute the INSERT statement
+                cur.executemany(sql, vendor_list)
 
-# Number of entities to insert
-num_entities = 160
+            # commit the changes to the database
+            conn.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error) 
 
-# Insert entities
-for _ in range(num_entities):
-    cur.execute("""
-        INSERT INTO Employee (name, position, salary, hire_date)
-        VALUES (%s, %s, %s, %s)
-    """, (name, position, salary, hire_date))
-
-# Commit the transaction
-conn.commit()
-
-# Close the connection
-cur.close()
-conn.close()
+if __name__ == '__main__':
+    vendor_list = [
+        ('HP'),
+        ('IBM'),
+        ('DELL')
+    ]
+    insert_many_vendors(vendor_list)

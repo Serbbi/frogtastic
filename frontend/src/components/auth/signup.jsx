@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/AuthProvider';
-import './signup.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './signup.css';
 
 export default function Signup() {
     const [input, setInput] = useState({

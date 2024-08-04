@@ -23,6 +23,8 @@ export default function CreateOrganizationMenu() {
         const organization = {
             name: form[0].value,
             participants: [],
+            admins: [],
+            table_columns: [],
             // description: form[1].value,
             // image: form[2].files[0]
         };

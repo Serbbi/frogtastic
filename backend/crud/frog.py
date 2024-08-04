@@ -75,7 +75,7 @@ class FrogController(Controller):
         return self.db.query(Frog).filter(Frog.current_tank_id == current_tank_id).all()
     
 
-    def get_frog_by_image(self, file):
+    def get_frog_by_image(self, file, organization_id: int):
         if not file.content_type.endswith(("jpg", "jpeg", "png")):
             return {"error": "Only images are allowed"}
 
@@ -86,7 +86,20 @@ class FrogController(Controller):
         result = retrieve_frog(extraction_image)
         frog_number, tank_id = extract_frog_and_tank(result.split('\n')[0])
 
-        return self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id).first()
+        db_frog = self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id, organization_id=organization_id).first()
+        if not db_frog:
+            sample_frog = self.db.query(Frog).filter_by(organization_id=organization_id).first()
+            if not sample_frog:
+                attributes = {}
+            else:
+                sample_attributes = sample_frog.attributes.keys()
+                attributes = {key: "" for key in sample_attributes}
+            db_frog = Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={})
+            self.db.add(db_frog)
+            self.db.commit()
+            self.db.refresh(db_frog)
+
+        return db_frog
     
 
     def update_frog(self, frog_id: int, frog: Frog):

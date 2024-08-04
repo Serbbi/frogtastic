@@ -71,7 +71,7 @@ export default function AppHeader() {
     return (
         <nav className="appHeader">
             <div className="leftSide">
-                {organization ? <img src="frog_logo.jpg" alt="logo" className='logo'/> : null}
+                {organization ? <img src="/frog_logo.jpg" alt="logo" className='logo'/> : null}
                 {organization ? <p>{organization.name}</p> : null}
             </div>
             <div className="rightSide">
@@ -92,8 +92,6 @@ export default function AppHeader() {
                                         <div className='notificationDownRight'>
                                             <FontAwesomeIcon icon="fa-solid fa-square-check" className='notificationButton check' onClick={() => handleNotification(notification)}/>
                                             <FontAwesomeIcon icon="fa-solid fa-square-xmark" className='notificationButton xmark' onClick={() => rejectNotification(notification)}/>
-                                            {/* <button onClick={() => handleNotification(notification)}>OK</button> */}
-                                            {/* <button>No</button> */}
                                         </div>
                                     </div>
                                 </li>
@@ -102,7 +100,7 @@ export default function AppHeader() {
                     </div>
                 )}
                 <p>{username ? username : 'Username'}</p>
-                <img src="user_icon.png" alt="user-icon" className='userIcon'/>
+                <img src="/user_icon.png" alt="user-icon" className='userIcon'/>
             </div>
         </nav>
     );

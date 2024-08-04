@@ -18,7 +18,7 @@ export default function AuthProvider({ children }) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ username: data.username, hashed_password: data.password, dict: {}, organizations: []}),
+				body: JSON.stringify({ username: data.username, hashed_password: data.password, attributes: {}, organizations: []}),
 			});
 			const res = await response.json();
 			console.log(res);

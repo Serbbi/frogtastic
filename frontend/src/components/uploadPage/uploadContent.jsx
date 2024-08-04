@@ -5,6 +5,7 @@ import "./uploadContent.css";
 import Camera from "../miniComponents/Camera";
 import { throwIfNotOk } from "../../util/errorThrower";
 import ErrorContent from "../miniComponents/ErrorContent";
+import { useOrganization } from "../../hooks/OrganizationProvider";
 
 export default function UploadContent() {
     const [success, setSuccess] = useState("default");
@@ -15,9 +16,10 @@ export default function UploadContent() {
     const [frog, setFrog] = useState({});
     const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
     const dropContainer = useRef(null);
+    const { organization } = useOrganization();
 
     async function postRequest(formData) {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/image`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/image/${organization.id}`, {
             method: 'POST',
             body: formData
         });

@@ -1,23 +1,13 @@
 import { useOrganization } from '../../hooks/OrganizationProvider';
 import { useNavigate } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 import './LeftSideBar.css';
 
-export default function LeftSideBar({ setContent }) {
+export default function LeftSideBar() {
     const { organization, setOrganization } = useOrganization();
+    const userId = localStorage.getItem("userId");
+    const canCreateOrganization = JSON.parse(localStorage.getItem('privileges'))['privileges']['canCreateOrganization'];
     const navigate = useNavigate();
-
-    function changeContent(name) {
-        return function () {
-            const newContent = {
-                allFrogs: false,
-                tankFrogs: false,
-                uploadImage: false,
-                createFrog: false
-            };
-            newContent[name] = true;
-            setContent(newContent);
-        }
-    }
 
     function logOut() {
         localStorage.clear();
@@ -29,19 +19,34 @@ export default function LeftSideBar({ setContent }) {
         <div className="leftBar">
             {organization ? 
             <ul className='menuList'>
-                <li onClick={changeContent("allFrogs")}>All Frogs</li>
-                <li onClick={changeContent("tankFrogs")}>Tank Frogs</li>
-                <li onClick={changeContent("uploadImage")}>Upload Image</li>
-                {/* <li onClick={changeContent("createFrog")}>Create Frog</li> */}
+                <li>
+                    <NavLink to="/home/all-frogs" activeClassName="active">All Frogs</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/home/tank-frogs" activeClassName="active">Tank Frogs</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/home/upload-image" activeClassName="active">Upload Image</NavLink>
+                </li>                    
                 <li>System Parameters</li>
             </ul> 
             : null}
             
             <hr></hr>
             <ul className='menuList'>
-                <li onClick={changeContent("joinOrganization")}>Join Organization</li>
-                <li onClick={changeContent("createOrganization")}>Create Organization</li>
-                {organization ? <li onClick={changeContent("organizationSettings")}>Organization Settings</li> : null}
+                <li>
+                    <NavLink to="/home/join-organization" activeClassName="active">Join Organization</NavLink>
+                </li>
+                {canCreateOrganization ?
+                    <li>
+                        <NavLink to="/home/create-organization" activeClassName="active">Create Organization</NavLink>
+                    </li>
+                : null}
+                {organization && organization.admins.includes(Number(userId)) ?
+                    <li>
+                        <NavLink to="/home/organization-settings" activeClassName="active">Organization Settings</NavLink>
+                    </li>
+                : null}
             </ul>
             <button className='logoutButton' onClick={() => logOut()}>Log Out</button>
         </div>

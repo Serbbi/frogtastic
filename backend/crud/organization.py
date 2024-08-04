@@ -23,6 +23,7 @@ class OrganizationController(Controller):
         db_organization.name = organization.name
         db_organization.participants = organization.participants
         db_organization.table_columns = organization.table_columns
+        db_organization.admins = organization.admins
         self.db.commit()
         self.db.refresh(db_organization)
         return db_organization

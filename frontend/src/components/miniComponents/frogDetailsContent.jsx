@@ -9,7 +9,7 @@ import { useOrganization } from "../../hooks/OrganizationProvider";
 import HistoryTable from "./HistoryTable";
 import "./frogDetailsContent.css";
 
-export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) {
+export default function FrogDetailsContent({ frog: initialFrog = null, goBackAction = null}) {
     const { addNotification } = useNotification();
     const token = localStorage.getItem('site');
     const [frog, setFrog] = useState(initialFrog);
@@ -17,7 +17,7 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
     const { organization } = useOrganization();
     const { tanks } = useAllTanks(organization ? organization.id : -1);
     const [ showHistory, setShowHistory ] = useState(false);
-    // console.log(frog);
+    const canEditFrogsPrivilege = JSON.parse(localStorage.getItem('privileges'))['privileges']['canEditFrogs'];
 
     function updateField(event) {
         const name = event.target.name;
@@ -88,29 +88,10 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
             });
     }
 
-    function injectFrog() {
-        if (frog.is_laying_eggs) {
-            setFrog(prevFrog => ({ ...prevFrog, is_laying_eggs: false }));
-            return;
-        }
-        setFrog(prevFrog => ({
-            ...prevFrog,
-            last_injection: new Date().toISOString().slice(0, 10), // this is to prevent long date format
-            is_laying_eggs: true
-        }));
-        setSaved(false);
-    }
-
     function toggleFrogSickness() {
         let attributes = { ...frog.attributes, is_sick: !frog.attributes.is_sick };
         setFrog(prevFrog => ({ ...prevFrog, attributes }));
         setSaved(false);
-    }
-
-    function getActualTank() {
-        if (frog.is_sick) return "Quarantine";
-        if (frog.is_laying_eggs) return "Egg box";
-        return frog.actual_tank_id ? frog.actual_tank_id : "";
     }
 
     function checkForChanges() {
@@ -143,33 +124,33 @@ export default function FrogDetailsContent({ frog: initialFrog, goBackAction }) 
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
-                                    <textarea name={key} value={value} onChange={updateField} />
+                                    <textarea name={key} value={value} disabled={!canEditFrogsPrivilege} onChange={updateField} />
                                 </div>
                             );
                         if (key === "is_sick") 
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
-                                    <input type="checkbox" name={key} checked={value} onChange={toggleFrogSickness} />
+                                    <input type="checkbox" name={key} checked={value} disabled={!canEditFrogsPrivilege} onChange={toggleFrogSickness} />
                                 </div>
                             );
                         if (key === "last_injection")
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
-                                    <input type="date" name={key} value={value} onChange={updateField} />
+                                    <input type="date" name={key} value={value} disabled={!canEditFrogsPrivilege} onChange={updateField} />
                                 </div>
                             );
                         return (
                             <div className="frogField" key={key}>
                                 <label>{formatLabel(key)}</label>
-                                <input type="text" name={key} value={value} onChange={updateField} />
+                                <input type="text" name={key} value={value} disabled={!canEditFrogsPrivilege} onChange={updateField} />
                             </div>
                         );
                     })}
                     <div className="frogField" key="current_tank_id">
                         <label>Current Tank</label>
-                        <select name="current_tank_id" value={frog ? frog.current_tank_id : -1} onChange={updateField}>
+                        <select name="current_tank_id" value={frog ? frog.current_tank_id : -1} disabled={!canEditFrogsPrivilege} onChange={updateField}>
                             {tanks && tanks.map(tank => (
                                 <option key={tank.id} value={tank.id}>{tank.tank_name}</option>
                             ))}

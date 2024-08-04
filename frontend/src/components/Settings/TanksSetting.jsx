@@ -6,7 +6,7 @@ export default function TanksSetting({ organization }) {
     const [showInputNewTank, setShowInputNewTank] = useState(false);
     const [newTankName, setNewTankName] = useState("");
     const [editingItemId, setEditingItemId] = useState(null);
-    const { tanks } = useAllTanks(organization.id);
+    const { tanks } = useAllTanks(organization ? organization.id : -1);
     const inputRef = useRef(null);
 
     async function putRequest(tank) {
