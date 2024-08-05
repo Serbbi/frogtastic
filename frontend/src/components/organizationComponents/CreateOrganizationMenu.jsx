@@ -1,7 +1,10 @@
+import { useNotification } from '../../hooks/NotificationProvider';
+import { v4 as uuidv4 } from 'uuid';
 import './CreateOrganizationMenu.css';
 
 export default function CreateOrganizationMenu() {
     const token = localStorage.getItem('site');
+    const { addNotification } = useNotification();
 
     async function postRequest(organization) {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations`, {
@@ -33,9 +36,11 @@ export default function CreateOrganizationMenu() {
             .then(data => {
                 if (data.error) throw new Error(data.error);
                 console.log(data);
+                addNotification({ id: uuidv4(), text: "Organization created", type: "success" });
             })
             .catch(error => {
                 console.error(error);
+                addNotification({ id: uuidv4(), text: error.message, type: "error" });
             });
     }
 

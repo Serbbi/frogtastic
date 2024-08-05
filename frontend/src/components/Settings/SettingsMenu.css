@@ -45,6 +45,7 @@
     border-radius: 0.5rem;
 
     text-align: left;
+    position: relative;
 }
 
 .settingContainer h3 {
@@ -125,6 +126,8 @@
     border-radius: 0.5rem;
     padding: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    top: 40px; /* Adjust this value based on the height of your button */
+    left: 0;
 }
 
 .predefinedAttributes {

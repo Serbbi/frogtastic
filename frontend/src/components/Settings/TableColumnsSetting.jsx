@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './SettingsMenu.css';
 
 export default function TableColumnsSetting({ frog, organization }) {
     const [showTableColumnOptions, setShowTableColumnOptions] = useState(false);
     const [listOfTableColumnsToAdd, setListOfTableColumnsToAdd] = useState([]);
     const [listOfTableColumnsToRemove, setListOfTableColumnsToRemove] = useState([]);
+    const inputRef = useRef();
 
     async function deleteRequest() {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organization.id}/table-columns`, {
@@ -69,6 +70,19 @@ export default function TableColumnsSetting({ frog, organization }) {
         setListOfTableColumnsToRemove([]);
     }
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (inputRef.current && !inputRef.current.contains(event.target)) {
+                setShowTableColumnOptions(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [inputRef]);
+
     return (
         <div className='settingContainer'>
             <h3>Frog table columns</h3>
@@ -82,7 +96,7 @@ export default function TableColumnsSetting({ frog, organization }) {
                     return <li className='attributeItemAdded' key={column} onClick={() => selectColumn(column)}>{column}</li>
                 })}
             </ul>
-            <button onClick={() => setShowTableColumnOptions(!showTableColumnOptions)}>Add Table Column</button>
+            <button onClick={() => setShowTableColumnOptions(!showTableColumnOptions)} ref={inputRef}>Add Table Column</button>
             {showTableColumnOptions && 
                 <div className='predefinedAttributesContainer'>
                     <ul className='predefinedAttributes'>

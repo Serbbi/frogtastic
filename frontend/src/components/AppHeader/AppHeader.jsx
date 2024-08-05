@@ -7,6 +7,7 @@ import './AppHeader.css';
 export default function AppHeader() {
     const [isOpen, setIsOpen] = useState(false);
     const { notifications } = UseAllNotifications();
+    const [ updatedNotifications, setUpdatedNotifications ] = useState(notifications);
     const userOrgs = localStorage.getItem('orgs').split(',');
     const username = localStorage.getItem('username');
     const { organization, setOrganization } = useOrganization();
@@ -52,6 +53,7 @@ export default function AppHeader() {
         deleteRequest(notification.id)
         .then(data => {
             console.log(data);
+            setUpdatedNotifications(updatedNotifications.filter(notif => notif.id !== notification.id));
         })
         .catch(error => {
             console.error(error);
@@ -62,6 +64,7 @@ export default function AppHeader() {
         deleteRequest(notification.id)
         .then(data => {
             console.log(data);
+            setUpdatedNotifications(updatedNotifications.filter(notif => notif.id !== notification.id));
         })
         .catch(error => {
             console.error(error);
@@ -81,8 +84,8 @@ export default function AppHeader() {
                 {isOpen && (
                     <div className="dropdownMenu">
                         <ul className='notificationList'>
-                            {notifications.length === 0 && <li>No notifications</li>}
-                            {notifications.map((notification, index) => (
+                            {updatedNotifications.length === 0 && <li>No notifications</li>}
+                            {updatedNotifications.map((notification, index) => (
                                 <li key={index}>
                                     <div className='notificationUp'>
                                         <strong>{notification.title}</strong>

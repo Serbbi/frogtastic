@@ -41,6 +41,7 @@
     flex-direction: row;
     width: 100vw;
     height: 90vh;
+    overflow: hidden;
 }
 
 @media screen and (max-width: 768px) {

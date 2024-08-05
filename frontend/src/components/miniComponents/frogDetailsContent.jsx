@@ -38,7 +38,7 @@ export default function FrogDetailsContent() {
             return;
         }
 
-        const newAttributes = { ...frog.attributes, [name]: value };
+        const newAttributes = { ...changedFrog.attributes, [name]: value };
         setChangedFrog(prevFrog => ({ ...prevFrog, attributes: newAttributes }));
         setSaved(false);
     }
