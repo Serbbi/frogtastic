@@ -20,13 +20,13 @@ export default function LeftSideBar() {
             {organization ? 
             <ul className='menuList'>
                 <li>
-                    <NavLink to="/home/all-frogs" activeClassName="active">All Frogs</NavLink>
+                    <NavLink to="/home/all-frogs" className={({ isActive }) => isActive ? "navLink active" : "navLink"}>All Frogs</NavLink>
                 </li>
                 <li>
-                    <NavLink to="/home/tank-frogs" activeClassName="active">Tank Frogs</NavLink>
+                    <NavLink to="/home/tank-frogs" className={({ isActive }) => isActive ? "navLink active" : "navLink"}>Tank Frogs</NavLink>
                 </li>
                 <li>
-                    <NavLink to="/home/upload-image" activeClassName="active">Upload Image</NavLink>
+                    <NavLink to="/home/upload-image" className={({ isActive }) => isActive ? "navLink active" : "navLink"}>Upload Image</NavLink>
                 </li>                    
                 <li>System Parameters</li>
             </ul> 
@@ -35,16 +35,16 @@ export default function LeftSideBar() {
             <hr></hr>
             <ul className='menuList'>
                 <li>
-                    <NavLink to="/home/join-organization" activeClassName="active">Join Organization</NavLink>
+                    <NavLink to="/home/join-organization" className={({ isActive }) => isActive ? "navLink active" : "navLink"}>Join Organization</NavLink>
                 </li>
                 {canCreateOrganization ?
                     <li>
-                        <NavLink to="/home/create-organization" activeClassName="active">Create Organization</NavLink>
+                        <NavLink to="/home/create-organization" className={({ isActive }) => isActive ? "navLink active" : "navLink"}>Create Organization</NavLink>
                     </li>
                 : null}
                 {organization && organization.admins.includes(Number(userId)) ?
                     <li>
-                        <NavLink to="/home/organization-settings" activeClassName="active">Organization Settings</NavLink>
+                        <NavLink to="/home/organization-settings" className={({ isActive }) => isActive ? "navLink active" : "navLink"}>Organization Settings</NavLink>
                     </li>
                 : null}
             </ul>

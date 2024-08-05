@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Loading from '../miniComponents/loading';
 import FrogDetailsContent from '../miniComponents/frogDetailsContent';
 import FrogTable from '../miniComponents/FrogTable';
@@ -9,11 +9,16 @@ import useAllTanks from '../../hooks/useAllTanks';
 import './TankFrogsContent.css';
 
 export default function TankFrogsContent() {
-    const [selectedNumber, setSelectedNumber] = useState(1);
     const [showingFrog, setShowingFrog] = useState(null);
-    const { frogs, tankStatus, isLoading } = useTankFrogs({ tankId: selectedNumber });
     const { organization } = useOrganization();
     const { tanks } = useAllTanks(organization ? organization.id : -1);
+    const [selectedNumber, setSelectedNumber] = useState(tanks && tanks.length > 0 ? tanks[0].id : -1);
+    const { frogs, tankStatus, isLoading } = useTankFrogs({ tankId: selectedNumber });
+
+    useEffect(() => {
+        setSelectedNumber(tanks && tanks.length > 0 ? tanks[0].id : -1);
+    }, [organization, tanks]);
+
 
     function handleNumberChange(event) {
         setSelectedNumber(parseInt(event.target.value));

@@ -25,6 +25,7 @@ export default function FrogDetailsContent({ frog: initialFrog = null, goBackAct
 
         if (name === "current_tank_id") {
             setFrog(prevFrog => ({ ...prevFrog, current_tank_id: Number(value) }));
+            console.log(frog);
             setSaved(false);
             return;
         }
@@ -151,6 +152,7 @@ export default function FrogDetailsContent({ frog: initialFrog = null, goBackAct
                     <div className="frogField" key="current_tank_id">
                         <label>Current Tank</label>
                         <select name="current_tank_id" value={frog ? frog.current_tank_id : -1} disabled={!canEditFrogsPrivilege} onChange={updateField}>
+                            {!frog.current_tank_id && <option value={-1}></option>}
                             {tanks && tanks.map(tank => (
                                 <option key={tank.id} value={tank.id}>{tank.tank_name}</option>
                             ))}
