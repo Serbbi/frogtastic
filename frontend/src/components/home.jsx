@@ -7,6 +7,7 @@ import CreateOrganizationMenu from "./organizationComponents/CreateOrganizationM
 import JoinOrganizationMenu from "./organizationComponents/JoinOrganizationMenu";
 import SettingsMenu from "./Settings/SettingsMenu";
 import { Route, Routes } from "react-router-dom";
+import FrogDetailsConten from "./miniComponents/frogDetailsContent";
 import "./home.css";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
                 <Route path="/create-organization" element={<CreateOrganizationMenu/> } />
                 <Route path="/join-organization" element={<JoinOrganizationMenu/> } />
                 <Route path="/organization-settings" element={<SettingsMenu/> } />
+                <Route path="/frog/:frogId" element={<FrogDetailsConten /> } />
             </Routes>
         </div>
     </div>

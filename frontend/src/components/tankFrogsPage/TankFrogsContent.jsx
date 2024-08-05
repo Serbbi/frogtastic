@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Loading from '../miniComponents/loading';
-import FrogDetailsContent from '../miniComponents/frogDetailsContent';
 import FrogTable from '../miniComponents/FrogTable';
 import useTankFrogs from '../../hooks/useTankFrogs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +8,6 @@ import useAllTanks from '../../hooks/useAllTanks';
 import './TankFrogsContent.css';
 
 export default function TankFrogsContent() {
-    const [showingFrog, setShowingFrog] = useState(null);
     const { organization } = useOrganization();
     const { tanks } = useAllTanks(organization ? organization.id : -1);
     const [selectedNumber, setSelectedNumber] = useState(tanks && tanks.length > 0 ? tanks[0].id : -1);
@@ -24,13 +22,7 @@ export default function TankFrogsContent() {
         setSelectedNumber(parseInt(event.target.value));
     };
 
-    function goBackAction() {
-        setShowingFrog(null);
-    }
-
     if (isLoading) return (<div className="tankFrogsContent"><Loading /></div>);
-
-    if (showingFrog) return (<div className='intermediateContainer'><FrogDetailsContent frog={showingFrog} goBackAction={goBackAction} /></div>);
 
     return (
         <div className="tankFrogsContent">
@@ -43,7 +35,7 @@ export default function TankFrogsContent() {
                     return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
                 })}
             </select>
-            {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} setShowingFrog={setShowingFrog} organization={organization}/>}
+            {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization}/>}
         </div>
     );
 }

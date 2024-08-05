@@ -1,11 +1,11 @@
-import FrogDetailsContent from "../miniComponents/frogDetailsContent";
 import { useState, useRef, useEffect } from "react";
 import Loading from "../miniComponents/loading";
-import "./uploadContent.css";
 import Camera from "../miniComponents/Camera";
 import { throwIfNotOk } from "../../util/errorThrower";
 import ErrorContent from "../miniComponents/ErrorContent";
 import { useOrganization } from "../../hooks/OrganizationProvider";
+import { useNavigate } from "react-router-dom";
+import "./uploadContent.css";
 
 export default function UploadContent() {
     const [success, setSuccess] = useState("default");
@@ -13,10 +13,10 @@ export default function UploadContent() {
     const [isLoading, setIsLoading] = useState(false);
     const [isActiveCamera, setIsActiveCamera] = useState(false);
     const [blob, setBlob] = useState(null);
-    const [frog, setFrog] = useState({});
     const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
     const dropContainer = useRef(null);
     const { organization } = useOrganization();
+    const navigate = useNavigate();
 
     async function postRequest(formData) {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/image/${organization.id}`, {
@@ -46,7 +46,7 @@ export default function UploadContent() {
                     return;
                 }
                 setSuccess("success");
-                setFrog(data);
+                navigate(`/home/frog/${data.id}`);
                 document.querySelector(".uploadContainer").style.display = "block";
             })
             .catch(error => {
@@ -109,7 +109,6 @@ export default function UploadContent() {
 
     return (
         <div className="uploadContainer">
-            {success === "success" ? <FrogDetailsContent frog={frog} goBackAction={goBackToDefault}/> : null}
             {success === "error" ? <ErrorContent errorMessage={errorMessage} goBack={goBackToDefault}/> : null}
             {success === "default" ?
                 <div className="uploadDefaultElements">
@@ -121,7 +120,6 @@ export default function UploadContent() {
                         <span className="file-name">{fileName}</span>
                     </label>
                     <button onClick={uploadImage} className="uploadButton">Upload</button>
-                    {/* <button onClick={() => setIsActiveCamera(true)} className="uploadButton">Take photo</button> */}
                 </div>
                 : null}
         </div>

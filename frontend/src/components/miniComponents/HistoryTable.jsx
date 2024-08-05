@@ -2,12 +2,12 @@ import useFrog from '../../hooks/useFrog';
 import './HistoryTable.css';
 
 export default function HistoryTable({ id, setShowHistory, showHistory, tanks }) {
-    const { frog, isLoading } = useFrog(id);
+    const { frog } = useFrog(id);
 
     function formatEventText(event) {
         if (event.includes("current_tank_id")) {
-            let fromId = event.split('\'')[1][0];
-            let toId = event.split('\'')[3][0];
+            let fromId = event.match(/'([^']+)'/)[1];
+            let toId = event.match(/'([^']+)'/g)[1].replace(/'/g, '');
             let fromTank = tanks.find(tank => tank.id === Number(fromId));
             fromTank ? fromTank = fromTank.tank_name : fromTank = 'Unknown Tank';
             let toTank = tanks.find(tank => tank.id === Number(toId));
