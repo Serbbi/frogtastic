@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import UseAllNotifications from '../../hooks/useAllNotifications';
-import { useOrganization } from '../../hooks/OrganizationProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './AppHeader.css';
 
-export default function AppHeader() {
+export default function AppHeader({ organization, setOrganization }) {
     const [isOpen, setIsOpen] = useState(false);
     const { notifications } = UseAllNotifications();
     const [ updatedNotifications, setUpdatedNotifications ] = useState(notifications);
     const userOrgs = localStorage.getItem('orgs').split(',');
     const username = localStorage.getItem('username');
-    const { organization, setOrganization } = useOrganization();
+    const [ isMenuOpen, setIsMenuOpen ] = useState(false);
 
     useEffect(() => {
         setOrganization(userOrgs[0]);
@@ -71,40 +70,54 @@ export default function AppHeader() {
         });
     }
 
+    function handleMenuOpen() {
+        if (!isMenuOpen) {
+            document.querySelector('.leftBar').style.left = '0';
+        } else {
+            document.querySelector('.leftBar').style.left = '-90px';
+        }
+        setIsMenuOpen(!isMenuOpen);
+    }
+
     return (
         <nav className="appHeader">
-            <div className="leftSide">
-                {organization ? <img src="/frog_logo.jpg" alt="logo" className='logo'/> : null}
-                {organization ? <p>{organization.name}</p> : null}
-            </div>
-            <div className="rightSide">
+            <div className="buttons">
                 <button className='headerButton'>Help</button>
                 {userOrgs.length > 1 ? <button className='headerButton'>Organizations</button> : null}
                 <button className='headerButton' onClick={toggleMenu}>Notifications</button>
-                {isOpen && (
-                    <div className="dropdownMenu">
-                        <ul className='notificationList'>
-                            {updatedNotifications.length === 0 && <li>No notifications</li>}
-                            {updatedNotifications.map((notification, index) => (
-                                <li key={index}>
-                                    <div className='notificationUp'>
-                                        <strong>{notification.title}</strong>
-                                    </div>
-                                    <div className='notificationDown'>
-                                        <p>{notification.description}</p>
-                                        <div className='notificationDownRight'>
-                                            <FontAwesomeIcon icon="fa-solid fa-square-check" className='notificationButton check' onClick={() => handleNotification(notification)}/>
-                                            <FontAwesomeIcon icon="fa-solid fa-square-xmark" className='notificationButton xmark' onClick={() => rejectNotification(notification)}/>
-                                        </div>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-                <p>{username ? username : 'Username'}</p>
-                <img src="/user_icon.png" alt="user-icon" className='userIcon'/>
+                <button id="menuButton" className='headerButton' onClick={handleMenuOpen}><FontAwesomeIcon icon="fa-solid fa-bars"/></button>
             </div>
+            <div className="userContainer">
+                <img src="/user_icon.png" alt="user-icon" className='userIcon'/>
+                <div className="userContainerCenter">
+                    <p className='userContainerUsername'>{username ? username : 'Username'}</p>
+                    <p className='userContainerEmail'>tonieserban@yahoo.ro</p>
+                </div>
+                <FontAwesomeIcon icon="fa-solid fa-chevron-down" className='userContainerChevron'/>
+            </div>
+
+            {/* TODO: redo the notification dropdown */}
+            {isOpen && (
+                <div className="dropdownMenu">
+                    <ul className='notificationList'>
+                        {updatedNotifications.length === 0 && <li>No notifications</li>}
+                        {updatedNotifications.map((notification, index) => (
+                            <li key={index}>
+                                <div className='notificationUp'>
+                                    <strong>{notification.title}</strong>
+                                </div>
+                                <div className='notificationDown'>
+                                    <p>{notification.description}</p>
+                                    <div className='notificationDownRight'>
+                                        <FontAwesomeIcon icon="fa-solid fa-square-check" className='notificationButton check' onClick={() => handleNotification(notification)}/>
+                                        <FontAwesomeIcon icon="fa-solid fa-square-xmark" className='notificationButton xmark' onClick={() => rejectNotification(notification)}/>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </nav>
     );
 }

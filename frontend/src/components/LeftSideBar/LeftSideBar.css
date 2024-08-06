@@ -1,13 +1,43 @@
+:root {
+    --primary-color: #3c734b;
+    --hover-color: #33ba45;
+    --background-color: #fff;
+    --active-color: #55d15d;
+}
+
 .leftBar {
-    background-color: rgb(229, 229, 229);
+    background-color: var(--background-color);
     width: 20%;
-    max-width: 200px;
-    min-width: 100px;
-    border-right: 1px solid #818181;
+    max-width: 250px;
+    height: 100vh;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 15px;
+    box-sizing: border-box;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.organizationNameAndLogo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: #21512e;
+}
+
+.logo {
+    border-radius: 50%;
+    height: 30px;
+    margin-left: 10px;
+}
+
+.organizationNameAndLogo p {
+    font-size: large;
+    font-weight: bold;
 }
 
 .menuList {
@@ -16,39 +46,70 @@
     margin: 0;
 }
 
-.menuList li {
-    padding: 10px;
-    /* border-bottom: 1px solid #c0c0c0; */
-    font-size: small;
+.menuList li,
+.logoutButton {
+    padding: 12px;
+    font-size: smaller;
+    transition: all 0.3s ease;
+    color: var(--primary-color);
 }
 
-.menuList li:hover {
-    background-color: #c0c0c0;
-    cursor: pointer;
+.navLink {
+    text-align: left;
+    text-decoration: none;
+    color: var(--primary-color);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
-hr {
-    margin: 0;
-    border: 0;
-    border-top: 1px solid #c0c0c0;
+.navLink:hover {
+    color: var(--hover-color);
+}
 
-    width: 80%;
+.active {
+    color: var(--active-color);
 }
 
 .logoutButton {
     margin-top: auto;
-    margin-bottom: 10px;
-    padding: 10px;
-    width: 80%;
-    background-color: #005015;
-    color: white;
+    padding-bottom: 6px;
+    background-color: var(--background-color);
+    text-align: left;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: smaller;
     border: none;
-    border-radius: 5px;
-    font-size: small;
+    display: flex;
+    gap: 15px;
 }
 
 .logoutButton:hover {
     cursor: pointer;
-    background-color: #e9ecef;
-    color: #003908;
+    color: var(--hover-color);
+}
+
+
+@media screen and (max-width: 768px) {
+    .leftBar {
+        width: 90px;
+        z-index: 1;
+        position: absolute;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        left: -90px;
+    }
+
+    .organizationNameAndLogo p {
+        display: none;
+    }
+
+    .navLink, .logoutButton {
+        font-size: large;
+    }
+
+    .navLink span, .logoutButton span {
+        display: none;
+    }
 }

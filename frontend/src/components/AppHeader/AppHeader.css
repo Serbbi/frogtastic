@@ -1,24 +1,85 @@
 .appHeader {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    padding: 0.5rem;
+    /* padding: 0.5rem; */
     padding-left: 0;
     padding-right: 0;
-    background-color: #003908;
     width: 100%;
     height: 10vh;
-    color: #e9ecef;
     margin: 0;
-    /* border-bottom: 1px solid #e9ecef; */
+}
+
+.userContainer {
+    display: flex;
+    align-items: center;
+    background-color: var(--background-color);
+    justify-content: space-between;
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
+    padding: 0.5rem;
+    /* cursor: pointer; */
+}
+
+.userContainerCenter {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: left;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.userContainer p {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.userContainerChevron {
+    margin: 0 1rem;
+}
+
+.userContainerEmail {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.userContainerUsername {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 2rem;
+    transition: all 0.3s;
+}
+
+.buttons button{
+    background-color: #45a049;
+    color: #fff;
+    font-weight: 600;
+    margin: 0;
+    border: none;
+    border-radius: 7px;
+}
+
+.buttons button:hover{
+    background-color: #3d8e3d;
+    color: #fff;
+}
+
+.buttons #menuButton {
+    display: none;
 }
 
 .leftSide {
     display: flex;
     align-items: center;
-    /* padding: 0 1rem 1rem 0; */
-
-    
+    /* padding: 0 1rem 1rem 0; */    
 }
 
 .rightSide {
@@ -26,16 +87,10 @@
     align-items: center;
 }
 
-.logo {
-    border-radius: 50%;
-    height: 30px;
-}
-
 .userIcon {
     border-radius: 50%;
-    height: 30px;
-    margin-right: 1rem;
-    margin-left: 1rem;
+    height: 45px;
+    margin: 0 1rem;
 }
 
 .headerButton {
@@ -43,7 +98,7 @@
     color: #e9ecef;
     border: 1px solid #e9ecef;
     border-radius: 5px;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.8rem;
     margin-right: 1rem;
     cursor: pointer;
 }
@@ -118,4 +173,23 @@
 
 .notificationButton.xmark:hover{
     color: #ff0000;
+}
+
+@media screen and (max-width: 768px) {
+    .buttons #menuButton {
+        display: block;
+    }
+
+    .buttons {
+        gap: 0.5rem;
+        padding: 0 1rem;
+        /* display: none; */
+    }
+
+    .appHeader {
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+        height: 20vh;
+    }
 }

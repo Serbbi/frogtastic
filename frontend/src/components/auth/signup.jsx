@@ -58,10 +58,9 @@ export default function Signup() {
                 <label className="errorLabel">{auth.getErrorMessage()}</label>
 
                 <button type="submit" className={"submitButton"}>Sign up</button>
-            </form>
-            <div>
+                <br />
                 <a href="/">Already have an account? Log in here!</a>
-            </div>
+            </form>
         </div>
     );
 };
