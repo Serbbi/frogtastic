@@ -49,6 +49,9 @@ export default function AuthProvider({ children }) {
 				setPrivileges(res.dict);
 				localStorage.setItem("site", res.access_token);
 				localStorage.setItem("privileges", JSON.stringify(res.dict));
+				if(res.organizations === null) { //just for the demo on railway
+					res.organizations = [];
+				}
 				localStorage.setItem("orgs", res.organizations);
 				localStorage.setItem("userId", res.id);
 				localStorage.setItem("username", data.username);
