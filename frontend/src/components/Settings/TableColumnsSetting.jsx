@@ -96,12 +96,12 @@ export default function TableColumnsSetting({ frog, organization }) {
                     return <li className='attributeItemAdded' key={column} onClick={() => selectColumn(column)}>{column}</li>
                 })}
             </ul>
-            <button onClick={() => setShowTableColumnOptions(!showTableColumnOptions)} ref={inputRef}>Add Table Column</button>
+            <button onClick={() => setShowTableColumnOptions(!showTableColumnOptions)}>Add Table Column</button>
             {showTableColumnOptions && 
-                <div className='predefinedAttributesContainer'>
+                <div className='predefinedAttributesContainer' ref={inputRef}>
                     <ul className='predefinedAttributes'>
                         {frog && ['frog_number', 'current_tank_id', ...Object.keys(frog.attributes)].map((option) => {
-                            if (!organization.table_columns.includes(option))
+                            if (!organization.table_columns.includes(option) && !listOfTableColumnsToAdd.includes(option))
                                 return <li key={option} onClick={() => setListOfTableColumnsToAdd([...listOfTableColumnsToAdd, option])}>{option}</li>
                         })}
                     </ul>

@@ -130,5 +130,14 @@ label {
     .rightDetailsContainer {
         width: 100%;
     }
+
+    .frogDetailsContainer {
+        /* overflow-x: hidden; */
+        align-items: start;
+    }
+
+    .frogDetailsContainer h1 {
+        margin: 2rem auto;
+    }
     
 }

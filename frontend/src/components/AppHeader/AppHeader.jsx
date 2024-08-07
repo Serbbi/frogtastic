@@ -6,22 +6,28 @@ import './AppHeader.css';
 export default function AppHeader({ organization, setOrganization }) {
     const [isOpen, setIsOpen] = useState(false);
     const { notifications } = UseAllNotifications();
-    const [ updatedNotifications, setUpdatedNotifications ] = useState(notifications);
+    const [ updatedNotifications, setUpdatedNotifications ] = useState([]);
     const userOrgs = localStorage.getItem('orgs').split(',');
     const username = localStorage.getItem('username');
     const [ isMenuOpen, setIsMenuOpen ] = useState(false);
+    const [ firstTime, setFirstTime ] = useState(true); //horrible
 
     useEffect(() => {
         setOrganization(userOrgs[0]);
+        setUpdatedNotifications(notifications);
     }, []);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
+        //this is to make sure that the notifications are updated when the user opens the dropdown
+        if (firstTime) { 
+            setUpdatedNotifications(notifications);
+            setFirstTime(false);
+        }
     };
 
     async function putRequest(organizationName, userId) {
         const token = localStorage.getItem('site');
-
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organizationName}/join/${userId}`, {
             method: 'PUT',
             headers: {
@@ -40,8 +46,8 @@ export default function AppHeader({ organization, setOrganization }) {
         return await response.json();
     }
 
-    function handleNotification(notification) { 
-        putRequest(notification.description.split(' ').pop(), notification.user_id)
+    function handleNotification(notification) {
+        putRequest(notification.description.split('join ').pop(), notification.user_id)
         .then(data => {
             console.log(data);
         })
@@ -74,7 +80,7 @@ export default function AppHeader({ organization, setOrganization }) {
         if (!isMenuOpen) {
             document.querySelector('.leftBar').style.left = '0';
         } else {
-            document.querySelector('.leftBar').style.left = '-90px';
+            document.querySelector('.leftBar').style.left = '-70px';
         }
         setIsMenuOpen(!isMenuOpen);
     }

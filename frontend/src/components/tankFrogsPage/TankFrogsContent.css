@@ -1,14 +1,5 @@
-/* .intermediateContainer {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    overflow-y: scroll;
-
-    display: block;
-} */
-
 .tankFrogsContent {
-    width: 90%;
+    width: 100%;
     height: 100%;
     box-sizing: border-box;
     overflow-y: scroll;
@@ -30,8 +21,8 @@
 }
 
 @media screen and (max-width: 768px) {
-    .tankFrogsContent {
-        width: 85%;
+    .selectButton {
+        width: fit-content;
     }
     
 }

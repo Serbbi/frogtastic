@@ -25,14 +25,14 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 15px;
     color: #21512e;
 }
 
 .logo {
     border-radius: 50%;
     height: 30px;
-    margin-left: 10px;
+    /* margin-left: 10px; */
 }
 
 .organizationNameAndLogo p {
@@ -94,7 +94,7 @@
 
 @media screen and (max-width: 768px) {
     .leftBar {
-        width: 90px;
+        width: 70px;
         z-index: 1;
         position: absolute;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -107,6 +107,8 @@
 
     .navLink, .logoutButton {
         font-size: large;
+        display: flex;
+        flex-direction: column;
     }
 
     .navLink span, .logoutButton span {

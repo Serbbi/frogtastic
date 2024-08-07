@@ -28,9 +28,10 @@ export default function JoinOrganizationMenu() {
 
         putRequest(selectedOrganization.name)
             .then(data => {
+                console.log(data);
+                if (data.detail) throw new Error(data.detail);
                 if (data.error) throw new Error(data.error);
                 addNotification({ id: uuidv4(), text: "Join request sent", type: "success" });
-                console.log(data);
             })
             .catch(error => {
                 addNotification({ id: uuidv4(), text: error.message, type: "error" });
@@ -53,7 +54,7 @@ export default function JoinOrganizationMenu() {
                         <tr key={organization.name} className={index % 2 === 0 ? 'even' : 'odd'} onClick={() => handleOpenModal(organization)}>
                             <td className='logoColumn'><img src='/Designer.jpeg' alt='Logo' className='organizationLogo'/></td>
                             <td className='nameColumn'>{organization.name}</td>
-                            <td className='descriptionColumn'>{description.length > 100 ? `${description.slice(0, 100)}...` : description}</td>
+                            <td className='descriptionColumn'><p>{description.length > 100 ? `${description.slice(0, 100)}...` : description}</p></td>
                         </tr>
                     ))}
                 </tbody>

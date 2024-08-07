@@ -10,6 +10,12 @@ class OrganizationController(Controller):
         self.db.add(db_organization)
         self.db.commit()
         self.db.refresh(db_organization)
+
+        db_user = self.db.query(User).filter(User.id == user.id).first()
+        db_user.organizations += (db_organization.id,)
+        flag_modified(db_user, "organizations")
+        self.db.commit()
+        self.db.refresh(db_user)
         return db_organization
     
     def get_organizations(self):
@@ -29,6 +35,7 @@ class OrganizationController(Controller):
         return db_organization
     
     def join_organization(self, organization_name: str, user_id: int):
+        print(organization_name)
         db_organization = self.db.query(Organization).filter(Organization.name == organization_name).first()
         if user_id not in db_organization.participants: # maybe return a 409 status code
             db_organization.participants += (user_id,)

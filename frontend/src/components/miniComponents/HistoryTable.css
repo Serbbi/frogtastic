@@ -35,3 +35,9 @@
     border-right: 1px solid #5a5a5a;
 }
 
+@media screen and (max-width: 768px) {
+    .historyTable {
+        margin: 20px auto;
+    }
+}
+
