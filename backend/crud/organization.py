@@ -12,6 +12,8 @@ class OrganizationController(Controller):
         self.db.refresh(db_organization)
 
         db_user = self.db.query(User).filter(User.id == user.id).first()
+        if(db_user.organizations == None):
+            db_user.organizations = []
         db_user.organizations += (db_organization.id,)
         flag_modified(db_user, "organizations")
         self.db.commit()
