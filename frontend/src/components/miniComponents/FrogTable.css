@@ -1,29 +1,47 @@
 .frogTable {
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     width: 90%;
     margin: auto;
+    background-color: var(--background-color);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 th,
 td {
     text-align: left;
-    padding: 8px;
+    padding: 0.6rem;
 }
 
-.tableRow:nth-child(even) {
-    background-color: #f2f2f2
+td {
+    border-bottom: 1px solid #ddd;
 }
+
+.tableRow:last-child td {
+    border-bottom: none;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+
 
 .tableHead {
-    background-color: #45a049;
-    color: white;
+    border-bottom: 1px solid #ddd;
 }
 
 .tableRow:hover {
-    background-color: #4b4b4b;
+    background-color: #21512e;
     color: white;
     cursor: pointer;
 }
+
+
+
+/* .tableRow:last-child:hover {
+    border-radius: 0 0 15px 15px;
+} */
 
 @media screen and (max-width: 768px) {
     .frogTable th:nth-child(n+3):not(:last-child),

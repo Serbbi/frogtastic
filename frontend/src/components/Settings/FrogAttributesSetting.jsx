@@ -46,6 +46,10 @@ export default function FrogAttributeSettings({ frog, organization }) {
             addToAttributeList(customAttribute);
             setCustomAttribute('');
         }
+        // this does not work for some reason
+        if (event.key) {
+            console.log("Key pressed: " + event.key);
+        }
     }
 
     function handleSave() {
@@ -103,6 +107,10 @@ export default function FrogAttributeSettings({ frog, organization }) {
         };
     }, [inputRef]);
 
+    function handleAddAttribute() {
+        setAddPredefinedAttribute(!addPredefinedAttribute);
+    }
+
     return (
         <div className='settingContainer'>
                 <h3>Frog Attributes</h3>
@@ -115,6 +123,7 @@ export default function FrogAttributeSettings({ frog, organization }) {
                     {listOfAttributesToAdd.map((key) => {
                         return <li className='attributeItemAdded' key={key} onClick={() => selectItem(key)}>{key}</li>
                     })}
+                    {/* <li key="+" className='attributeItem' onClick={handleAddAttribute} onKeyDown={handleKeyDown}>+</li> */}
                 </ul>
                 <button onClick={() => setAddPredefinedAttribute(!addPredefinedAttribute)}>Add Predefined Attribute</button>
                 {!addCustomAttribute && <button onClick={() => setAddCustomAttribute(!addCustomAttribute)}>Add Custom Attribute</button>}
@@ -126,8 +135,10 @@ export default function FrogAttributeSettings({ frog, organization }) {
                             }
                             {frog && predefinedOptions.map((option) => {
                                 if (![...Object.keys(frog.attributes), ...listOfAttributesToAdd].includes(option))
-                                    return <li key={option} onClick={() => addToAttributeList(option)}>{option}</li>
+                                    return <li key={option} onClick={() => addToAttributeList(option)}>{option}</li>;
+                                return null;
                             })}
+                            {!frog && <li>Please add a frog to the database first!</li>}
                         </ul>        
                     </div>}
 

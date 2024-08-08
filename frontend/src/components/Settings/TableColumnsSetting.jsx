@@ -100,10 +100,14 @@ export default function TableColumnsSetting({ frog, organization }) {
             {showTableColumnOptions && 
                 <div className='predefinedAttributesContainer' ref={inputRef}>
                     <ul className='predefinedAttributes'>
-                        {frog && ['frog_number', 'current_tank_id', ...Object.keys(frog.attributes)].map((option) => {
+                        {frog && ['frog_number', 'current_tank', ...Object.keys(frog.attributes)].map((option) => {
                             if (!organization.table_columns.includes(option) && !listOfTableColumnsToAdd.includes(option))
-                                return <li key={option} onClick={() => setListOfTableColumnsToAdd([...listOfTableColumnsToAdd, option])}>{option}</li>
+                                return <li key={option} onClick={() => setListOfTableColumnsToAdd([...listOfTableColumnsToAdd, option])}>{option}</li>;
+                            return null;
                         })}
+                        {!frog && <li>Please add a frog to the database first!</li>}
+                        {/* {frog && [...Object.keys(frog.attributes)].length === 0 && <li>Frog has no attributes</li>} */}
+                        {/* {frog && ['frog_number', 'current_tank_id', ...Object.keys(frog.attributes)].length === organization.table_columns.length && <li>No more columns to add</li>} */}
                     </ul>
                 </div>
             }
