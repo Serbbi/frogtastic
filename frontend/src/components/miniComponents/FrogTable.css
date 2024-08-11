@@ -9,20 +9,25 @@
     overflow: hidden;
 }
 
-th,
-td {
+.frogTable th, .frogTable td {
     text-align: left;
     padding: 0.6rem;
 }
 
-td {
+.frogTable td {
     border-bottom: 1px solid #ddd;
 }
 
 .tableRow:last-child td {
     border-bottom: none;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
+}
+
+.tableRow:last-child td:first-child {
+    border-bottom-left-radius: 0;
+}
+
+.tableRow:last-child td:last-child {
+    border-bottom-right-radius: 0;
 }
 
 
