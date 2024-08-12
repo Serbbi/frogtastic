@@ -36,9 +36,8 @@ class OrganizationController(Controller):
         self.db.refresh(db_organization)
         return db_organization
     
-    def join_organization(self, organization_name: str, user_id: int):
-        print(organization_name)
-        db_organization = self.db.query(Organization).filter(Organization.name == organization_name).first()
+    def join_organization(self, organization_id: int, user_id: int):
+        db_organization = self.db.query(Organization).filter(Organization.id == organization_id).first()
         if user_id not in db_organization.participants: # maybe return a 409 status code
             db_organization.participants += (user_id,)
 

@@ -15,20 +15,25 @@ These methods will be used by the endpoints in the `routers` folder.
 """
 
 class FrogController(Controller):
-    def get_frogs(self):
-        return self.db.query(Frog).all()
+    def get_frogs(self, org_q: int = None, tank_q: int = None, no_frogs_q: int = None):
+        query = self.db.query(Frog)
+        
+        if tank_q:
+            query = query.filter(Frog.current_tank_id == tank_q)
+        elif org_q:
+            query = query.filter(Frog.organization_id == org_q)
+        
+        frogs = query.all()
+
+        if no_frogs_q:
+            frogs = frogs[:no_frogs_q]
+        
+        return frogs
     
-
-    def get_organization_frogs(self, organization_id: int):
-        return self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
-    
-
-    def get_organization_one_frog(self, organization_id: int):
-        return self.db.query(Frog).filter(Frog.organization_id == organization_id).first()
-
 
     def get_frog(self, frog_id: int):
         return self.db.query(Frog).filter(Frog.id == frog_id).first()
+    
     
     def add_frog_attributes(self, attributes: list, organization_id: int):
         frogs = self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
@@ -45,6 +50,7 @@ class FrogController(Controller):
             self.db.refresh(frog)
                     
         return {"message": "Attributes added successfully"}
+    
 
     def delete_frog_attributes(self, attributes: list, organization_id: int):
         frogs = self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
@@ -57,6 +63,7 @@ class FrogController(Controller):
             self.db.refresh(frog)
                     
         return {"message": "Attributes deleted successfully"}
+
 
     def create_frog(self, frog: Frog):
         # if(verify_frog_details(frog)):
@@ -71,10 +78,6 @@ class FrogController(Controller):
         return db_frog
     
 
-    def get_tank_frogs(self, current_tank_id: int):
-        return self.db.query(Frog).filter(Frog.current_tank_id == current_tank_id).all()
-    
-
     def get_frog_by_image(self, file, organization_id: int):
         if not file.content_type.endswith(("jpg", "jpeg", "png")):
             return {"error": "Only images are allowed"}
@@ -84,6 +87,8 @@ class FrogController(Controller):
 
         extraction_image = extract_image(img)
         result = retrieve_frog(extraction_image)
+        if not result:
+            return {"error": "Error handling image"}
         frog_number, tank_id = extract_frog_and_tank(result.split('\n')[0])
 
         db_frog = self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id, organization_id=organization_id).first()

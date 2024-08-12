@@ -1,7 +1,9 @@
+from typing import Union
 from fastapi import APIRouter, Depends
 from models.user import User
 from util.util import get_current_user
 from crud.notification import NotificationController
+from schemas.notification import NotificationBase
 
 router = APIRouter(
     prefix="/notifications",
@@ -9,19 +11,21 @@ router = APIRouter(
 )
 
 @router.get("")
-async def get_notifications(controller: NotificationController = Depends(NotificationController)):
-    return controller.get_notifications()
+async def get_notifications(org_q: Union[int, None] = None, controller: NotificationController = Depends(NotificationController)):
+    return controller.get_notifications(org_q)
 
-@router.post("/{type}/{organization_name}")
-async def create_notification(type: str, organization_name: str, 
-                              controller: NotificationController = Depends(NotificationController),
-                              current_user: User = Depends(get_current_user)):
-    return controller.create_notification(current_user, type, organization_name)
 
-@router.post("/{type}/{organization_name}/{user_id}")
-async def handle_notification(type: str, organization_name: str, user_id: int,
+@router.post("")
+async def create_notification(notification: NotificationBase,
+                              current_user: User = Depends(get_current_user),
                               controller: NotificationController = Depends(NotificationController)):
-    return controller.handle_notification(user_id, organization_name, type)
+    return controller.create_notification(current_user, notification)
+
+
+@router.post("/{notification_id}/handle")
+async def handle_notification(notification_id: int, body: dict, controller: NotificationController = Depends(NotificationController)):
+    return controller.handle_notification(notification_id, body)
+
 
 @router.delete("/{notification_id}")
 async def delete_notification(notification_id: int, controller: NotificationController = Depends(NotificationController)):

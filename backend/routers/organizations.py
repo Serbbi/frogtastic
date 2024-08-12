@@ -37,10 +37,6 @@ async def get_organization(organization_id: int, controller: OrganizationControl
 async def update_organization(organization_id: int, organization: OrganizationBase, controller: OrganizationController = Depends(OrganizationController)):
     return controller.update_organization(organization_id, organization)
 
-@router.put("/{organization_name}/join/{user_id}")
-async def join_organization(organization_name: str, user_id: int, controller: OrganizationController = Depends(OrganizationController)):
-    return controller.join_organization(organization_name, user_id)
-
 @router.delete("/{organization_id}")
 async def delete_organization(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
     return controller.delete_organization(organization_id)
