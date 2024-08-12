@@ -17,6 +17,7 @@ export default function FrogTable({ frogs, organization }) {
             <thead className='tableHead'>
                 <tr>
                     {organization.table_columns.map(column => {
+                        if (column === "current_tank") return <th key={column}>Tank</th>;
                         return <th key={column}>{formatColumnName(column)}</th>
                     })}
                 </tr>
@@ -29,6 +30,7 @@ export default function FrogTable({ frogs, organization }) {
                                 if(column === "frog_number") 
                                     return <td key={column}>{frog[column]}</td>;
                                 if(column === "current_tank") {
+                                    if (frog.current_tank_id === null) return <td key={column}></td>;
                                     return <td key={column}>{tanks.find(tank => tank.id === frog.current_tank_id).tank_name}</td>;
                                 }
                                 if(column === "is_sick") 

@@ -84,6 +84,8 @@ class FrogController(Controller):
 
         extraction_image = extract_image(img)
         result = retrieve_frog(extraction_image)
+        if not result:
+            return {"error": "Error handling image"}
         frog_number, tank_id = extract_frog_and_tank(result.split('\n')[0])
 
         db_frog = self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id, organization_id=organization_id).first()

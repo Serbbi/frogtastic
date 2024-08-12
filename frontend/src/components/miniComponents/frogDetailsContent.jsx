@@ -162,7 +162,7 @@ export default function FrogDetailsContent() {
                     })}
                     <div className="frogField" key="current_tank_id">
                         <label>Current Tank</label>
-                        <select name="current_tank_id" disabled={!canEditFrogsPrivilege} onChange={updateField}>
+                        <select name="current_tank_id" value={frog.current_tank_id ? frog.current_tank_id : -1} disabled={!canEditFrogsPrivilege} onChange={updateField}>
                             {!frog.current_tank_id && <option value={-1}></option>}
                             {tanks && tanks.map(tank => (
                                 <option key={tank.id} value={tank.id}>{tank.tank_name}</option>

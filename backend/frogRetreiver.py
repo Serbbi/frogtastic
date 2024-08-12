@@ -8,6 +8,8 @@ import re
 
 
 def retrieve_frog(image):
+    if image is None:
+        return None
     model = load_model('./CORF3D_ACF/output/models/RGB_5.h5')
     img = cv2.resize(image, (224, 224))
     y_pred = model.predict(np.array([img]))
