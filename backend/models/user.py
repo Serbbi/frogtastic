@@ -19,5 +19,3 @@ class User(Base):
     hashed_password = Column(String, index=True)
     attributes = Column(JSON, default=lambda: {})
     organizations = Column(ARRAY(Integer), index=True)
-
-    # privileges = Column(JSON, default=lambda: privilegesConfig)

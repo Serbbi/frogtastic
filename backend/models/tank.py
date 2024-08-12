@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, ARRAY, JSON, String
+from sqlalchemy import Column, ForeignKey, Integer, String
 from database import Base
 
 class Tank(Base):
@@ -7,5 +7,3 @@ class Tank(Base):
     id = Column(Integer, primary_key=True, index=True)
     tank_name = Column(String, index=True)
     organization_id = Column(Integer, ForeignKey('organizations.id'), index=True)
-    frog_ids = Column(ARRAY(Integer, ForeignKey('frogs.id')), index=True)
-    attributes = Column(JSON, default=lambda: {})
