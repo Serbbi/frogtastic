@@ -5,3 +5,4 @@ class OrganizationBase(BaseModel):
     participants: list
     admins: list
     table_columns: list
+    system_parameters: dict

@@ -15,5 +15,3 @@ class UserBase(BaseModel):
     hashed_password: str
     attributes: dict
     organizations: list
-
-    # privileges: dict = privilegesConfig

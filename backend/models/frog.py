@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, JSON
+from sqlalchemy import Column, ForeignKey, Integer, JSON, String
 from database import Base
 
 class Frog(Base):
@@ -11,3 +11,4 @@ class Frog(Base):
     attributes = Column(JSON, default=lambda: {})
     organization_id = Column(Integer, ForeignKey('organizations.id'), index=True)
     history = Column(JSON, default=lambda: {})
+    image_path = Column(String, index=True)
