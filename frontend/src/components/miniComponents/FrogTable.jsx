@@ -6,7 +6,7 @@ import './FrogTable.css';
 
 export default function FrogTable({ frogs, organization }) {
     const navigate = useNavigate();
-    const { tanks } = UseAllTanks(organization.id);
+    const { tanks } = UseAllTanks(organization ? organization.id : -1);
 
     function formatColumnName(columnName) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
