@@ -23,7 +23,7 @@ export default function FrogTable({ frogs, organization }) {
                 </tr>
             </thead>
             <tbody>
-                {frogs.map(frog => {
+                {tanks && frogs.map(frog => {
                     return (
                         <tr key={frog.id} className='tableRow' onClick={() => navigate(`/home/frog/${frog.id}`)}>
                             {organization.table_columns.map(column => {
