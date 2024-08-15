@@ -15,7 +15,7 @@ class TankController(Controller):
     
     
     def create_tank(self, tank: Tank):
-        db_tank = Tank(tank_name=tank.tank_name, organization_id=tank.organization_id, frog_ids=tank.frog_ids, attributes=tank.attributes)
+        db_tank = Tank(tank_name=tank.tank_name, organization_id=tank.organization_id)
         self.db.add(db_tank)
         self.db.commit()
         self.db.refresh(db_tank)
@@ -26,8 +26,6 @@ class TankController(Controller):
         db_tank = self.db.query(Tank).filter(Tank.id == tank_id).first()
         db_tank.tank_name = tank.tank_name
         db_tank.organization_id = tank.organization_id
-        db_tank.frog_ids = tank.frog_ids
-        db_tank.attributes = tank.attributes
         self.db.commit()
         self.db.refresh(db_tank)
         return db_tank

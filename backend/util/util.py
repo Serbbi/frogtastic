@@ -12,6 +12,7 @@ from passlib.context import CryptContext
 load_dotenv()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+GENERAL_PRIVILEGES = 'general_privileges'
 
 """
 This file contains utility functions for the login router.
@@ -58,4 +59,19 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], contro
 def get_access_right(privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
     if privilege in current_user.attributes['privileges']:
         return current_user.attributes['privileges'][privilege]
+    return False
+
+
+def get_general_access_right(privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
+    if GENERAL_PRIVILEGES not in current_user.attributes:
+        return False
+    if privilege in current_user.attributes[GENERAL_PRIVILEGES]:
+        return current_user.attributes[GENERAL_PRIVILEGES][privilege]
+    return False
+
+def get_organization_access_right(org_id: str, privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
+    if org_id not in current_user.attributes:
+        return False
+    if privilege in current_user.attributes[org_id]:
+        return current_user.attributes[org_id][privilege]
     return False

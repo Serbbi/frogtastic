@@ -40,11 +40,3 @@ async def update_organization(organization_id: int, organization: OrganizationBa
 @router.delete("/{organization_id}")
 async def delete_organization(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
     return controller.delete_organization(organization_id)
-
-@router.post("/{organization_id}/table-columns")
-async def create_table_columns(organization_id: int, table_columns: List[str], controller: OrganizationController = Depends(OrganizationController)):
-    return controller.create_table_columns(organization_id, table_columns)
-
-@router.delete("/{organization_id}/table-columns")
-async def delete_table_columns(organization_id: int, table_columns: List[str], controller: OrganizationController = Depends(OrganizationController)):
-    return controller.delete_table_columns(organization_id, table_columns)

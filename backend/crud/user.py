@@ -1,3 +1,4 @@
+import re
 from crud.controller import Controller
 from models.user import User
 
@@ -6,20 +7,30 @@ In this file we have the methods that will perform the CRUD actions for the User
 These methods will be used by the endpoints in the `routers` folder. 
 """
 
+email_patterns = {
+    "rug": r"\.rug\.nl$",
+}
+
 class UserController(Controller):
     def get_user_by_username(self, username: str):
         return self.db.query(User).filter(User.username == username).first()
+    
+
+    def get_user_by_email(self, email: str):
+        return self.db.query(User).filter(User.email == email).first()
 
     
     def create_user(self, user: User):
-        db_user = User(username=user.username, hashed_password=user.hashed_password, attributes={"privileges":{}}, organizations=user.organizations)
+        db_user = User(username=user.username, hashed_password=user.hashed_password, attributes={}, organizations=user.organizations, email=user.email)
         self.db.add(db_user)
         self.db.commit()
         self.db.refresh(db_user)
         return db_user
     
 
-    def get_users(self):
+    def get_users(self, org_q: int = None):
+        if org_q:
+            return self.db.query(User).filter(User.organizations.any(org_q)).all()
         return self.db.query(User).all()
     
 
@@ -32,6 +43,8 @@ class UserController(Controller):
         db_user.username = user.username
         db_user.hashed_password = user.hashed_password
         db_user.attributes = user.attributes
+        db_user.organizations = user.organizations
+        db_user.email = user.email
         self.db.commit()
         self.db.refresh(db_user)
         return db_user
@@ -42,3 +55,8 @@ class UserController(Controller):
         self.db.delete(db_user)
         self.db.commit()
         return db_user
+    
+
+    def verify_email(self, email: str):
+        for pattern in email_patterns:
+            return re.search(email_patterns[pattern], email)

@@ -22,6 +22,14 @@ async def get_frogs(org_q: Union[int, None] = None,
                     controller: FrogController = Depends(FrogController)):
     return controller.get_frogs(org_q, tank_q, no_frogs_q)
 
+
+@router.get("/download-csv")
+async def download_csv(org_q: Union[int, None],
+                       tank_q: Union[int, None] = None,
+                       controller: FrogController = Depends(FrogController)):
+    return controller.download_csv(org_q, tank_q)
+
+
 @router.get("/{frog_id}")
 async def get_frog(frog_id: int, controller: FrogController = Depends(FrogController)):
     return controller.get_frog(frog_id)

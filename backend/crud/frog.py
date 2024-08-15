@@ -1,13 +1,17 @@
 import datetime
-
+import io
+from fastapi.responses import StreamingResponse
 import numpy as np
 from crud.controller import Controller
 from models.frog import Frog
+from models.tank import Tank
+from models.organization import Organization
 from frogRetreiver import retrieve_frog, extract_image, extract_frog_and_tank
 from util.frogUtil import verify_frog_details
 import zipfile
 from sqlalchemy.orm.attributes import flag_modified
 import cv2
+import pandas as pd
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -91,6 +95,9 @@ class FrogController(Controller):
             return {"error": "Error handling image"}
         frog_number, tank_id = extract_frog_and_tank(result.split('\n')[0])
 
+        _, buffer = cv2.imencode('.png', extraction_image)
+        img_bytes = io.BytesIO(buffer.tobytes())
+
         db_frog = self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id, organization_id=organization_id).first()
         if not db_frog:
             sample_frog = self.db.query(Frog).filter_by(organization_id=organization_id).first()
@@ -99,12 +106,14 @@ class FrogController(Controller):
             else:
                 sample_attributes = sample_frog.attributes.keys()
                 attributes = {key: "" for key in sample_attributes}
-            db_frog = Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={})
+            
+            image_path = image_paths.get(f"{tank_id}{frog_number}")
+            db_frog = Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={}, image_path=image_path)
             self.db.add(db_frog)
             self.db.commit()
             self.db.refresh(db_frog)
 
-        return db_frog
+        return StreamingResponse(img_bytes, media_type="image/png")
     
 
     def update_frog(self, frog_id: int, frog: Frog):
@@ -127,12 +136,35 @@ class FrogController(Controller):
         self.db.commit()
         return db_frog
     
+
     def train_model(self, file):
         with zipfile.ZipFile(file.file, 'r') as zip_ref:
             file_names = zip_ref.namelist()
         for name in file_names:
             print(name)
         return {"message": "Model trained successfully"}
+    
+
+    def download_csv(self, org_q: int, tank_q: int = None):
+        query = self.db.query(Frog)
+        tanks = self.db.query(Tank).all()
+        organization = self.db.query(Organization).filter(Organization.id == org_q).first()
+
+        query = query.filter(Frog.organization_id == org_q)
+        if tank_q:
+            query = query.filter(Frog.current_tank_id == tank_q)
+
+        frogs = query.all()
+        df = pd.DataFrame([frog.__dict__ for frog in frogs])
+        df = df.drop(columns=["_sa_instance_state"])
+        df["current_tank_id"] = df["current_tank_id"].apply(lambda x: next((tank.tank_name for tank in tanks if tank.id == x), None))
+        df = df.rename(columns={"current_tank_id": "current_tank_name"})
+        df["organization_id"] = organization.name
+        df = df.rename(columns={"organization_id": "organization_name"})
+        df = df.drop(columns=["id"])
+
+        csv = df.to_csv(index=False)
+        return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=frogs.csv"})
 
 
 def update_history(db_frog, frog):
@@ -148,3 +180,24 @@ def update_history(db_frog, frog):
         history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] = status_string
     return history
     
+image_paths = {
+    "11": "https://drive.google.com/uc?export=view&id=1tcFPy8RjPa00vnTYqrJ4z8BeSbwDVnY9",
+    "12": "https://drive.google.com/uc?export=view&id=1SOxgByqfw2GdsXDfbKG-OjwQ6VPTYdaA",
+    "13": "https://drive.google.com/uc?export=view&id=1mzQpxCX_TE6qDd6DXypl6GEaKVtM6-cd",
+    "14": "https://drive.google.com/uc?export=view&id=15NXx94A-Xt5TfYVzu-0VsZHrPV-Qnjww",
+    "15": "https://drive.google.com/uc?export=view&id=1sCez8lXw7CHi1dybajH2SGQq9yHy2y-o",
+    "16": "https://drive.google.com/uc?export=view&id=1SJ3zv884KAsZCoIDKHdU_sUYM0qG5UkU",
+    "17": "https://drive.google.com/uc?export=view&id=1ESAyKd6QnvhmhLborMdghxFk0OkXKlO-",
+    "18": "https://drive.google.com/uc?export=view&id=1Smabarh2Ak_YB4_3vW5wUPb5hJurjGB4",
+    "19": "https://drive.google.com/uc?export=view&id=1P4fjHAtNPQVQFk2q0WW6ELJ18JtDhkaC",
+    "110": "https://drive.google.com/uc?export=view&id=",
+    "111": "https://drive.google.com/uc?export=view&id=",
+    "112": "https://drive.google.com/uc?export=view&id=",
+    "113": "https://drive.google.com/uc?export=view&id=",
+    "114": "https://drive.google.com/uc?export=view&id=",
+    "115": "https://drive.google.com/uc?export=view&id=",
+    "116": "https://drive.google.com/uc?export=view&id=",
+    "117": "https://drive.google.com/uc?export=view&id=",
+    "118": "https://drive.google.com/uc?export=view&id=",
+    "119": "https://drive.google.com/uc?export=view&id=",
+}
