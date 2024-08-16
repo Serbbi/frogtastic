@@ -2,10 +2,9 @@ from fastapi import APIRouter, Depends
 from crud.organization import OrganizationController
 from schemas.organization import OrganizationBase
 from util.organizationsUtil import get_create_organization_access_right
-from util.exceptions import raise_access_right_exception
+from util.exceptions import raise_403_exception
 from models.user import User
 from util.util import get_current_user
-from typing import List
 
 router = APIRouter(
     prefix="/organizations",
@@ -23,7 +22,7 @@ async def create_organization(organization: OrganizationBase,
                               controller: OrganizationController = Depends(OrganizationController)):
     if access_right:
         return controller.create_organization(organization, current_user)
-    raise_access_right_exception()
+    raise_403_exception("You do not have the right to create an organization")
 
 @router.get("")
 async def get_organizations(controller: OrganizationController = Depends(OrganizationController)):

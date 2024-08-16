@@ -7,7 +7,6 @@ from models.frog import Frog
 from models.tank import Tank
 from models.organization import Organization
 from frogRetreiver import retrieve_frog, extract_image, extract_frog_and_tank
-from util.frogUtil import verify_frog_details
 import zipfile
 from sqlalchemy.orm.attributes import flag_modified
 import cv2
@@ -70,8 +69,6 @@ class FrogController(Controller):
 
 
     def create_frog(self, frog: Frog):
-        # if(verify_frog_details(frog)):
-            # return {"error": "Invalid frog details"}
         already_exists = self.db.query(Frog).filter_by(frog_number=frog.frog_number, tank_id=frog.tank_id, organization_id=frog.organization_id).first()
         if(already_exists):
             return {"error": "Frog already exists"}
@@ -108,23 +105,22 @@ class FrogController(Controller):
                 attributes = {key: "" for key in sample_attributes}
             
             image_path = image_paths.get(f"{tank_id}{frog_number}")
-            db_frog = Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={}, image_path=image_path)
-            self.db.add(db_frog)
-            self.db.commit()
-            self.db.refresh(db_frog)
+            self.create_frog(Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={}, image_path=image_path))
 
         return StreamingResponse(img_bytes, media_type="image/png")
     
 
     def update_frog(self, frog_id: int, frog: Frog):
+        if not verify_frog_details(frog):
+            return {"error": "Invalid frog details"}
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
-        # if(verify_frog_details(frog)):
-            # return {"error": "Invalid frog details"}
+
         db_frog.history = dict(update_history(db_frog, frog))
         db_frog.current_tank_id = frog.current_tank_id
         flag_modified(db_frog, "history")
         db_frog.attributes = frog.attributes
         db_frog.organization_id = frog.organization_id
+
         self.db.commit()
         self.db.refresh(db_frog)
         return db_frog
@@ -179,6 +175,16 @@ def update_history(db_frog, frog):
     if status_string:
         history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] = status_string
     return history
+
+# returns True if the frog details are valid
+def verify_frog_details(frog : Frog):
+    if frog.current_tank_id < 0:
+        return False
+    if "egg_quality" in frog.attributes:
+        if frog.attributes["egg_quality"] != "" and int(frog.attributes["egg_quality"]) < 0:
+            return False
+    # add more if Julia thinks it is necessary
+    return True
     
 image_paths = {
     "11": "https://drive.google.com/uc?export=view&id=1tcFPy8RjPa00vnTYqrJ4z8BeSbwDVnY9",
@@ -190,14 +196,14 @@ image_paths = {
     "17": "https://drive.google.com/uc?export=view&id=1ESAyKd6QnvhmhLborMdghxFk0OkXKlO-",
     "18": "https://drive.google.com/uc?export=view&id=1Smabarh2Ak_YB4_3vW5wUPb5hJurjGB4",
     "19": "https://drive.google.com/uc?export=view&id=1P4fjHAtNPQVQFk2q0WW6ELJ18JtDhkaC",
-    "110": "https://drive.google.com/uc?export=view&id=",
-    "111": "https://drive.google.com/uc?export=view&id=",
-    "112": "https://drive.google.com/uc?export=view&id=",
-    "113": "https://drive.google.com/uc?export=view&id=",
-    "114": "https://drive.google.com/uc?export=view&id=",
-    "115": "https://drive.google.com/uc?export=view&id=",
-    "116": "https://drive.google.com/uc?export=view&id=",
-    "117": "https://drive.google.com/uc?export=view&id=",
-    "118": "https://drive.google.com/uc?export=view&id=",
-    "119": "https://drive.google.com/uc?export=view&id=",
+    "110": "https://drive.google.com/uc?export=view&id=16XQliTF3biFN5J2nnEKxVdVyxrmJuCMQ",
+    "111": "https://drive.google.com/uc?export=view&id=1-ad-IJCzPsMijhFz2X5E9KyjgkujSkJw",
+    "112": "https://drive.google.com/uc?export=view&id=1QwbKnEDKzJrNjfhWu2GTC_A4TAz9rSUm",
+    "113": "https://drive.google.com/uc?export=view&id=153AgLPUJy355kXaZxa9Dh3p5-xjtvJIs",
+    "114": "https://drive.google.com/uc?export=view&id=14SAv_ntNDKafz4DL1Es0oS94tpiQX9x4",
+    "115": "https://drive.google.com/uc?export=view&id=1YnByFavnErp7-2gFOXTmmVtUeb9Gxko1",
+    "116": "https://drive.google.com/uc?export=view&id=1ORp6QPkjrwPzqhJ88jk88Ukm01Kr9yQ-",
+    "117": "https://drive.google.com/uc?export=view&id=1pr0uk0vkCCsGbp5PaB6R83Tg2RgmXpvt",
+    "118": "https://drive.google.com/uc?export=view&id=1AY792rnJTvHM3_ZcVXPuK1u-triVqR_L",
+    "119": "https://drive.google.com/uc?export=view&id=17ZRAGhHAEKdHw8oFQFs4hQcUy7eQ7e9j",
 }
