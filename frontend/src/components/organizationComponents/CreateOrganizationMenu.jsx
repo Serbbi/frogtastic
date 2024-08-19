@@ -28,6 +28,7 @@ export default function CreateOrganizationMenu() {
             participants: [],
             admins: [],
             table_columns: [],
+            system_parameters: {},
             // description: form[1].value,
             // image: form[2].files[0]
         };

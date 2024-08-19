@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNotification } from "../../hooks/NotificationProvider";
 import { v4 as uuidv4 } from "uuid";
 import { throwIfNotOk } from "../../util/errorThrower";
-import useAllTanks from "../../hooks/useAllTanks";
+import useTanks from "../../hooks/useTanks";
 import { useOrganization } from "../../hooks/OrganizationProvider";
 import HistoryTable from "./HistoryTable";
-import useFrog from "../../hooks/useFrog";
+import useFrogs from "../../hooks/useFrogs";
 import Loading from "./loading";
 import { useNavigate, useParams } from "react-router-dom";
+import { useImage } from "../../hooks/ImageProvider";
 import "./frogDetailsContent.css";
 
 export default function FrogDetailsContent() {
@@ -16,13 +17,22 @@ export default function FrogDetailsContent() {
     const token = localStorage.getItem('site');
     const [ saved, setSaved ] = useState(true);
     const { organization } = useOrganization();
-    const { tanks } = useAllTanks(organization ? organization.id : -1);
+    const { tanks } = useTanks(organization ? organization.id : -1);
     const [ showHistory, setShowHistory ] = useState(false);
-    const canEditFrogsPrivilege = JSON.parse(localStorage.getItem('privileges'))['privileges']['canEditFrogs'];
+    const privileges = JSON.parse(localStorage.getItem('privileges'));
+    const [ canEditFrogs, setCanEditFrogs ] = useState(false);
     const { frogId } = useParams();
-    const { frog, isLoading } = useFrog(frogId);
+    const { frog, isLoading } = useFrogs(frogId, null, null, null);
     const [ changedFrog, setChangedFrog ] = useState(null);
     const navigate = useNavigate();
+    const { extractionImageURL } = useImage();
+    const [ showCompareModal, setShowCompareModal ] = useState(false);
+
+    useEffect(() => {
+        if (organization) {
+            setCanEditFrogs(privileges[organization.id]['canEditFrogs']);
+        }
+    }, [organization]);
 
     useEffect(() => {
         setChangedFrog(frog);
@@ -44,7 +54,7 @@ export default function FrogDetailsContent() {
     }
 
     async function updateRequest(frog) {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}?org_q=${organization.id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -70,7 +80,7 @@ export default function FrogDetailsContent() {
     }
 
     async function deleteRequest(frog) {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}?org_q=${organization.id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -136,33 +146,33 @@ export default function FrogDetailsContent() {
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
-                                    <textarea name={key} value={value} disabled={!canEditFrogsPrivilege} onChange={updateField} />
+                                    <textarea name={key} value={value} disabled={!canEditFrogs} onChange={updateField} />
                                 </div>
                             );
                         if (key === "is_sick") 
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
-                                    <input type="checkbox" name={key} checked={value} disabled={!canEditFrogsPrivilege} onChange={updateField} />
+                                    <input type="checkbox" name={key} checked={value} disabled={!canEditFrogs} onChange={updateField} />
                                 </div>
                             );
                         if (key === "last_injection")
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
-                                    <input type="date" name={key} value={value} disabled={!canEditFrogsPrivilege} onChange={updateField} />
+                                    <input type="date" name={key} value={value} disabled={!canEditFrogs} onChange={updateField} />
                                 </div>
                             );
                         return (
                             <div className="frogField" key={key}>
                                 <label>{formatLabel(key)}</label>
-                                <input type="text" name={key} value={value} disabled={!canEditFrogsPrivilege} onChange={updateField} />
+                                <input type="text" name={key} value={value} disabled={!canEditFrogs} onChange={updateField} />
                             </div>
                         );
                     })}
                     <div className="frogField" key="current_tank_id">
                         <label>Current Tank</label>
-                        <select name="current_tank_id" disabled={!canEditFrogsPrivilege} onChange={updateField}>
+                        <select name="current_tank_id" disabled={!canEditFrogs} onChange={updateField}>
                             {!frog.current_tank_id && <option value={-1}></option>}
                             {tanks && tanks.map(tank => (
                                 <option key={tank.id} value={tank.id}>{tank.tank_name}</option>
@@ -171,11 +181,22 @@ export default function FrogDetailsContent() {
                     </div>
                 </div>
                 <div className="rightDetailsContainer">
+                    <button className="saveButton" onClick={() => setShowCompareModal(true)}>Compare</button>
                     <button className="saveButton" onClick={saveFrog}>Save</button>
                     <button className="saveButton" onClick={deleteFrog}>Delete</button>
                     <button className="saveButton" onClick={() => setShowHistory(!showHistory)}>History</button>
                 </div>
             </div>
+            {showCompareModal && <div className="modalCompareImages">
+                <div className="modalCompareImagesContent">
+                    <span className='closeJoinOrg' onClick={() => setShowCompareModal(false)}>&times;</span>
+                    <h2>Extraction Image</h2>
+                    <h2>Reference Image</h2>
+                    <img src={`data:image/png;base64,${extractionImageURL}`} alt="Extraction" />
+                    <img src={frog.image_path} alt="Reference" />
+                </div>
+            </div>}
+            
         </div>
     );
 }

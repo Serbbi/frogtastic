@@ -5,7 +5,7 @@ import './LeftSideBar.css';
 
 export default function LeftSideBar({ organization, setOrganization }) {
     const userId = localStorage.getItem("userId");
-    const canCreateOrganization = JSON.parse(localStorage.getItem('privileges'))['privileges']['canCreateOrganization'];
+    const canCreateOrganization = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canCreateOrganization'];
     const navigate = useNavigate();
 
     function logOut() {

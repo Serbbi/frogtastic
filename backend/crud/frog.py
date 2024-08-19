@@ -1,3 +1,4 @@
+import base64
 import datetime
 import io
 from fastapi.responses import StreamingResponse
@@ -37,42 +38,26 @@ class FrogController(Controller):
     def get_frog(self, frog_id: int):
         return self.db.query(Frog).filter(Frog.id == frog_id).first()
     
-    
-    def add_frog_attributes(self, attributes: list, organization_id: int):
-        frogs = self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
 
-        if "" in attributes:
-            return {"error": "Attributes cannot be empty"}
-
-        for frog in frogs:
+    def update_frogs(self, attributes: list, org_q: int):
+        frogs = self.db.query(Frog).filter(Frog.organization_id == org_q).all()
+        for db_frog in frogs:
             for attribute in attributes:
-                frog.attributes[attribute] = ""
-
-            flag_modified(frog, "attributes")
-            self.db.commit()
-            self.db.refresh(frog)
-                    
-        return {"message": "Attributes added successfully"}
+                if attribute not in db_frog.attributes:
+                    db_frog.attributes[attribute] = ""
+                else:
+                    db_frog.attributes.pop(attribute)
+            flag_modified(db_frog, "attributes")
+            
+        self.db.commit()
+        return {"message": "Frogs updated successfully"}
     
-
-    def delete_frog_attributes(self, attributes: list, organization_id: int):
-        frogs = self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
-        for frog in frogs:
-            for attribute in attributes:
-                frog.attributes.pop(attribute, None)
-
-            flag_modified(frog, "attributes")
-            self.db.commit()
-            self.db.refresh(frog)
-                    
-        return {"message": "Attributes deleted successfully"}
-
 
     def create_frog(self, frog: Frog):
         already_exists = self.db.query(Frog).filter_by(frog_number=frog.frog_number, tank_id=frog.tank_id, organization_id=frog.organization_id).first()
         if(already_exists):
             return {"error": "Frog already exists"}
-        db_frog = Frog(frog_number=frog.frog_number, tank_id=frog.tank_id, current_tank_id=frog.current_tank_id, attributes=frog.attributes, organization_id=frog.organization_id, history=frog.history)
+        db_frog = Frog(frog_number=frog.frog_number, tank_id=frog.tank_id, current_tank_id=frog.current_tank_id, attributes=frog.attributes, organization_id=frog.organization_id, history=frog.history, image_path=frog.image_path)
         self.db.add(db_frog)
         self.db.commit()
         self.db.refresh(db_frog)
@@ -105,9 +90,10 @@ class FrogController(Controller):
                 attributes = {key: "" for key in sample_attributes}
             
             image_path = image_paths.get(f"{tank_id}{frog_number}")
-            self.create_frog(Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={}, image_path=image_path))
+            db_frog = self.create_frog(Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={}, image_path=image_path))
 
-        return StreamingResponse(img_bytes, media_type="image/png")
+        # Leave it as base64 for now, we can change it to something different later
+        return {"frog": db_frog, "image": base64.b64encode(img_bytes.getvalue()).decode('utf-8')}
     
 
     def update_frog(self, frog_id: int, frog: Frog):
@@ -178,7 +164,7 @@ def update_history(db_frog, frog):
 
 # returns True if the frog details are valid
 def verify_frog_details(frog : Frog):
-    if frog.current_tank_id < 0:
+    if frog.current_tank_id != None and frog.current_tank_id < 0:
         return False
     if "egg_quality" in frog.attributes:
         if frog.attributes["egg_quality"] != "" and int(frog.attributes["egg_quality"]) < 0:
@@ -187,23 +173,23 @@ def verify_frog_details(frog : Frog):
     return True
     
 image_paths = {
-    "11": "https://drive.google.com/uc?export=view&id=1tcFPy8RjPa00vnTYqrJ4z8BeSbwDVnY9",
-    "12": "https://drive.google.com/uc?export=view&id=1SOxgByqfw2GdsXDfbKG-OjwQ6VPTYdaA",
-    "13": "https://drive.google.com/uc?export=view&id=1mzQpxCX_TE6qDd6DXypl6GEaKVtM6-cd",
-    "14": "https://drive.google.com/uc?export=view&id=15NXx94A-Xt5TfYVzu-0VsZHrPV-Qnjww",
-    "15": "https://drive.google.com/uc?export=view&id=1sCez8lXw7CHi1dybajH2SGQq9yHy2y-o",
-    "16": "https://drive.google.com/uc?export=view&id=1SJ3zv884KAsZCoIDKHdU_sUYM0qG5UkU",
-    "17": "https://drive.google.com/uc?export=view&id=1ESAyKd6QnvhmhLborMdghxFk0OkXKlO-",
-    "18": "https://drive.google.com/uc?export=view&id=1Smabarh2Ak_YB4_3vW5wUPb5hJurjGB4",
-    "19": "https://drive.google.com/uc?export=view&id=1P4fjHAtNPQVQFk2q0WW6ELJ18JtDhkaC",
-    "110": "https://drive.google.com/uc?export=view&id=16XQliTF3biFN5J2nnEKxVdVyxrmJuCMQ",
-    "111": "https://drive.google.com/uc?export=view&id=1-ad-IJCzPsMijhFz2X5E9KyjgkujSkJw",
-    "112": "https://drive.google.com/uc?export=view&id=1QwbKnEDKzJrNjfhWu2GTC_A4TAz9rSUm",
-    "113": "https://drive.google.com/uc?export=view&id=153AgLPUJy355kXaZxa9Dh3p5-xjtvJIs",
-    "114": "https://drive.google.com/uc?export=view&id=14SAv_ntNDKafz4DL1Es0oS94tpiQX9x4",
-    "115": "https://drive.google.com/uc?export=view&id=1YnByFavnErp7-2gFOXTmmVtUeb9Gxko1",
-    "116": "https://drive.google.com/uc?export=view&id=1ORp6QPkjrwPzqhJ88jk88Ukm01Kr9yQ-",
-    "117": "https://drive.google.com/uc?export=view&id=1pr0uk0vkCCsGbp5PaB6R83Tg2RgmXpvt",
-    "118": "https://drive.google.com/uc?export=view&id=1AY792rnJTvHM3_ZcVXPuK1u-triVqR_L",
-    "119": "https://drive.google.com/uc?export=view&id=17ZRAGhHAEKdHw8oFQFs4hQcUy7eQ7e9j",
+    "11": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog1_tank1_DT_MiMix2_trip.png",
+    "12": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog2_tank1_DT_MiMix2_trip.png",
+    "13": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog3_tank1_DT_MiMix2_trip(2).png",
+    "14": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog4_tank1_DT_MiMix2_trip.png",
+    "15": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog5_tank1_DT_MiMix2_trip.png",
+    "16": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog6_tank1_DT_MiMix2_trip.png",
+    "17": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog7_tank1_DT_MiMix2_trip.png",
+    "18": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog8_tank1_DT_MiMix2_trip(2).png",
+    "19": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog9_tank1_DT_MiMix2_trip(2).png",
+    "110": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog10_tank1_DT_MiMix2_trip(2).png",
+    "111": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog11_tank1_DT_MiMix2_tripod.png",
+    "112": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog12_tank1_DT_MiMix2_tripod.png",
+    "113": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog13_tank1_DT_MiMix2_tripod(2).png",
+    "114": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog14_tank1_DT_MiMix2_tripod.png",
+    "115": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog15_tank1_DT_MiMix2_tripod(2).png",
+    "116": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog16_tank1_DT_MiMix2_tripod(2).png",
+    "117": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog17_tank1_DT_MiMix2_tripod.png",
+    "118": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog18_tank1_DT_MiMix2_tripod(2).png",
+    "119": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog19_tank1_DT_MiMix2_tripod.png",
 }

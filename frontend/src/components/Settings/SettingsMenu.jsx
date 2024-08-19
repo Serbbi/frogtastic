@@ -1,4 +1,4 @@
-import useSampleFrog from '../../hooks/useSampleFrog';
+import useFrogs from '../../hooks/useFrogs';
 import { useOrganization } from '../../hooks/OrganizationProvider';
 import FrogAttributesSetting from './FrogAttributesSetting';
 import TableColumnsSetting from './TableColumnsSetting'
@@ -7,13 +7,13 @@ import './SettingsMenu.css';
 
 export default function SettingsMenu() {
     const { organization } = useOrganization();
-    const { frog } = useSampleFrog(organization ? organization.id : -1);
+    const { frogs } = useFrogs(null, organization ? organization.id : -1, null, 1);
 
     return (
         <div className="settingsMenu">
             <h1 className='title'>Settings</h1>
-            <FrogAttributesSetting frog={frog} organization={organization}/>
-            <TableColumnsSetting frog={frog} organization={organization}/>
+            <FrogAttributesSetting frog={frogs ? frogs[0] : null} organization={organization}/>
+            <TableColumnsSetting frog={frogs ? frogs[0] : null} organization={organization}/>
             <TanksSetting organization={organization}/>
         </div>
     );

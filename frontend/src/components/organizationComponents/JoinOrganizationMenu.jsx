@@ -1,23 +1,25 @@
-import useAllOrganizations from '../../hooks/useAllOrganizations';
+import useOrganizations from '../../hooks/useOrganizations';
 import { useNotification } from '../../hooks/NotificationProvider';
 import './JoinOrganizationMenu.css';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function JoinOrganizationMenu() {
-    const token = localStorage.getItem('site');
-    const { organizations, isLoading } = useAllOrganizations();
+    const username = localStorage.getItem('username');
+    const userId = localStorage.getItem('userId');
+    const { organizations } = useOrganizations();
     const [ showModal, setShowModal ] = useState(false);
     const [ selectedOrganization, setSelectedOrganization ] = useState(null);
     const { addNotification } = useNotification();
     const description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
-    async function putRequest(organizationName) {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/notifications/Join Request/${organizationName}`, {
+    async function postRequest(notification) {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/notifications`, {
+            method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
             },
-            method: 'POST'
+            body: JSON.stringify(notification)
         });
 
         return await response.json();
@@ -26,7 +28,14 @@ export default function JoinOrganizationMenu() {
     function handleJoin(event) {
         event.preventDefault();
 
-        putRequest(selectedOrganization.name)
+        const notification = {
+            title: "Join Request",
+            description: `${username} has requested to join ${selectedOrganization.name}`,
+            organization_id: selectedOrganization.id,
+            user_id: userId
+        };
+
+        postRequest(notification)
             .then(data => {
                 console.log(data);
                 if (data.detail) throw new Error(data.detail);

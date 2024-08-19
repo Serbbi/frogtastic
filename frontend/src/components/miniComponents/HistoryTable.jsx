@@ -1,8 +1,9 @@
-import useFrog from '../../hooks/useFrog';
+import useFrogs from '../../hooks/useFrogs';
 import './HistoryTable.css';
 
 export default function HistoryTable({ id, setShowHistory, showHistory, tanks }) {
-    const { frog } = useFrog(id);
+    const { frog } = useFrogs(id, null, null, null);
+
 
     function formatEventText(event) {
         if (event.includes("current_tank_id")) {

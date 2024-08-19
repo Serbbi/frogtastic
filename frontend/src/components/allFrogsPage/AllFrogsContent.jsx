@@ -1,12 +1,12 @@
 import FrogTable from "../miniComponents/FrogTable";
 import Loading from "../miniComponents/loading";
-import useAllFrogs from "../../hooks/useAllFrogs";
+import useFrogs from "../../hooks/useFrogs";
 import { useOrganization } from "../../hooks/OrganizationProvider"
 import './AllFrogsContent.css';
 
 export default function AllFrogsContent() {
     const { organization } = useOrganization();
-    const { frogs, isLoading } = useAllFrogs(organization ? organization.id : -1);
+    const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, null, null);
 
     if (isLoading) return (<div className="allFrogsContainer"><Loading /></div>);
 

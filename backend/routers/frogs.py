@@ -36,28 +36,14 @@ async def get_frog(frog_id: int, controller: FrogController = Depends(FrogContro
     return controller.get_frog(frog_id)
 
 
-@router.post("/{organization_id}/attributes")
-async def post_attributes(
-    organization_id: int, 
-    attributes: List[str], 
-    current_user: User = Depends(util.get_current_user),
-    controller: FrogController = Depends(FrogController)
-):
-    if util.get_organization_access_right(str(organization_id), "canEditFrogs", current_user):
-        return controller.add_frog_attributes(attributes, organization_id)
-    raise_403_exception("You cannot modify frog attributes")
-
-
-@router.delete("/{organization_id}/attributes")
-async def delete_attributes(
-    organization_id: int, 
-    attributes: List[str], 
-    current_user: User = Depends(util.get_current_user),
-    controller: FrogController = Depends(FrogController)
-):
-    if util.get_organization_access_right(str(organization_id), "canEditFrogs", current_user):
-        return controller.delete_frog_attributes(attributes, organization_id)
-    raise_403_exception("You cannot modify frog attributes")
+@router.put("")
+async def update_frogs(org_q: int, 
+                       attributes: List[str],
+                       current_user: User = Depends(util.get_current_user),
+                       controller: FrogController = Depends(FrogController)):
+    if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
+        return controller.update_frogs(attributes, org_q)
+    raise_403_exception("You cannot edit these frogs")
 
 
 @router.put("/{frog_id}")

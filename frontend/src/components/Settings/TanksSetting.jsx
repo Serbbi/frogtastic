@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import useAllTanks from '../../hooks/useAllTanks';
+import useTanks from '../../hooks/useTanks';
 import './SettingsMenu.css';
 
 export default function TanksSetting({ organization }) {
     const [showInputNewTank, setShowInputNewTank] = useState(false);
     const [newTankName, setNewTankName] = useState("");
     const [editingItemId, setEditingItemId] = useState(null);
-    const { tanks } = useAllTanks(organization ? organization.id : -1);
+    const { tanks } = useTanks(organization ? organization.id : null);
     const inputRef = useRef(null);
 
     async function putRequest(tank) {
@@ -115,11 +115,11 @@ export default function TanksSetting({ organization }) {
             <ul className='attributeList'>
                 {tanks && tanks.map(tank =>
                     editingItemId === tank.id ?
-                        <div key={tank.id} ref={inputRef} className='editTankDiv'>
+                        <li key={tank.id} ref={inputRef} className='editTankDiv'>
                             <input value={newTankName} id='editTankInput' onChange={(e) => setNewTankName(e.target.value)} />
                             <button onClick={() => handleSaveClick(tank)}>Save</button>
                             <button onClick={() => handleDeleteClick(tank.id)}>Delete</button>
-                        </div>
+                        </li>
                         :
                         <li key={tank.id} className="attributeItem" >
                             <span onClick={() => handleEditClick(tank.id, tank.tank_name)}>{tank.tank_name}</span>
