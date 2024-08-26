@@ -47,11 +47,15 @@ export default function CreateOrganizationMenu() {
 
     return (
         <div className='createOrganizationMenu'>
-            <h1>Create Organization</h1>
+            <h1 className='title'>Create Organization</h1>
             <form className='createOrganizationForm' onSubmit={handleSubmit}>
-                <input type="text" placeholder="Organization Name" />
-                <textarea type="text" placeholder="Organization Description" />
-                <input type="file" />
+                <div className="contentWithoutButton">
+                    <div className="nameAndDescription">
+                        <input type="text" placeholder="Organization Name" />
+                        <textarea type="text" placeholder="Organization Description" />
+                    </div>
+                    <input type="file" />
+                </div>
                 <button type="submit">Create</button>
             </form>
         </div>

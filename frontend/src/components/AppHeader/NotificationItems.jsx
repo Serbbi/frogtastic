@@ -61,8 +61,8 @@ export default function NotificationItems({ organizationId, addShownNotification
         return null;
     }
 
-    return updatedNotifications.map((notification, index) => (
-        <li key={index}>
+    return updatedNotifications.map(notification => (
+        <li key={notification.id}>
             <div className='notificationUp'>
                 <strong>{notification.title}</strong>
             </div>

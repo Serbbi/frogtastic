@@ -109,12 +109,12 @@ label {
 }
 
 .okStatus {
-    color: green;
+    color: rgb(52, 192, 52);
     margin-left: 20px;
 }
 
 .sickStatus {
-    color: rgb(255, 238, 0);
+    color: rgb(255, 230, 0);
     margin-left: 20px;
 }
 

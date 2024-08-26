@@ -1,18 +1,27 @@
 .tankFrogsContent {
+    display: inline;
     width: 100%;
     height: 100%;
+    text-align: left;
+    padding: 1rem;
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow: scroll;
 
-    display: block;
+    h1 {
+        width: 50%;
+    }
+}
+
+.titleAndSelect {
+    display: flex;
+    justify-content: space-between;
 }
 
 .selectButton {
     background-color: #c9c9c9;
     color: rgb(52, 52, 52);
     padding: 7px 20px;
-    margin: 8px;
-    margin-right: 5%;
+    margin: auto 8px;
     border: none;
     border-radius: 5px;
     cursor: pointer;

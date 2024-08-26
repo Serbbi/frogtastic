@@ -33,15 +33,17 @@ export default function TankFrogsContent() {
 
     return (
         <div className="tankFrogsContent">
-            <h1>Tank Frogs
-                {!tankStatus ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
-                    : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
-            </h1>
-            <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
-                {tanks && tanks.map(tank => {
-                    return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
-                })}
-            </select>
+            <div className="titleAndSelect">
+                <h1 className='title'>Tank Frogs
+                    {!tankStatus ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
+                        : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
+                </h1>
+                <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
+                    {tanks && tanks.map(tank => {
+                        return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
+                    })}
+                </select>
+            </div>
             {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization}/>}
         </div>
     );

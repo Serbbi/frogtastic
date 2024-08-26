@@ -12,7 +12,7 @@ export default function AllFrogsContent() {
 
     return (
         <div className="allFrogsContainer">
-            <h1>All Frogs</h1>
+            <h1 className="title">All Frogs</h1>
             {frogs.length === 0 && <h2>No Frogs</h2>}
             {frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization}/>}
         </div>

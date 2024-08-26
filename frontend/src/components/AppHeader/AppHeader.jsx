@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NotificationItems from './NotificationItems';
+import useOrganizations from '../../hooks/useOrganizations';
+import { useNavigate } from "react-router-dom";
 import './AppHeader.css';
 
 export default function AppHeader({ organization, setOrganization }) {
@@ -9,6 +11,11 @@ export default function AppHeader({ organization, setOrganization }) {
     const userOrgs = localStorage.getItem('orgs').split(',');
     const username = localStorage.getItem('username');
     const [ isMenuOpen, setIsMenuOpen ] = useState(false);
+    const [ isProfileSettingsOpen, setIsProfileSettingsOpen ] = useState(false);
+    const userContainer = document.querySelector('.userContainerAndProfileSettings');
+    const [ showOrganizations, setShowOrganizations ] = useState(false);
+    const { organizations } = useOrganizations();
+    const navigate = useNavigate();
 
     useEffect(() => {
         setOrganization(userOrgs[0]);
@@ -37,34 +44,69 @@ export default function AppHeader({ organization, setOrganization }) {
         setIsMenuOpen(!isMenuOpen);
     }
 
+    function handleProfileSettingsOpen() {
+        if (!isProfileSettingsOpen) {
+            userContainer.style.maxHeight = '300px';
+        } else {
+            userContainer.style.maxHeight = '45px';  // Collapsed height
+        }
+        setIsProfileSettingsOpen(!isProfileSettingsOpen);
+    }
+
+    function getOrganizationName(orgId) {
+        for (let org of organizations) {
+            if (org.id === orgId) {
+                return org.name;
+            }
+        }
+    }
+
     return (
         <nav className="appHeader">
             <div className="buttons">
-                <button className='headerButton'>Help</button>
-                {userOrgs.length > 1 ? <button className='headerButton'>Organizations</button> : null}
-                <button className='headerButton' onClick={toggleMenu}>Notifications</button>
+                <button className='headerButton' onClick={() => navigate('/home/help')}>?</button>
+                {/* {userOrgs.length > 1 ? <button className='headerButton'>Organizations</button> : null} */}
+                <div className='newDropdown'>
+                    <button className='headerButton' onClick={toggleMenu}><FontAwesomeIcon icon="fa-solid fa-bell" /></button>
+                    {isOpen && (
+                            <ul className='notificationList'>
+                                {userOrgs.map((org) => (
+                                    <NotificationItems organizationId={org} addShownNotifications={addShownNotifications} />
+                                ))}
+                                {shownNotifications === 0 && <li key={0}>No notifications</li>}
+                            </ul>
+                    )}
+                </div>
                 <button id="menuButton" className='headerButton' onClick={handleMenuOpen}><FontAwesomeIcon icon="fa-solid fa-bars"/></button>
             </div>
-            <div className="userContainer">
-                <img src="/user_icon.png" alt="user-icon" className='userIcon'/>
-                <div className="userContainerCenter">
-                    <p className='userContainerUsername'>{username ? username : 'Username'}</p>
-                    <p className='userContainerEmail'>tonieserban@yahoo.ro</p>
+            <div className="userContainerAndProfileSettings">
+                <div className="userContainer">
+                    <img src="/user_icon.png" alt="user-icon" className='userIcon'/>
+                    <div className="userContainerCenter">
+                        <p className='userContainerUsername'>{username ? username : 'Username'}</p>
+                        <p className='userContainerEmail'>tonieserban@yahoo.ro</p>
+                    </div>
+                    {isProfileSettingsOpen ? <FontAwesomeIcon icon="fa-solid fa-chevron-up" className='userContainerChevron' onClick={handleProfileSettingsOpen}/> :
+                    <FontAwesomeIcon icon="fa-solid fa-chevron-down" className='userContainerChevron' onClick={handleProfileSettingsOpen}/>}
                 </div>
-                <FontAwesomeIcon icon="fa-solid fa-chevron-down" className='userContainerChevron'/>
-            </div>
-
-            {/* TODO: redo the notification dropdown */}
-            {isOpen && (
-                <div className="dropdownMenu">
-                    <ul className='notificationList'>
+                <div className="profileSettings">
+                    {!showOrganizations && 
+                        <>
+                        <button className='profileSettingsButton' onClick={() => navigate(`/home/profile-settings/${username}`)}>Profile Settings</button>
+                        <button className='profileSettingsButton' onClick={() => setShowOrganizations(true)}>Organizations</button>
+                        {/* <button className='profileSettingsButton'>Logout</button> */}
+                        </>
+                    }
+                    {showOrganizations &&
+                    <>
                         {userOrgs.map((org) => (
-                            <NotificationItems organizationId={org} addShownNotifications={addShownNotifications} />
+                            <button className='profileSettingsButton' onClick={() => setOrganization(org)}>{getOrganizationName(Number(org))}</button>
                         ))}
-                        {shownNotifications === 0 && <li>No notifications</li>}
-                    </ul>
+                        <button className='profileSettingsButton' onClick={() => setShowOrganizations(false)}>Back</button>
+                    </>
+                    }
                 </div>
-            )}
+            </div>
         </nav>
     );
 }

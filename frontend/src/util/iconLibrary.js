@@ -23,6 +23,8 @@ import {
     , faBell
     , faChevronDown
     , faBars
+    , faChevronUp
+    , faXmark
 } from '@fortawesome/free-solid-svg-icons';
 
 export function initializeIcons() {
@@ -48,5 +50,7 @@ export function initializeIcons() {
         faBuildingCircleArrowRight,
         faBell,
         faChevronDown,
-        faBars);
+        faChevronUp,
+        faBars,
+        faXmark);
 }

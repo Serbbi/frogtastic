@@ -56,7 +56,7 @@ export default function JoinOrganizationMenu() {
 
     return (
         <div className='joinOrganizationMenu'>
-            <h1>Join Organization</h1>
+            <h1 className='title'>Join Organization</h1>
             <table className='organizationTable'>
                 <tbody>
                     {organizations && organizations.map((organization, index) => (

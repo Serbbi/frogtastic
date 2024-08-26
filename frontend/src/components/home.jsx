@@ -11,6 +11,7 @@ import FrogDetailsConten from "./miniComponents/frogDetailsContent";
 import { useOrganization } from "../hooks/OrganizationProvider";
 import ImageProvider from "../hooks/ImageProvider";
 import "./home.css";
+import SystemParameters from "./SystemParameters/SystemParameters";
 
 export default function Home() {
     const { organization, setOrganization } = useOrganization();
@@ -26,10 +27,13 @@ export default function Home() {
                             <Route path="/all-frogs" element={<AllFrogsContent/> } />
                             <Route path="/tank-frogs" element={<TankFrogsContent/> } />
                             <Route path="/upload-image" element={<UploadContent/> } />
-                            <Route path="/create-organization" element={<CreateOrganizationMenu/> } />
+                            <Route path="/system-parameters" element={<SystemParameters organization={organization} /> } />
                             <Route path="/join-organization" element={<JoinOrganizationMenu/> } />
+                            <Route path="/create-organization" element={<CreateOrganizationMenu/> } />
                             <Route path="/organization-settings" element={<SettingsMenu/> } />
                             <Route path="/frog/:frogId" element={<FrogDetailsConten /> } />
+                            <Route path="/help" element={<div>Help</div>} />
+                            <Route path="/profile-settings/:userName" element={<div>Profile Settings</div>} />
                         </Routes>
                     </ImageProvider>
                 </div>

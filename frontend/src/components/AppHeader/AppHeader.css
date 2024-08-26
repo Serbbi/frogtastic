@@ -1,24 +1,60 @@
 .appHeader {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
-    /* padding: 0.5rem; */
+    /* align-items: center; */
     padding-left: 0;
     padding-right: 0;
     width: 100%;
     height: 10vh;
     margin: 0;
+    padding-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.userContainerAndProfileSettings {
+    display: flex;
+    flex-direction: column;
+    align-items:start;
+    background-color: var(--background-color);
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
+    padding: 0.5rem;
+    transition: max-height 0.3s ease; /* Add transition to max-height */
+    overflow: hidden; /* Ensure content doesn't overflow during transition */
+    max-height: 45px;
+    height: fit-content; 
+    z-index: 1;
 }
 
 .userContainer {
     display: flex;
     align-items: center;
-    background-color: var(--background-color);
     justify-content: space-between;
-    border-radius: 15px;
-    box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
-    padding: 0.5rem;
-    /* cursor: pointer; */
+}
+
+.profileSettings {
+    transition: display 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.6rem;
+    align-items: end;
+    padding: 1rem 0;
+
+    button {
+        background-color: var(--background-color);
+        border: none;
+        padding: 0.5rem 0.8rem;
+        cursor: pointer;
+        font-weight: 600;
+        color: #3e3e3e;
+        max-width: 250px;
+        text-align: right;
+    }
+
+    button:hover {
+        color: #006f0f;
+    }
 }
 
 .userContainerCenter {
@@ -40,6 +76,11 @@
     margin: 0 1rem;
 }
 
+.userContainerChevron:hover {
+    cursor: pointer;
+    color: #003908;
+}
+
 .userContainerEmail {
     font-size: 0.8rem;
     color: #999;
@@ -53,8 +94,8 @@
 .buttons {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 0 2rem;
+    gap: 0.6rem;
+    padding: 0 0.7rem 0 2rem;
     transition: all 0.3s;
 }
 
@@ -79,7 +120,6 @@
 .leftSide {
     display: flex;
     align-items: center;
-    /* padding: 0 1rem 1rem 0; */    
 }
 
 .rightSide {
@@ -99,8 +139,10 @@
     border: 1px solid #e9ecef;
     border-radius: 5px;
     padding: 0.5rem 0.8rem;
-    margin-right: 1rem;
     cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: auto 1rem;
 }
 
 .headerButton:hover {
@@ -108,21 +150,24 @@
     color: #003908;
 }
 
-.dropdownMenu {
-    position: absolute;
-    z-index: 1;
-    top: 3rem;
-    right: 1rem;
-    background-color: #6c9471;
-    border: 1px solid #e9ecef;
-    border-radius: 5px;
-    padding: 0 0.5rem;
+.newDropdown {
+    display: inline-block;
+    position: relative;
+    z-index: 2;
 }
 
 .notificationList {
     list-style: none;
-    padding: 0;
-    margin: 0;
+    position: absolute;
+    background-color: #f9fffa;
+    border-radius: 10px;
+    padding: 0 0.5rem;
+    margin: 0.5rem 0;
+    width: 25dvw;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
+    transition: all 0.3s ease;
 }
 
 .notificationList li {
@@ -131,6 +176,7 @@
     align-items: center;
     padding: 0.5rem;
     border-bottom: 1px solid #e9ecef;
+    transition: all 0.3s ease;
 }
 
 .notificationList li:last-child {
@@ -154,8 +200,7 @@
 
 .notificationButton {
     cursor: pointer;
-    height: 30px;
-    /* max-height: 30px; */
+    height: 1.5rem;
 }
 
 .notificationButton.check{

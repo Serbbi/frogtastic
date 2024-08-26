@@ -12,7 +12,8 @@
 }
 
 .title {
-    color: #21512e;
+    color: var(--title-color);
+    margin-top: 0;
 }
 
 .settingsMenu button {
