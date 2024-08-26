@@ -77,6 +77,7 @@ export default function UploadContent() {
             e.preventDefault();
             dropContainer.current.classList.remove("drag-active");
             document.getElementById("image").files = e.dataTransfer.files;
+            setFileName(e.dataTransfer.files[0].name);
         };
 
         const dropElem = dropContainer.current;

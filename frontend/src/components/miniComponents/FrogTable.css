@@ -20,6 +20,10 @@
 
 .frogTable td {
     border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
 }
 
 .tableRow:last-child td {

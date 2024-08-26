@@ -15,6 +15,7 @@ export default function AppHeader({ organization, setOrganization }) {
     const userContainer = document.querySelector('.userContainerAndProfileSettings');
     const [ showOrganizations, setShowOrganizations ] = useState(false);
     const { organizations } = useOrganizations();
+    const [ firstTime, setFirstTime ] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,6 +27,7 @@ export default function AppHeader({ organization, setOrganization }) {
         if (!isOpen) {
             setShownNotifications(0);
         }
+        setFirstTime(false);
     };
 
     function addShownNotifications(toAdd) {
@@ -65,9 +67,12 @@ export default function AppHeader({ organization, setOrganization }) {
         <nav className="appHeader">
             <div className="buttons">
                 <button className='headerButton' onClick={() => navigate('/home/help')}>?</button>
-                {/* {userOrgs.length > 1 ? <button className='headerButton'>Organizations</button> : null} */}
                 <div className='newDropdown'>
-                    <button className='headerButton' onClick={toggleMenu}><FontAwesomeIcon icon="fa-solid fa-bell" /></button>
+                    <button className='headerButton' onClick={toggleMenu}>
+                        <FontAwesomeIcon icon="fa-solid fa-bell" />
+                        {firstTime && <span className='notificationBadge'></span>}    
+                    </button>
+                    
                     {isOpen && (
                             <ul className='notificationList'>
                                 {userOrgs.map((org) => (

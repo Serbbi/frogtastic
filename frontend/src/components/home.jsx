@@ -10,8 +10,9 @@ import { Route, Routes } from "react-router-dom";
 import FrogDetailsConten from "./miniComponents/frogDetailsContent";
 import { useOrganization } from "../hooks/OrganizationProvider";
 import ImageProvider from "../hooks/ImageProvider";
-import "./home.css";
 import SystemParameters from "./SystemParameters/SystemParameters";
+import HelpContent from "./HelpPage/HelpContent";
+import "./home.css";
 
 export default function Home() {
     const { organization, setOrganization } = useOrganization();
@@ -32,7 +33,7 @@ export default function Home() {
                             <Route path="/create-organization" element={<CreateOrganizationMenu/> } />
                             <Route path="/organization-settings" element={<SettingsMenu/> } />
                             <Route path="/frog/:frogId" element={<FrogDetailsConten /> } />
-                            <Route path="/help" element={<div>Help</div>} />
+                            <Route path="/help" element={<HelpContent/> } />
                             <Route path="/profile-settings/:userName" element={<div>Profile Settings</div>} />
                         </Routes>
                     </ImageProvider>

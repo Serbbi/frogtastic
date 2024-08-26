@@ -159,7 +159,10 @@ def update_history(db_frog, frog):
         if value != db_frog.attributes.get(key):
             status_string += f"{key} changed from '{db_frog.attributes.get(key)}' to '{value}'\n"
     if status_string:
-        history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] = status_string
+        if datetime.datetime.now().strftime("%Y-%m-%d %H:%M") in history:
+            history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] += status_string
+        else:
+            history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] = status_string
     return history
 
 # returns True if the frog details are valid
