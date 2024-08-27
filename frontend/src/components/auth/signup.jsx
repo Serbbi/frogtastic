@@ -6,6 +6,7 @@ import './signup.css';
 export default function Signup() {
     const [input, setInput] = useState({
         username: "",
+        email: "",
         password: "",
     });
 
@@ -29,38 +30,39 @@ export default function Signup() {
 
     return (
         <div className='mainContainerSignup'>
-            <h2>Sign Up</h2>
-            <form onSubmit={handleSubmitEvent} className="formContainerSignup">
-                <div className='inputContainer'>
-                    <input
-                        className='inputField'
-                        placeholder="Username"
-                        onChange={handleInput}
-                        name="username" />
-                    <div className='icon'>
-                        <FontAwesomeIcon icon="fa-solid fa-circle-question" />
-                        <span className='tooltiptext'>You can use your name e.g. John Cena</span>
+            <div className="formAndTitle">
+                <h2>Sign Up</h2>
+                <form onSubmit={handleSubmitEvent} className="formContainerSignup">
+                    <div className='inputContainer'>
+                        <input
+                            className='inputField'
+                            placeholder="Username"
+                            onChange={handleInput}
+                            name="username" />
                     </div>
-                </div>
-                <div className='inputContainer'>
-                    <input
-                        className='inputField'
-                        placeholder="Password"
-                        onChange={handleInput}
-                        name="password" 
-                        type="password" />
-                    <div className='icon'>
-                        <FontAwesomeIcon icon="fa-solid fa-circle-question" />
-                        <span className='tooltiptext'>Whatever password you like</span>
+                    <div className='inputContainer'>
+                        <input
+                            className='inputField'
+                            placeholder="Email"
+                            onChange={handleInput}
+                            name="email" />
                     </div>
-                </div>
+                    <div className='inputContainer'>
+                        <input
+                            className='inputField'
+                            placeholder="Password"
+                            onChange={handleInput}
+                            name="password" 
+                            type="password" />
+                    </div>
 
-                <label className="errorLabel">{auth.getErrorMessage()}</label>
+                    <label className="errorLabel">{auth.getErrorMessage()}</label>
 
-                <button type="submit" className={"submitButton"}>Sign up</button>
-                <br />
-                <a href="/">Already have an account? Log in here!</a>
-            </form>
+                    <button type="submit" className={"submitButton"}>Sign up</button>
+                    <br />
+                    <a href="/">Already have an account? Log in here!</a>
+                </form>
+            </div> 
         </div>
     );
 };

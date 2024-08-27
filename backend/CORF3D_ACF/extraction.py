@@ -344,10 +344,10 @@ def extract_square_symimage_path(image_path: str, min_threshold=80, max_threshol
 def extract_square(image=None, threshold=80, progress_path=None, greyscale=False):
     img = image
     height_full, width_full = img.shape[:2]
-    # img_small = cv2.resize(img, (0, 0), fx=0.2, fy=0.2)
-    scale_factor = 800 / float(height_full)
-    dim = (int(width_full * scale_factor), 800)
-    img_small = cv2.resize(img, dim)
+    img_small = cv2.resize(img, (0, 0), fx=0.2, fy=0.2) # we are using this because it gives way better predictions
+    # scale_factor = 800 / float(height_full)
+    # dim = (int(width_full * scale_factor), 800)
+    # img_small = cv2.resize(img, dim)
     height_small, width_small = img_small.shape[:2]
     if greyscale:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

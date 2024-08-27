@@ -8,7 +8,13 @@ These methods will be used by the endpoints in the `routers` folder.
 """
 
 email_patterns = {
-    "rug": r"\.rug\.nl$",
+    "rug": r"rug\.nl$",
+}
+
+beginning_attributes = {
+    "general_privileges": {
+        "canCreateOrganization": False,
+    }
 }
 
 class UserController(Controller):
@@ -21,7 +27,7 @@ class UserController(Controller):
 
     
     def create_user(self, user: User):
-        db_user = User(username=user.username, hashed_password=user.hashed_password, attributes={}, organizations=user.organizations, email=user.email)
+        db_user = User(username=user.username, hashed_password=user.hashed_password, attributes=beginning_attributes, organizations=user.organizations, email=user.email)
         self.db.add(db_user)
         self.db.commit()
         self.db.refresh(db_user)

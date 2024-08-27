@@ -4,16 +4,20 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('../../../public/Designer.jpeg');
-    background-size: cover;
-    background-position: center;
+    background: rgb(60, 134, 80);
+    background: linear-gradient(36deg, rgb(107, 155, 120) 0%, rgb(121, 205, 143) 34%, rgba(232,251,230,1) 100%); 
 }
 
+
 .formContainerSignup {
-    width: 40%;
-    background-color: whitesmoke;
-    padding: 20px;
-    border-radius: 20px;
+    a {
+        color: rgb(53, 53, 53);
+        font-size: 0.9rem;
+    }
+
+    button {
+        background-color: rgb(53,98,65);
+    }
 }
 
 .inputContainer {
@@ -40,7 +44,7 @@
 .submitButton {
     width: 40%;
     height: 40px;
-    margin-top: 15px;
+    margin: 15px 0;
 
     background-color: #3d9349;
     border: none;
@@ -76,6 +80,14 @@
   .icon:hover .tooltiptext {
     visibility: visible;
   }
+
+.formAndTitle {
+    width: 50%;
+    background-color: whitesmoke;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
 @media screen and (max-width: 768px) {
     .formContainerSignup {

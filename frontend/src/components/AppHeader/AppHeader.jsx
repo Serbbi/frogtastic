@@ -75,7 +75,7 @@ export default function AppHeader({ organization, setOrganization }) {
                     
                     {isOpen && (
                             <ul className='notificationList'>
-                                {userOrgs.map((org) => (
+                                {userOrgs[0] !== "" && userOrgs.map((org) => (
                                     <NotificationItems organizationId={org} addShownNotifications={addShownNotifications} />
                                 ))}
                                 {shownNotifications === 0 && <li key={0}>No notifications</li>}

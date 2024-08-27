@@ -50,8 +50,9 @@ function Login() {
 
                 <button type="submit" className={"submitButton"}>Log In</button>
             </form>
+            {/* <a href="/user/password/reset">Forgot your password?</a> */}
             <div>
-                <a href="/signup">Don't have an account? Sign up here!</a>
+                <p>Don't have an account? <a href="/signup">Register here!</a></p>
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@ import zipfile
 from sqlalchemy.orm.attributes import flag_modified
 import cv2
 import pandas as pd
+import json
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -89,6 +90,9 @@ class FrogController(Controller):
                 sample_attributes = sample_frog.attributes.keys()
                 attributes = {key: "" for key in sample_attributes}
             
+            with open('image_paths.json') as f:
+                image_paths = json.load(f)
+
             image_path = image_paths.get(f"{tank_id}{frog_number}")
             db_frog = self.create_frog(Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={}, image_path=image_path))
 
@@ -174,64 +178,3 @@ def verify_frog_details(frog : Frog):
             return False
     # add more if Julia thinks it is necessary
     return True
-    
-image_paths = {
-    "11": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog1_tank1_DT_MiMix2_trip.png",
-    "12": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog2_tank1_DT_MiMix2_trip.png",
-    "13": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog3_tank1_DT_MiMix2_trip(2).png",
-    "14": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog4_tank1_DT_MiMix2_trip.png",
-    "15": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog5_tank1_DT_MiMix2_trip.png",
-    "16": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog6_tank1_DT_MiMix2_trip.png",
-    "17": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog7_tank1_DT_MiMix2_trip.png",
-    "18": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog8_tank1_DT_MiMix2_trip(2).png",
-    "19": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog9_tank1_DT_MiMix2_trip(2).png",
-    "110": "https://storage.googleapis.com/cool_frog_bucket/frogs/220728_frog10_tank1_DT_MiMix2_trip(2).png",
-    "111": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog11_tank1_DT_MiMix2_tripod.png",
-    "112": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog12_tank1_DT_MiMix2_tripod.png",
-    "113": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog13_tank1_DT_MiMix2_tripod(2).png",
-    "114": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog14_tank1_DT_MiMix2_tripod.png",
-    "115": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog15_tank1_DT_MiMix2_tripod(2).png",
-    "116": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog16_tank1_DT_MiMix2_tripod(2).png",
-    "117": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog17_tank1_DT_MiMix2_tripod.png",
-    "118": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog18_tank1_DT_MiMix2_tripod(2).png",
-    "119": "https://storage.googleapis.com/cool_frog_bucket/frogs/220729_frog19_tank1_DT_MiMix2_tripod.png",
-    "21": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog1_tank2_DT_MiMix2_trip.png",
-    "22": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog2_tank2_DT_MiMix2_trip.png",
-    "23": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog3_tank2_DT_MiMix2_trip.png",
-    "24": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog4_tank2_DT_MiMix2_trip.png",
-    "25": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog5_tank2_DT_MiMix2_trip.png",
-    "26": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog6_tank2_DT_MiMix2_trip.png",
-    "27": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog7_tank2_DT_MiMix2_trip.png",
-    "28": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog8_tank2_DT_MiMix2_trip.png",
-    "29": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog9_tank2_DT_MiMix2_trip.png",
-    "210": "https://storage.googleapis.com/cool_frog_bucket/frogs/220801_frog10_tank2_DT_MiMix2_trip.png",
-    "211": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog11_tank2_DT_MiMix2_trip.png",
-    "212": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog12_tank2_DT_MiMix2_trip.png",
-    "213": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog13_tank2_DT_MiMix2_trip.png",
-    "214": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog14_tank2_DT_MiMix2_trip.png",
-    "215": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog15_tank2_DT_MiMix2_trip.png",
-    "216": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog16_tank2_DT_MiMix2_trip(2).png",
-    "217": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog17_tank2_DT_MiMix2_trip.png",
-    "218": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog18_tank2_DT_MiMix2_trip.png",
-    "219": "https://storage.googleapis.com/cool_frog_bucket/frogs/220802_frog19_tank2_DT_MiMix2_trip.png",
-    "31": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog1_tank3_DT_MiMix2_trip.png",
-    "32": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog2_tank3_DT_MiMix2_trip.png",
-    "33": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog3_tank3_DT_MiMix2_trip.png",
-    "34": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog4_tank3_DT_MiMix2_trip.png",
-    "35": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog5_tank3_DT_MiMix2_trip.png",
-    "36": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog6_tank3_DT_MiMix2_trip.png",
-    "37": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog7_tank3_DT_MiMix2_trip(2).png",
-    "38": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog8_tank3_DT_MiMix2_trip(2).png",
-    "39": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog9_tank3_DT_MiMix2_trip.png",
-    "310": "https://storage.googleapis.com/cool_frog_bucket/frogs/220803_frog10_tank3_DT_MiMix2_trip.png",
-    "311": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog11_tank3_DT_MiMix2_trip.png",
-    "312": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog12_tank3_DT_MiMix2_trip(2).png",
-    "313": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog13_tank3_DT_MiMix2_trip(2).png",
-    "314": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog14_tank3_DT_MiMix2_trip(2).png",
-    "315": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog15_tank3_DT_MiMix2_trip(2).png",
-    "316": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog16_tank3_DT_MiMix2_trip.png",
-    "317": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog17_tank3_DT_MiMix2_trip(2).png",
-    "318": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog18_tank3_DT_MiMix2_trip.png",
-    "319": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog19_tank3_DT_MiMix2_trip.png",
-    "320": "https://storage.googleapis.com/cool_frog_bucket/frogs/220804_frog20_tank3_DT_MiMix2_trip.png"
-}

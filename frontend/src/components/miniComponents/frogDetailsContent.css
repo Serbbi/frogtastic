@@ -15,11 +15,69 @@
 .frogField {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch; /* Make sure all child elements have the same height */
     justify-content: center;
     width: 100%;
     margin: 0.5rem 0;
+
+    label {
+        background-color: rgb(183, 209, 185);
+        font-weight: bold;
+        border-radius: 1rem 0 0 1rem;
+        font-size: 1.1rem;
+        padding: 0.8rem;
+        height: auto; /* Auto height to match the tallest element */
+        display: flex;
+        align-items: center;
+    }
+
+    input, textarea, select {
+        border-left: none;
+        border-radius: 0 1rem 1rem 0;
+        height: 100%; /* Match the label's height */
+    }
+
+    input, select {
+        height: auto; /* Explicitly set height for input */
+    }
+
+    textarea {
+        resize: vertical; /* Allow textarea to resize vertically */
+        min-height: 3rem;
+    }
+
+    input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        position: relative;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: #377247;
+    }
+
+    input[type="checkbox"]:checked::before {
+        content: '\2713';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        color: white;
+        font-weight: bolder;
+    }
+
+    select {
+        font-size: 1rem;
+    }
+
+    select:hover {
+        cursor: pointer;
+        background-color: #b4c0b5;
+    }
 }
+
 
 input {
     width: 100%;
@@ -60,9 +118,9 @@ label {
     height: 3rem;
     margin: 0.5rem 0;
     padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #4CAF50;
+    border: none;
+    border-radius: 10px;
+    background-color: #377247;
     color: white;
     font-size: 1.2rem;
     font-weight: bolder;
