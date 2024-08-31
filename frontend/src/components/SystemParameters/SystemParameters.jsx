@@ -30,7 +30,7 @@ export default function SystemParameters({ organization }) {
     }
 
     function updateField(event) {
-        const name = event.target.previousSibling.innerText;
+        const name = event.target.name;
         const value = event.target.value;
 
         setModifiedOrganization(prevOrganization => ({ ...prevOrganization, system_parameters: { ...prevOrganization.system_parameters, [name]: value } }));
@@ -78,8 +78,9 @@ export default function SystemParameters({ organization }) {
     return (
         <div className="systemParamsContainer">
             <div className="titleAndButtons">
-                <h1 className="title">System Parameters</h1>
+                <h1 className="title" onClick={() => console.log(modifiedOrganization.system_parameters)}>System Parameters</h1>
                 <button onClick={handleShowCreateCard}>Add Parameter</button>
+                <button onClick={() => putRequest(modifiedOrganization).then(data => console.log(data)).catch(error => console.log('Error:', error))}>Save</button>
             </div>
             
             <div className="systemParamsGrid">
@@ -99,7 +100,7 @@ export default function SystemParameters({ organization }) {
                             <p>{formatLabel(key)}</p>
                             <button onClick={() => handleDeleteParam(key)} className='paramCardButton'><FontAwesomeIcon icon="fa-solid fa-xmark" /></button>
                         </div>
-                        <input type="text" value={modifiedOrganization.system_parameters[key]} onChange={updateField} />
+                        <input type="text" name={key} value={modifiedOrganization.system_parameters[key]} onChange={updateField} />
                     </div>
                 ))}
             </div>

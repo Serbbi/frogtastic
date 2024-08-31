@@ -21,19 +21,21 @@ export default function useFrogs(id = null, organizationId = null, currentTankId
             url += `?${params.toString()}`;
         }
     }
-    const { data, error, isLoading } = useSWR(url, fetcher);
+    const { data, error, isLoading, mutate } = useSWR(url, fetcher, { revalidateOnFocus: false });
 
     if (Array.isArray(data)) {
         return {
             frogs : data,
             isLoading,
-            error
+            error,
+            mutate
         };
     }
 
     return {
         frog : data,
         isLoading,
-        error
+        error,
+        mutate
     };
 }

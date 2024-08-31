@@ -34,10 +34,11 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .confirmation-box__button--confirm {
-    background-color: #4caf50;
+    background-color: #377247;
     color: white;
 }
 
@@ -46,10 +47,10 @@
 }
 
 .confirmation-box__button--cancel {
-    background-color: #f44336;
+    background-color: #f3742b;
     color: white;
 }
 
 .confirmation-box__button--cancel:hover {
-    background-color: #da251d;
+    background-color: #f3991a;
 }

@@ -37,11 +37,11 @@ export default function CreateOrganizationMenu() {
             .then(data => {
                 if (data.error) throw new Error(data.error);
                 console.log(data);
-                addNotification({ id: uuidv4(), text: "Organization created", type: "success" });
+                addNotification({ text: "Organization created", type: "success" });
             })
             .catch(error => {
                 console.error(error);
-                addNotification({ id: uuidv4(), text: error.message, type: "error" });
+                addNotification({ text: error.message, type: "error" });
             });
     }
 

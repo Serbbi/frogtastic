@@ -40,10 +40,10 @@ export default function JoinOrganizationMenu() {
                 console.log(data);
                 if (data.detail) throw new Error(data.detail);
                 if (data.error) throw new Error(data.error);
-                addNotification({ id: uuidv4(), text: "Join request sent", type: "success" });
+                addNotification({ text: "Join request sent", type: "success" });
             })
             .catch(error => {
-                addNotification({ id: uuidv4(), text: error.message, type: "error" });
+                addNotification({ text: error.message, type: "error" });
                 console.error(error);
             });
         setShowModal(false);

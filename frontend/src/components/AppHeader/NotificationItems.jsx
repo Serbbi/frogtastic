@@ -1,14 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UseNotifications from "../../hooks/useNotifications";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function NotificationItems({ organizationId, addShownNotifications }) {
-    const { notifications, isLoading } = UseNotifications(organizationId);
-    const [updatedNotifications, setUpdatedNotifications] = useState([]);
+    const { notifications, isLoading, mutate: mutateNotifications } = UseNotifications(organizationId);
 
     useEffect(() => {
         if (!isLoading) {
-            setUpdatedNotifications(notifications);
             addShownNotifications(notifications.length);
         }
     }, [notifications, isLoading]);
@@ -27,41 +25,47 @@ export default function NotificationItems({ organizationId, addShownNotification
         return await response.json();
     }
 
-    function handleNotification(notification) {
+    async function handleNotification(notification) {
         addShownNotifications(-1);
-        postRequest(notification.id, 'accept')
-            .then(data => {
-                console.log(data);
-                const newNotifications = updatedNotifications.filter(notif => notif.id !== notification.id);
-                setUpdatedNotifications(newNotifications);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+
+        try {
+            const data = await postRequest(notification.id, 'accept');
+            console.log(data);
+
+            await mutateNotifications((notifications) =>
+                notifications.filter(notif => notif.id !== notification.id),
+                false
+            );
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function rejectNotification(notification) {
+    async function rejectNotification(notification) {
         addShownNotifications(-1);
-        postRequest(notification.id, 'reject')
-            .then(data => {
-                console.log(data);
-                const newNotifications = updatedNotifications.filter(notif => notif.id !== notification.id);
-                setUpdatedNotifications(newNotifications);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+
+        try {
+            const data = await postRequest(notification.id, 'reject');
+            console.log(data);
+
+            await mutateNotifications((notifications) =>
+                notifications.filter(notif => notif.id !== notification.id),
+                false
+            );
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     if (isLoading) {
         return <p>Loading...</p>;
     }
 
-    if (updatedNotifications.length === 0) {
+    if (notifications.length === 0) {
         return null;
     }
 
-    return updatedNotifications.map(notification => (
+    return notifications.map(notification => (
         <li key={notification.id}>
             <div className='notificationUp'>
                 <strong>{notification.title}</strong>

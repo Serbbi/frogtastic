@@ -8,12 +8,12 @@ export default function useNotifications(organizationId) {
         url += `?org_q=${organizationId}`;
     }
 
-
-    const { data, error, isLoading } = useSWR(url, fetcher);
+    const { data, error, isLoading, mutate } = useSWR(url, fetcher);
 
     return {
         notifications: data,
         isLoading,
-        error
+        error,
+        mutate
     };
 }
