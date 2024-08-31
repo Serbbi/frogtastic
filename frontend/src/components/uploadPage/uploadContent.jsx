@@ -5,6 +5,7 @@ import { throwIfNotOk } from "../../util/errorThrower";
 import ErrorContent from "../miniComponents/ErrorContent";
 import { useOrganization } from "../../hooks/OrganizationProvider";
 import { useNavigate } from "react-router-dom";
+import { useImage } from "../../hooks/ImageProvider";
 import "./uploadContent.css";
 
 export default function UploadContent() {
@@ -17,15 +18,16 @@ export default function UploadContent() {
     const dropContainer = useRef(null);
     const { organization } = useOrganization();
     const navigate = useNavigate();
+    const { setExtractionImageURL } = useImage();
 
     async function postRequest(formData) {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/image/${organization.id}`, {
             method: 'POST',
-            body: formData
+            body: formData,
         });
-        
-        throwIfNotOk(response);
 
+        throwIfNotOk(response);
+        
         return await response.json();
     }
 
@@ -40,13 +42,15 @@ export default function UploadContent() {
 
         postRequest(formData)
             .then(data => {
+                setExtractionImageURL(data.image);
                 if(data.error) {
                     setSuccess("error");
                     setErrorMessage(data.error);
                     return;
                 }
+
                 setSuccess("success");
-                navigate(`/home/frog/${data.id}`);
+                navigate(`/home/frog/${data.frog.id}`);
                 document.querySelector(".uploadContainer").style.display = "block";
             })
             .catch(error => {
@@ -73,6 +77,7 @@ export default function UploadContent() {
             e.preventDefault();
             dropContainer.current.classList.remove("drag-active");
             document.getElementById("image").files = e.dataTransfer.files;
+            setFileName(e.dataTransfer.files[0].name);
         };
 
         const dropElem = dropContainer.current;

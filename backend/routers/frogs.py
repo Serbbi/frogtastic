@@ -1,10 +1,11 @@
 # The router that is used from all "/frogs/*" endpoints.
 from fastapi import APIRouter, Depends, UploadFile, File
+from models.user import User
 from crud.frog import FrogController
 from schemas.frog import FrogBase
-from util.frogUtil import get_create_frog_access_right, get_edit_frog_access_right, get_delete_frog_access_right
-from util.exceptions import raise_access_right_exception
-from typing import List
+from util import util
+from util.exceptions import raise_403_exception
+from typing import List, Union
 
 router = APIRouter(
     prefix="/frogs",
@@ -16,73 +17,59 @@ router = APIRouter(
 )
 
 @router.get("")
-async def get_frogs(controller: FrogController = Depends(FrogController)):
-    return controller.get_frogs()
+async def get_frogs(org_q: Union[int, None] = None, 
+                    tank_q: Union[int, None] = None,
+                    no_frogs_q: Union[int, None] = None, 
+                    controller: FrogController = Depends(FrogController)):
+    return controller.get_frogs(org_q, tank_q, no_frogs_q)
 
-@router.get("/organization/{organization_id}")
-async def get_organization_frogs(organization_id: int, controller: FrogController = Depends(FrogController)):
-    return controller.get_organization_frogs(organization_id)
 
-@router.get("/organization/{organization_id}/one")
-async def get_organization_one_frog(organization_id: int, controller: FrogController = Depends(FrogController)):
-    return controller.get_organization_one_frog(organization_id)
+@router.get("/download-csv")
+async def download_csv(org_q: Union[int, None],
+                       tank_q: Union[int, None] = None,
+                       controller: FrogController = Depends(FrogController)):
+    return controller.download_csv(org_q, tank_q)
+
 
 @router.get("/{frog_id}")
 async def get_frog(frog_id: int, controller: FrogController = Depends(FrogController)):
     return controller.get_frog(frog_id)
 
-@router.post("/organization/{organization_id}/attributes")
-async def post_attributes(
-    organization_id: int, 
-    attributes: List[str], 
-    controller: FrogController = Depends(FrogController)
-):
-    return controller.add_frog_attributes(attributes, organization_id)
 
-@router.delete("/organization/{organization_id}/attributes")
-async def delete_attributes(
-    organization_id: int, 
-    attributes: List[str], 
-    controller: FrogController = Depends(FrogController)
-):
-    return controller.delete_frog_attributes(attributes, organization_id)
-
-@router.post("")
-async def create_frog(
-    frog: FrogBase, 
-    access_right: bool = Depends(get_create_frog_access_right),
-    controller: FrogController = Depends(FrogController)
-):
-    if access_right:
-        return controller.create_frog(frog)
-    raise_access_right_exception()
-
-
-@router.get("/tank/{tank_id}")
-async def get_tank_frogs(tank_id: int, controller: FrogController = Depends(FrogController)):
-    return controller.get_tank_frogs(tank_id)
+@router.put("")
+async def update_frogs(org_q: int, 
+                       attributes: List[str],
+                       current_user: User = Depends(util.get_current_user),
+                       controller: FrogController = Depends(FrogController)):
+    if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
+        return controller.update_frogs(attributes, org_q)
+    raise_403_exception("You cannot edit these frogs")
 
 
 @router.put("/{frog_id}")
 async def update_frog(
     frog_id: int, 
-    frog: FrogBase, 
-    access_right: bool = Depends(get_edit_frog_access_right),
+    frog: FrogBase,
+    org_q: Union[int, None] = None, 
+    current_user: User = Depends(util.get_current_user),
     controller: FrogController = Depends(FrogController)
 ):
-    if access_right:
+    if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
         return controller.update_frog(frog_id, frog)
-    raise_access_right_exception()
+    
+    raise_403_exception("You cannot edit this frog")
 
 @router.delete("/{frog_id}")
 async def delete_frog(
     frog_id: int, 
-    access_right: bool = Depends(get_delete_frog_access_right),
+    org_q: Union[int, None] = None,
+    current_user: User = Depends(util.get_current_user),
     controller: FrogController = Depends(FrogController)
 ):
-    if access_right:
+    if util.get_organization_access_right(str(org_q), "canDeleteFrogs", current_user):
         return controller.delete_frog(frog_id)
-    raise_access_right_exception()
+    raise_403_exception("You cannot delete this frog")
+
 
 @router.post("/train")
 async def train_model(

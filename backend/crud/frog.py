@@ -1,13 +1,18 @@
+import base64
 import datetime
-
+import io
+from fastapi.responses import StreamingResponse
 import numpy as np
 from crud.controller import Controller
 from models.frog import Frog
+from models.tank import Tank
+from models.organization import Organization
 from frogRetreiver import retrieve_frog, extract_image, extract_frog_and_tank
-from util.frogUtil import verify_frog_details
 import zipfile
 from sqlalchemy.orm.attributes import flag_modified
 import cv2
+import pandas as pd
+import json
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -15,64 +20,49 @@ These methods will be used by the endpoints in the `routers` folder.
 """
 
 class FrogController(Controller):
-    def get_frogs(self):
-        return self.db.query(Frog).all()
+    def get_frogs(self, org_q: int = None, tank_q: int = None, no_frogs_q: int = None):
+        query = self.db.query(Frog)
+        
+        if tank_q:
+            query = query.filter(Frog.current_tank_id == tank_q)
+        elif org_q:
+            query = query.filter(Frog.organization_id == org_q)
+        
+        frogs = query.all()
+
+        if no_frogs_q:
+            frogs = frogs[:no_frogs_q]
+        
+        return frogs
     
-
-    def get_organization_frogs(self, organization_id: int):
-        return self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
-    
-
-    def get_organization_one_frog(self, organization_id: int):
-        return self.db.query(Frog).filter(Frog.organization_id == organization_id).first()
-
 
     def get_frog(self, frog_id: int):
         return self.db.query(Frog).filter(Frog.id == frog_id).first()
     
-    def add_frog_attributes(self, attributes: list, organization_id: int):
-        frogs = self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
 
-        if "" in attributes:
-            return {"error": "Attributes cannot be empty"}
-
-        for frog in frogs:
+    def update_frogs(self, attributes: list, org_q: int):
+        frogs = self.db.query(Frog).filter(Frog.organization_id == org_q).all()
+        for db_frog in frogs:
             for attribute in attributes:
-                frog.attributes[attribute] = ""
-
-            flag_modified(frog, "attributes")
-            self.db.commit()
-            self.db.refresh(frog)
-                    
-        return {"message": "Attributes added successfully"}
-
-    def delete_frog_attributes(self, attributes: list, organization_id: int):
-        frogs = self.db.query(Frog).filter(Frog.organization_id == organization_id).all()
-        for frog in frogs:
-            for attribute in attributes:
-                frog.attributes.pop(attribute, None)
-
-            flag_modified(frog, "attributes")
-            self.db.commit()
-            self.db.refresh(frog)
-                    
-        return {"message": "Attributes deleted successfully"}
+                if attribute not in db_frog.attributes:
+                    db_frog.attributes[attribute] = ""
+                else:
+                    db_frog.attributes.pop(attribute)
+            flag_modified(db_frog, "attributes")
+            
+        self.db.commit()
+        return {"message": "Frogs updated successfully"}
+    
 
     def create_frog(self, frog: Frog):
-        # if(verify_frog_details(frog)):
-            # return {"error": "Invalid frog details"}
         already_exists = self.db.query(Frog).filter_by(frog_number=frog.frog_number, tank_id=frog.tank_id, organization_id=frog.organization_id).first()
         if(already_exists):
             return {"error": "Frog already exists"}
-        db_frog = Frog(frog_number=frog.frog_number, tank_id=frog.tank_id, current_tank_id=frog.current_tank_id, attributes=frog.attributes, organization_id=frog.organization_id, history=frog.history)
+        db_frog = Frog(frog_number=frog.frog_number, tank_id=frog.tank_id, current_tank_id=frog.current_tank_id, attributes=frog.attributes, organization_id=frog.organization_id, history=frog.history, image_path=frog.image_path)
         self.db.add(db_frog)
         self.db.commit()
         self.db.refresh(db_frog)
         return db_frog
-    
-
-    def get_tank_frogs(self, current_tank_id: int):
-        return self.db.query(Frog).filter(Frog.current_tank_id == current_tank_id).all()
     
 
     def get_frog_by_image(self, file, organization_id: int):
@@ -88,6 +78,9 @@ class FrogController(Controller):
             return {"error": "Error handling image"}
         frog_number, tank_id = extract_frog_and_tank(result.split('\n')[0])
 
+        _, buffer = cv2.imencode('.png', extraction_image)
+        img_bytes = io.BytesIO(buffer.tobytes())
+
         db_frog = self.db.query(Frog).filter_by(frog_number=frog_number, tank_id=tank_id, organization_id=organization_id).first()
         if not db_frog:
             sample_frog = self.db.query(Frog).filter_by(organization_id=organization_id).first()
@@ -96,23 +89,28 @@ class FrogController(Controller):
             else:
                 sample_attributes = sample_frog.attributes.keys()
                 attributes = {key: "" for key in sample_attributes}
-            db_frog = Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={})
-            self.db.add(db_frog)
-            self.db.commit()
-            self.db.refresh(db_frog)
+            
+            with open('image_paths.json') as f:
+                image_paths = json.load(f)
 
-        return db_frog
+            image_path = image_paths.get(f"{tank_id}{frog_number}")
+            db_frog = self.create_frog(Frog(frog_number=frog_number, tank_id=tank_id, current_tank_id=None, attributes=attributes, organization_id=organization_id, history={}, image_path=image_path))
+
+        # Leave it as base64 for now, we can change it to something different later
+        return {"frog": db_frog, "image": base64.b64encode(img_bytes.getvalue()).decode('utf-8')}
     
 
     def update_frog(self, frog_id: int, frog: Frog):
+        if not verify_frog_details(frog):
+            return {"error": "Invalid frog details"}
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
-        # if(verify_frog_details(frog)):
-            # return {"error": "Invalid frog details"}
+
         db_frog.history = dict(update_history(db_frog, frog))
         db_frog.current_tank_id = frog.current_tank_id
         flag_modified(db_frog, "history")
         db_frog.attributes = frog.attributes
         db_frog.organization_id = frog.organization_id
+
         self.db.commit()
         self.db.refresh(db_frog)
         return db_frog
@@ -124,12 +122,35 @@ class FrogController(Controller):
         self.db.commit()
         return db_frog
     
+
     def train_model(self, file):
         with zipfile.ZipFile(file.file, 'r') as zip_ref:
             file_names = zip_ref.namelist()
         for name in file_names:
             print(name)
         return {"message": "Model trained successfully"}
+    
+
+    def download_csv(self, org_q: int, tank_q: int = None):
+        query = self.db.query(Frog)
+        tanks = self.db.query(Tank).all()
+        organization = self.db.query(Organization).filter(Organization.id == org_q).first()
+
+        query = query.filter(Frog.organization_id == org_q)
+        if tank_q:
+            query = query.filter(Frog.current_tank_id == tank_q)
+
+        frogs = query.all()
+        df = pd.DataFrame([frog.__dict__ for frog in frogs])
+        df = df.drop(columns=["_sa_instance_state"])
+        df["current_tank_id"] = df["current_tank_id"].apply(lambda x: next((tank.tank_name for tank in tanks if tank.id == x), None))
+        df = df.rename(columns={"current_tank_id": "current_tank_name"})
+        df["organization_id"] = organization.name
+        df = df.rename(columns={"organization_id": "organization_name"})
+        df = df.drop(columns=["id"])
+
+        csv = df.to_csv(index=False)
+        return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=frogs.csv"})
 
 
 def update_history(db_frog, frog):
@@ -142,6 +163,18 @@ def update_history(db_frog, frog):
         if value != db_frog.attributes.get(key):
             status_string += f"{key} changed from '{db_frog.attributes.get(key)}' to '{value}'\n"
     if status_string:
-        history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] = status_string
+        if datetime.datetime.now().strftime("%Y-%m-%d %H:%M") in history:
+            history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] += status_string
+        else:
+            history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] = status_string
     return history
-    
+
+# returns True if the frog details are valid
+def verify_frog_details(frog : Frog):
+    if frog.current_tank_id != None and frog.current_tank_id < 0:
+        return False
+    if "egg_quality" in frog.attributes:
+        if frog.attributes["egg_quality"] != "" and int(frog.attributes["egg_quality"]) < 0:
+            return False
+    # add more if Julia thinks it is necessary
+    return True

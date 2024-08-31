@@ -1,7 +1,7 @@
 # The router that is used from all "/image/*" endpoints.
 from fastapi import APIRouter, Depends, File, UploadFile
 from crud.frog import FrogController
-from util.exceptions import raise_frog_not_found_exception
+from util.exceptions import raise_404_exception
 
 router = APIRouter(
     prefix="/image",
@@ -19,4 +19,4 @@ async def upload_image(organization_id: int, file: UploadFile = File(...), contr
     if db_frog:
         return db_frog
     
-    raise_frog_not_found_exception()
+    raise_404_exception("Frog not found")

@@ -1,17 +1,24 @@
 import { useState, useEffect } from 'react';
 import Loading from '../miniComponents/loading';
 import FrogTable from '../miniComponents/FrogTable';
-import useTankFrogs from '../../hooks/useTankFrogs';
+import useFrogs from '../../hooks/useFrogs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useOrganization } from '../../hooks/OrganizationProvider';
-import useAllTanks from '../../hooks/useAllTanks';
+import useTanks from '../../hooks/useTanks';
 import './TankFrogsContent.css';
 
 export default function TankFrogsContent() {
     const { organization } = useOrganization();
-    const { tanks } = useAllTanks(organization ? organization.id : -1);
+    const { tanks } = useTanks(organization ? organization.id : -1);
     const [selectedNumber, setSelectedNumber] = useState(tanks && tanks.length > 0 ? tanks[0].id : -1);
-    const { frogs, tankStatus, isLoading } = useTankFrogs({ tankId: selectedNumber });
+    const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, selectedNumber, null);
+    const [ tankStatus, setTankStatus ] = useState(false);
+
+    useEffect(() => {
+        if(frogs) {
+            setTankStatus(frogs.some(frog => frog.attributes["is_sick"]));
+        }
+    }, [frogs]);
 
     useEffect(() => {
         setSelectedNumber(tanks && tanks.length > 0 ? tanks[0].id : -1);
@@ -26,15 +33,17 @@ export default function TankFrogsContent() {
 
     return (
         <div className="tankFrogsContent">
-            <h1>Tank Frogs
-                {!tankStatus ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
-                    : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
-            </h1>
-            <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
-                {tanks && tanks.map(tank => {
-                    return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
-                })}
-            </select>
+            <div className="titleAndSelect">
+                <h1 className='title'>Tank Frogs
+                    {!tankStatus ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
+                        : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
+                </h1>
+                <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
+                    {tanks && tanks.map(tank => {
+                        return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
+                    })}
+                </select>
+            </div>
             {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization}/>}
         </div>
     );

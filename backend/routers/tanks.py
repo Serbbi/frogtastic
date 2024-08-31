@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from fastapi import APIRouter, Depends
 from schemas.tank import TankBase
 from crud.tank import TankController
@@ -14,8 +14,8 @@ router = APIRouter(
 )
 
 @router.get("")
-async def get_tanks(controller: TankController = Depends(TankController)):
-    return controller.get_tanks()
+async def get_tanks(org_q: Union[int, None] = None, controller: TankController = Depends(TankController)):
+    return controller.get_tanks(org_q)
 
 @router.get("/{tank_id}")
 async def get_tank(tank_id: int, controller: TankController = Depends(TankController)):
@@ -33,14 +33,10 @@ async def update_tank(tank_id: int, tank: TankBase, controller: TankController =
 async def delete_tank(tank_id: int, controller: TankController = Depends(TankController)):
     return controller.delete_tank(tank_id)
 
-@router.get("/organization/{organization_id}")
-async def get_tanks_by_organization(organization_id: int, controller: TankController = Depends(TankController)):
-    return controller.get_tanks_by_organization(organization_id)
-
-@router.post("/organization/{organization_id}/attributes")
+@router.post("/{organization_id}/attributes")
 async def create_tank_attributes(organization_id: int, attributes: List[str], controller: TankController = Depends(TankController)):
     return controller.create_tank_attributes(organization_id, attributes)
 
-@router.delete("/organization/{organization_id}/attributes")
+@router.delete("/{organization_id}/attributes")
 async def delete_tank_attributes(organization_id: int, attributes: List[str], controller: TankController = Depends(TankController)):
     return controller.delete_tank_attributes(organization_id, attributes)

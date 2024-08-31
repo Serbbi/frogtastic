@@ -7,28 +7,16 @@ export default function TableColumnsSetting({ frog, organization }) {
     const [listOfTableColumnsToRemove, setListOfTableColumnsToRemove] = useState([]);
     const inputRef = useRef();
 
-    async function deleteRequest() {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organization.id}/table-columns`, {
-            method: 'DELETE',
+    async function putRequest() {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organization.id}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(listOfTableColumnsToRemove)
-        });
+            body: JSON.stringify(organization),
+        })
 
-        return await response.json();
-    }
-
-    async function postRequest() {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organization.id}/table-columns`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(listOfTableColumnsToAdd)
-        });
-
-        return await response.json();
+        return response.json();
     }
 
     function selectColumn(column) {
@@ -44,27 +32,12 @@ export default function TableColumnsSetting({ frog, organization }) {
     }
 
     function handleSaveColumns() {
-        if (listOfTableColumnsToAdd.length !== 0) {
-            postRequest()
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-        
-        if (listOfTableColumnsToRemove.length !== 0) {
-            deleteRequest()
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
         organization.table_columns = [...organization.table_columns, ...listOfTableColumnsToAdd];
         organization.table_columns = organization.table_columns.filter(column => !listOfTableColumnsToRemove.includes(column));
+
+        putRequest()
+            .then(data => console.log(data))
+            .catch(error => console.log('Error:', error));
 
         setListOfTableColumnsToAdd([]);
         setListOfTableColumnsToRemove([]);
@@ -86,7 +59,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     return (
         <div className='settingContainer'>
             <h3>Frog table columns</h3>
-            <hr/>
+            {/* <hr/> */}
             <p>Click to select columns to remove</p>
             <ul className='attributeList'>
                 {organization && organization.table_columns.map((column) => {

@@ -6,6 +6,7 @@ export default function ErrorContent({ errorMessage, goBack }) {
         <div className="errorContent">
             <FontAwesomeIcon icon="fa-solid fa-arrow-left" onClick={goBack} className="goBackButton" />
             <h3>{errorMessage}</h3>
+            <p>For more information about the errors, please check our <a href='/home/help'>help</a> page.</p>
         </div>
     );
 }

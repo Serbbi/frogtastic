@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, ARRAY
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String, ARRAY
 from database import Base
 
 class Organization(Base):
@@ -9,4 +9,5 @@ class Organization(Base):
     participants = Column(ARRAY(Integer, ForeignKey('users.id')), index=True)
     admins = Column(ARRAY(Integer, ForeignKey('users.id')), index=True)
     table_columns = Column(ARRAY(String), index=True)
+    system_parameters = Column(JSON, default=lambda: {})
 

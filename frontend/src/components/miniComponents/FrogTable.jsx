@@ -1,12 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import UseAllTanks from '../../hooks/useAllTanks';
+import UseTanks from '../../hooks/useTanks';
 import './FrogTable.css';
 
 export default function FrogTable({ frogs, organization }) {
     const navigate = useNavigate();
-    const { tanks } = UseAllTanks(organization ? organization.id : -1);
+    const { tanks } = UseTanks(organization ? organization.id : -1);
+
 
     function formatColumnName(columnName) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
@@ -30,8 +31,7 @@ export default function FrogTable({ frogs, organization }) {
                                 if(column === "frog_number") 
                                     return <td key={column}>{frog[column]}</td>;
                                 if(column === "current_tank") {
-                                    if (frog.current_tank_id === null) return <td key={column}></td>;
-                                    return <td key={column}>{tanks.find(tank => tank.id === frog.current_tank_id).tank_name}</td>;
+                                    return <td key={column}>{tanks.find(tank => tank.id === frog.current_tank_id) ? tanks.find(tank => tank.id === frog.current_tank_id).tank_name : null}</td>;
                                 }
                                 if(column === "is_sick") 
                                     return frog.attributes[column] ? <td key={column}><FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus"/></td>

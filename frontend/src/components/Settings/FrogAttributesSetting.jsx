@@ -11,25 +11,14 @@ export default function FrogAttributeSettings({ frog, organization }) {
     const [listOfAttributesToRemove, setListOfAttributesToRemove] = useState([]);
     const inputRef = useRef(null);
 
-    async function deleteRequest() {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/organization/${organization.id}/attributes`, {
-            method: 'DELETE',
+    async function putRequest(attributes) {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs?org_q=${organization.id}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('site')}`
             },
-            body: JSON.stringify(listOfAttributesToRemove)
-        });
-
-        return await response.json();
-    }
-
-    async function postRequest() {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/organization/${organization.id}/attributes`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(listOfAttributesToAdd)
+            body: JSON.stringify(attributes)
         });
 
         return await response.json();
@@ -53,34 +42,22 @@ export default function FrogAttributeSettings({ frog, organization }) {
     }
 
     function handleSave() {
-        if (listOfAttributesToAdd.length !== 0) {
-            postRequest()
-                .then(data => {
+        if (listOfAttributesToAdd.length > 0 || listOfAttributesToRemove.length > 0) {
+            putRequest([...listOfAttributesToAdd, ...listOfAttributesToRemove])
+                .then((data) => {
                     console.log(data);
+                    frog.attributes = {...frog.attributes, ...listOfAttributesToAdd.reduce((acc, attribute) => ({...acc, [attribute]: ''}), {})};
+                    listOfAttributesToRemove.forEach((attribute) => {
+                        delete frog.attributes[attribute];
+                    });
+
+                    setListOfAttributesToAdd([]);
+                    setListOfAttributesToRemove([]);
                 })
-                .catch(error => {
-                    console.error(error);
+                .catch((error) => {
+                    console.error('Error:', error);
                 });
         }
-        
-        if (listOfAttributesToRemove.length !== 0) {
-            deleteRequest()
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-
-        
-        frog.attributes = {...frog.attributes, ...listOfAttributesToAdd.reduce((acc, attribute) => ({...acc, [attribute]: ''}), {})};
-        listOfAttributesToRemove.forEach((attribute) => {
-            delete frog.attributes[attribute];
-        });
-
-        setListOfAttributesToAdd([]);
-        setListOfAttributesToRemove([]);
     }
 
     function selectItem(attribute) {
@@ -114,7 +91,6 @@ export default function FrogAttributeSettings({ frog, organization }) {
     return (
         <div className='settingContainer'>
                 <h3>Frog Attributes</h3>
-                <hr/>
                 <p>Click to select attributes to remove</p>
                 <ul className='attributeList'>
                     {frog && Object.keys(frog.attributes).map((key) => {

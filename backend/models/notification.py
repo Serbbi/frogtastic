@@ -7,7 +7,7 @@ class Notification(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String, index=True)
-    organization_name = Column(String, ForeignKey("organizations.name"), index=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), index=True)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
 
 

@@ -1,12 +1,13 @@
 # The router that is used from all "/users/*" endpoints.
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Union
+from fastapi import APIRouter, Depends
 from crud.user import UserController
 from util import util
-from util.userUtil import get_get_user_access_right, get_edit_user_access_right, get_delete_user_access_right
 from schemas.user import UserBase
-from util.exceptions import raise_access_right_exception
+from models.user import User
+from util.exceptions import raise_400_exception, raise_403_exception
 
-
+ACCESS_RIGHT_MESSAGE = "User does not have access right"
 router = APIRouter(
     prefix="/users",
     tags=["users"]
@@ -14,23 +15,25 @@ router = APIRouter(
 
 @router.get("")
 async def get_users(
-    access_right: bool = Depends(get_get_user_access_right),
+    org_q: Union[int, None] = None,
+    current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if access_right:
-        return controller.get_users()
-    raise_access_right_exception()
+    if util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
+        return controller.get_users(org_q)
+    raise_403_exception(ACCESS_RIGHT_MESSAGE)
 
 
 @router.get("/{user_id}")
 async def get_user(
     user_id: int, 
-    access_right: bool = Depends(get_get_user_access_right),
+    org_q: Union[int, None] = None,
+    current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if access_right:
+    if util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
         return controller.get_user_by_id(user_id)
-    raise_access_right_exception()
+    raise_403_exception(ACCESS_RIGHT_MESSAGE)
 
 @router.post("")
 async def create_user(
@@ -39,7 +42,14 @@ async def create_user(
 ):
     user_db = controller.get_user_by_username(user.username)
     if user_db:
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise_400_exception("Username already registered")
+    
+    user_db = controller.get_user_by_email(user.email)
+    if user_db:
+        raise_400_exception("Email already registered")
+
+    if controller.verify_email(user.email) is None:
+        raise_400_exception("Email must be a 'rug.nl' email")
     
     user.hashed_password = util.get_password_hash(user.hashed_password)
     controller.create_user(user)
@@ -50,20 +60,22 @@ async def create_user(
 async def update_user(
     user_id: int, 
     user: UserBase, 
-    access_right: bool = Depends(get_edit_user_access_right),
+    org_q: Union[int, None] = None,
+    current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if access_right:
+    if util.get_organization_access_right(str(org_q), "canEditUsers", current_user):
         return controller.update_user(user_id, user)
-    raise_access_right_exception()
+    raise_403_exception(ACCESS_RIGHT_MESSAGE)
 
 
 @router.delete("/{user_id}")
 async def delete_user(
     user_id: int, 
-    access_right: bool = Depends(get_delete_user_access_right),
+    org_q: Union[int, None] = None,
+    current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if access_right:
+    if util.get_organization_access_right(str(org_q), "canDeleteUsers", current_user):
         return controller.delete_user(user_id)
-    raise_access_right_exception()
+    raise_403_exception(ACCESS_RIGHT_MESSAGE)

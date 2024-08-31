@@ -1,12 +1,16 @@
 .frogTable {
     border-collapse: separate;
     border-spacing: 0;
-    width: 90%;
+    width: 100%;
     margin: auto;
     background-color: var(--background-color);
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+
+.frogTable th {
+    background-color: rgb(183, 209, 185);
 }
 
 .frogTable th, .frogTable td {
@@ -16,6 +20,10 @@
 
 .frogTable td {
     border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
 }
 
 .tableRow:last-child td {
@@ -30,23 +38,11 @@
     border-bottom-right-radius: 0;
 }
 
-
-
-.tableHead {
-    border-bottom: 1px solid #ddd;
-}
-
 .tableRow:hover {
-    background-color: #21512e;
+    background-color: #377247;
     color: white;
     cursor: pointer;
 }
-
-
-
-/* .tableRow:last-child:hover {
-    border-radius: 0 0 15px 15px;
-} */
 
 @media screen and (max-width: 768px) {
     .frogTable th:nth-child(n+3):not(:last-child),

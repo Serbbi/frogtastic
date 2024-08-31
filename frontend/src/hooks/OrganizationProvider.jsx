@@ -17,7 +17,6 @@ export const OrganizationProvider = ({ children }) => {
         catch (error) {
             console.error(error);
         }
-        
     }
 
     return (

@@ -1,4 +1,4 @@
-import { useContext, createContext, useState, useMemo } from "react";
+import { useContext, createContext, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -11,28 +11,7 @@ export default function AuthProvider({ children }) {
 	const [privileges, setPrivileges] = useState(localStorage.getItem("privileges") || "");
 	const navigate = useNavigate();
 
-	const signUpAction = async (data) => {
-		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ username: data.username, hashed_password: data.password, attributes: {}, organizations: []}),
-			});
-			const res = await response.json();
-			console.log(res);
-			if(res.username) {
-				loginAction(data);
-			} else {
-				setErrorMessage(res.detail);
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	};
-
-	const loginAction = async (data) => {
+	const loginAction = useCallback(async (data) => {
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/token`, {
 				method: "POST",
@@ -42,7 +21,6 @@ export default function AuthProvider({ children }) {
 				body: `username=${data.username}&password=${data.password}`,
 			});
 			const res = await response.json();
-			console.log(res);
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
@@ -54,30 +32,58 @@ export default function AuthProvider({ children }) {
 				}
 				localStorage.setItem("orgs", res.organizations);
 				localStorage.setItem("userId", res.id);
-				localStorage.setItem("username", data.username);
+				localStorage.setItem("username", res.username);
+				localStorage.setItem("email", res.email);
 				navigate("/home");
+				setErrorMessage("");
 			} else {
 				setErrorMessage(res.detail);
 			}
 		} catch (err) {
 			console.error(err);
 		}
-	};
+	}, [navigate]);
 
-	const logOut = () => {
+	const signUpAction = useCallback(async (data) => {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ 
+					username: data.username, 
+					hashed_password: data.password, 
+					email: data.email, 
+					attributes: {}, 
+					organizations: []
+				}),
+			});
+			const res = await response.json();
+			if(res.username) {
+				loginAction(data);
+			} else {
+				setErrorMessage(res.detail);
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}, [loginAction]);
+
+	const logOut = useCallback(() => {
 		setUser(null);
 		setToken("");
 		localStorage.removeItem("site");
 		navigate("/login");
-	};
+	}, [navigate]);
 
-	function getErrorMessage() {
+	const getErrorMessage = useCallback(() => {
 		return errorMessage;
-	}
+	}, [errorMessage]);
 
-	function getPrivileges() {
+	const getPrivileges = useCallback(() => {
 		return privileges;
-	}
+	}, [privileges]);
 
 	const value = useMemo(() => ({
 		token, 

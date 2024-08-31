@@ -37,10 +37,9 @@ def retrieve_frog(image):
 
 def extract_image(image):
     needs_flipping = {}
-    folder = "./uploaded images"
 
     try:
-        extraction_image, flip = extract_square(folder, image=image)
+        extraction_image, flip = extract_square(image=image)
         needs_flipping["image_name"] = flip # changed from image which was before the name of the image
         return extraction_image
     except (ValueError, cv2.error) as e:

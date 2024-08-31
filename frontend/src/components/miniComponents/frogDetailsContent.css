@@ -15,19 +15,74 @@
 .frogField {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch; /* Make sure all child elements have the same height */
     justify-content: center;
     width: 100%;
     margin: 0.5rem 0;
-}
 
-input {
-    width: 100%;
-    height: 2rem;
-    margin: 0.5rem 0;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    label {
+        background-color: rgb(183, 209, 185);
+        font-weight: bold;
+        border-radius: 1rem 0 0 1rem;
+        font-size: 1.1rem;
+        padding: 0.8rem;
+        height: auto; /* Auto height to match the tallest element */
+        display: flex;
+        align-items: center;
+    }
+
+    input {
+        width: 100%;
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+    }
+
+    input, textarea, select {
+        border-left: none;
+        border-radius: 0 1rem 1rem 0;
+        height: 100%; /* Match the label's height */
+    }
+
+    input, select {
+        height: auto; /* Explicitly set height for input */
+    }
+
+    textarea {
+        resize: vertical; /* Allow textarea to resize vertically */
+        min-height: 3rem;
+    }
+
+    input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        position: relative;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: #377247;
+    }
+
+    input[type="checkbox"]:checked::before {
+        content: '\2713';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        color: white;
+        font-weight: bolder;
+    }
+
+    select {
+        font-size: 1rem;
+    }
+
+    select:hover {
+        cursor: pointer;
+        background-color: #b4c0b5;
+    }
 }
 
 textarea {
@@ -60,9 +115,9 @@ label {
     height: 3rem;
     margin: 0.5rem 0;
     padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #4CAF50;
+    border: none;
+    border-radius: 10px;
+    background-color: #377247;
     color: white;
     font-size: 1.2rem;
     font-weight: bolder;
@@ -109,13 +164,53 @@ label {
 }
 
 .okStatus {
-    color: green;
+    color: rgb(52, 192, 52);
     margin-left: 20px;
 }
 
 .sickStatus {
-    color: rgb(255, 238, 0);
+    color: rgb(255, 230, 0);
     margin-left: 20px;
+}
+
+.modalCompareImages {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalCompareImagesContent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns for larger screens */
+    justify-content: center;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 70%;
+    height: auto;
+    position: relative;
+    gap: 20px; /* Space between columns */
+
+    div {
+        width: 100%;
+    }
+    img {
+        width: 90%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    h2 { 
+        margin-top: 0;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -138,6 +233,15 @@ label {
 
     .frogDetailsContainer h1 {
         margin: 2rem auto;
+    }
+
+    .modalCompareImagesContent {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        width: 90%;
+    }
+
+    .modalCompareImagesContent > div {
+        margin-bottom: 20px; /* Add space between the stacked elements */
     }
     
 }

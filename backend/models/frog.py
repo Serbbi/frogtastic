@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, JSON
+from sqlalchemy import Column, ForeignKey, Integer, JSON, String
 from database import Base
 
 class Frog(Base):
@@ -11,11 +11,4 @@ class Frog(Base):
     attributes = Column(JSON, default=lambda: {})
     organization_id = Column(Integer, ForeignKey('organizations.id'), index=True)
     history = Column(JSON, default=lambda: {})
-
-    # last_injection = Column(Date, index=True, nullable=True)
-    # last_priming = Column(Date, index=True, nullable=True)
-    # notes = Column(String, index=True, nullable=True)
-    # sex = Column(String, index=True, nullable=True)
-    # egg_quality = Column(Integer, index=True, nullable=True)
-    # is_sick = Column(Boolean, index=True)
-    # is_laying_eggs = Column(Boolean, index=True)
+    image_path = Column(String, index=True)
