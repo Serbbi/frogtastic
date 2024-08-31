@@ -11,6 +11,7 @@ import Loading from "./loading";
 import { useNavigate, useParams } from "react-router-dom";
 import { useImage } from "../../hooks/ImageProvider";
 import "./frogDetailsContent.css";
+import ConfirmationBox from "./ConfirmationBox";
 
 export default function FrogDetailsContent() {
     const { addNotification } = useNotification();
@@ -190,13 +191,17 @@ export default function FrogDetailsContent() {
             {showCompareModal && <div className="modalCompareImages">
                 <div className="modalCompareImagesContent">
                     <span className='closeJoinOrg' onClick={() => setShowCompareModal(false)}>&times;</span>
-                    <h2>Extraction Image</h2>
-                    <h2>Reference Image</h2>
-                    <img src={`data:image/png;base64,${extractionImageURL}`} alt="Extraction" />
-                    <img src={frog.image_path} alt="Reference" />
+                    <div>
+                        <h2>Extraction Image</h2>
+                        <img src={`data:image/png;base64,${extractionImageURL}`} alt="Extraction" />
+                    </div>
+                    <div>
+                        <h2>Reference Image</h2>
+                        <img src={frog.image_path} alt="Reference" />
+                    </div>
                 </div>
             </div>}
-            
+            {/* <ConfirmationBox message="Are you sure you want to leave?" onConfirm={checkForChanges} onCancel={() => {}} /> */}
         </div>
     );
 }

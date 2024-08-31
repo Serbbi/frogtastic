@@ -21,7 +21,6 @@ export default function AuthProvider({ children }) {
 				body: `username=${data.username}&password=${data.password}`,
 			});
 			const res = await response.json();
-			console.log(res);
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
@@ -33,8 +32,10 @@ export default function AuthProvider({ children }) {
 				}
 				localStorage.setItem("orgs", res.organizations);
 				localStorage.setItem("userId", res.id);
-				localStorage.setItem("username", data.username);
+				localStorage.setItem("username", res.username);
+				localStorage.setItem("email", res.email);
 				navigate("/home");
+				setErrorMessage("");
 			} else {
 				setErrorMessage(res.detail);
 			}
@@ -59,7 +60,6 @@ export default function AuthProvider({ children }) {
 				}),
 			});
 			const res = await response.json();
-			console.log(res);
 			if(res.username) {
 				loginAction(data);
 			} else {

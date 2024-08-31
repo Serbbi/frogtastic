@@ -3,6 +3,7 @@ import { useOrganization } from '../../hooks/OrganizationProvider';
 import FrogAttributesSetting from './FrogAttributesSetting';
 import TableColumnsSetting from './TableColumnsSetting'
 import TanksSetting from './TanksSetting';
+import UserPrivilegesSetting from './UserPrivilegesSetting';
 import './SettingsMenu.css';
 
 export default function SettingsMenu() {
@@ -12,9 +13,12 @@ export default function SettingsMenu() {
     return (
         <div className="settingsMenu">
             <h1 className='title'>Settings</h1>
-            <FrogAttributesSetting frog={frogs ? frogs[0] : null} organization={organization}/>
-            <TableColumnsSetting frog={frogs ? frogs[0] : null} organization={organization}/>
-            <TanksSetting organization={organization}/>
+            <div className="settingsGrid">
+                <FrogAttributesSetting frog={frogs ? frogs[0] : null} organization={organization}/>
+                <TableColumnsSetting frog={frogs ? frogs[0] : null} organization={organization}/>
+                <TanksSetting organization={organization}/>
+                <UserPrivilegesSetting organizationId={organization ? organization.id : -1}/>
+            </div>
         </div>
     );
 }

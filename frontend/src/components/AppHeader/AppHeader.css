@@ -233,21 +233,37 @@
 }
 
 @media screen and (max-width: 768px) {
+    .appHeader {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .userContainerCenter {
+        display: none;
+    }
+
+    .profileSettings button{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+    
     .buttons #menuButton {
         display: block;
     }
 
     .buttons {
-        gap: 0.5rem;
+        /* gap: 0.1rem; */
         padding: 0 1rem;
         /* display: none; */
     }
 
-    .appHeader {
-        flex-direction: column;
-        justify-content: center;
-        gap: 1rem;
-        height: 20vh;
+    .notificationList {
+        width: 90vw;
+        position: absolute;
+        top: 50;
+        right: -196px;
     }
 }
 

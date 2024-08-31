@@ -59,7 +59,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     return (
         <div className='settingContainer'>
             <h3>Frog table columns</h3>
-            <hr/>
+            {/* <hr/> */}
             <p>Click to select columns to remove</p>
             <ul className='attributeList'>
                 {organization && organization.table_columns.map((column) => {

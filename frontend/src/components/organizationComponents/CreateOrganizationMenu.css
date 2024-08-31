@@ -12,16 +12,33 @@
 .createOrganizationForm {
     display: flex;
     flex-direction: column;
+    align-items: center;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 0.5rem;
 
     padding: 0.5rem;
+
+    button {
+        width: 20%;
+        height: 2.5rem;
+        margin: 0.5rem 0;
+        border: none;
+        border-radius: 7px;
+        background-color: #377247;
+        color: white;
+        font-weight: bolder;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
 }
 
 .createOrganizationForm input {
     margin: 0.5rem;
-    padding: 0.4rem;
+    padding: 0.7rem;
 
     border: 1px solid #ccc;
     border-radius: 0.5rem;
@@ -31,7 +48,7 @@
 
 .createOrganizationForm textarea {
     margin: 0.5rem;
-    padding: 0.4rem;
+    padding: 0.7rem;
 
     border: 1px solid #ccc;
     border-radius: 0.5rem;
@@ -40,16 +57,15 @@
     max-width: 80%;
 
     font-family: 'Roboto', sans-serif;
-    font-size: 0.85rem
+    font-size: 0.85rem;
+
+    resize: vertical; /* Allow textarea to resize vertically */
+    min-height: 3rem;
 }
 
 .contentWithoutButton {
     display: flex;
-    /* width: 50%; */
-
-    /* input {
-        margin: 0;
-    } */
+    width: 100%;
 }
 
 .nameAndDescription {

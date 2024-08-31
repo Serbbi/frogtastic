@@ -110,7 +110,7 @@ export default function TanksSetting({ organization }) {
     return (
         <div className='settingContainer'>
             <h3>Tanks</h3>
-            <hr />
+            {/* <hr /> */}
             <p>Click to select a tank to edit</p>
             <ul className='attributeList'>
                 {tanks && tanks.map(tank =>

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/AuthProvider';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './signup.css';
 
 export default function Signup() {
@@ -60,7 +59,7 @@ export default function Signup() {
 
                     <button type="submit" className={"submitButton"}>Sign up</button>
                     <br />
-                    <a href="/">Already have an account? Log in here!</a>
+                    <p>Already have an account? <a href="/">Log in here!</a></p>
                 </form>
             </div> 
         </div>

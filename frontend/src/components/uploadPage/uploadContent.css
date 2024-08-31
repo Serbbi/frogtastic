@@ -85,11 +85,11 @@
   background-color: #377247;
   color: white;
   font-weight: bolder;
+  cursor: pointer;
 }
 
 .uploadButton:hover {
   background-color: #45a049;
-  cursor: pointer;
 }
 
 .orWord {

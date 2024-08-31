@@ -10,7 +10,7 @@ export default function AppHeader({ organization, setOrganization }) {
     const [ shownNotifications, setShownNotifications ] = useState(0);
     const userOrgs = localStorage.getItem('orgs').split(',');
     const username = localStorage.getItem('username');
-    const [ isMenuOpen, setIsMenuOpen ] = useState(false);
+    const userEmail = localStorage.getItem('email');
     const [ isProfileSettingsOpen, setIsProfileSettingsOpen ] = useState(false);
     const userContainer = document.querySelector('.userContainerAndProfileSettings');
     const [ showOrganizations, setShowOrganizations ] = useState(false);
@@ -38,12 +38,13 @@ export default function AppHeader({ organization, setOrganization }) {
     }
 
     function handleMenuOpen() {
-        if (!isMenuOpen) {
-            document.querySelector('.leftBar').style.left = '0';
+        const position = document.querySelector('.leftBar').style.left;
+
+        if (position === '0px') {
+            document.querySelector('.leftBar').style.left = '-250px';
         } else {
-            document.querySelector('.leftBar').style.left = '-70px';
+            document.querySelector('.leftBar').style.left = '0';
         }
-        setIsMenuOpen(!isMenuOpen);
     }
 
     function handleProfileSettingsOpen() {
@@ -51,6 +52,7 @@ export default function AppHeader({ organization, setOrganization }) {
             userContainer.style.maxHeight = '300px';
         } else {
             userContainer.style.maxHeight = '45px';  // Collapsed height
+            setShowOrganizations(false);
         }
         setIsProfileSettingsOpen(!isProfileSettingsOpen);
     }
@@ -89,7 +91,7 @@ export default function AppHeader({ organization, setOrganization }) {
                     <img src="/user_icon.png" alt="user-icon" className='userIcon'/>
                     <div className="userContainerCenter">
                         <p className='userContainerUsername'>{username ? username : 'Username'}</p>
-                        <p className='userContainerEmail'>tonieserban@yahoo.ro</p>
+                        <p className='userContainerEmail'>{userEmail}</p>
                     </div>
                     {isProfileSettingsOpen ? <FontAwesomeIcon icon="fa-solid fa-chevron-up" className='userContainerChevron' onClick={handleProfileSettingsOpen}/> :
                     <FontAwesomeIcon icon="fa-solid fa-chevron-down" className='userContainerChevron' onClick={handleProfileSettingsOpen}/>}

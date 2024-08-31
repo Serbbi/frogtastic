@@ -87,11 +87,11 @@
 
 @media screen and (max-width: 768px) {
     .leftBar {
-        width: 70px;
-        z-index: 1;
+        width: 250px;
+        z-index: 3;
         position: absolute;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        left: -90px;
+        left: -250px;
     }
 
     .organizationNameAndLogo p {
@@ -105,6 +105,15 @@
     }
 
     .navLink span, .logoutButton span {
-        display: none;
+        /* display: none; */
+        font-size: small;
+    }
+
+    .navLink { 
+        flex-direction: row;
+    }
+
+    .menuList li{
+        margin: 15px 0;
     }
 }

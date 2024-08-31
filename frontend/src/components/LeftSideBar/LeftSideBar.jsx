@@ -1,12 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useRef, useEffect } from "react";
 import './LeftSideBar.css';
 
 export default function LeftSideBar({ organization, setOrganization }) {
     const userId = localStorage.getItem("userId");
     const canCreateOrganization = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canCreateOrganization'];
     const navigate = useNavigate();
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target))
+                document.querySelector('.leftBar').style.left = '-250px';
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [menuRef]);
 
     function logOut() {
         localStorage.clear();
@@ -15,7 +29,7 @@ export default function LeftSideBar({ organization, setOrganization }) {
     }
 
     return (
-        <div className="leftBar">
+        <div className="leftBar" ref={menuRef}>
             <div className='organizationNameAndLogo'>
                 {organization ? <img src="/frog_logo.jpg" alt="logo" className='logo'/> : null}
                 {organization ? <p>{organization.name}</p> : null}
