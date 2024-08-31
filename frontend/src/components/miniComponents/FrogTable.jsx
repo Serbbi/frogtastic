@@ -8,6 +8,7 @@ export default function FrogTable({ frogs, organization }) {
     const navigate = useNavigate();
     const { tanks } = UseTanks(organization ? organization.id : -1);
 
+
     function formatColumnName(columnName) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
     }
@@ -17,6 +18,7 @@ export default function FrogTable({ frogs, organization }) {
             <thead className='tableHead'>
                 <tr>
                     {organization.table_columns.map(column => {
+                        if (column === "current_tank") return <th key={column}>Tank</th>;
                         return <th key={column}>{formatColumnName(column)}</th>
                     })}
                 </tr>
