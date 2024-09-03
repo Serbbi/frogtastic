@@ -1,4 +1,4 @@
-import { useNotification } from "../../hooks/NotificationProvider";
+import { useNotification } from "../../services/providers/NotificationProvider";
 import Notification from "./Notification";
 import './Notification.css';
 

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UseNotifications from "../../hooks/useNotifications";
+import { notificationHandleRequest } from "../../services/api/notifications/NotificationsPost";
 import { useEffect } from "react";
 
 export default function NotificationItems({ organizationId, addShownNotifications }) {
@@ -11,25 +12,11 @@ export default function NotificationItems({ organizationId, addShownNotification
         }
     }, [notifications, isLoading]);
 
-    async function postRequest(notificationId, action) {
-        const token = localStorage.getItem('site');
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/notifications/${notificationId}/handle`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({ action: action })
-        });
-
-        return await response.json();
-    }
-
     async function handleNotification(notification) {
         addShownNotifications(-1);
 
         try {
-            const data = await postRequest(notification.id, 'accept');
+            const data = await notificationHandleRequest(notification.id, 'accept');
             console.log(data);
 
             await mutateNotifications((notifications) =>
@@ -45,7 +32,7 @@ export default function NotificationItems({ organizationId, addShownNotification
         addShownNotifications(-1);
 
         try {
-            const data = await postRequest(notification.id, 'reject');
+            const data = await notificationHandleRequest(notification.id, 'reject');
             console.log(data);
 
             await mutateNotifications((notifications) =>
