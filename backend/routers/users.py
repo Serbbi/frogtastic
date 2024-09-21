@@ -64,8 +64,8 @@ async def update_user(
     current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_organization_access_right(str(org_q), "canEditUsers", current_user):
-        return controller.update_user(user_id, user)
+    # if util.get_organization_access_right(str(org_q), "canEditUsers", current_user):
+    return controller.update_user(user_id, user)
     raise_403_exception(ACCESS_RIGHT_MESSAGE)
 
 

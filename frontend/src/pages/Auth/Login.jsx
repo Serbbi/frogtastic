@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useAuth } from "../../services/providers/AuthProvider";
 import "./Login.css";
+import { Link } from "react-router-dom";
 
-function Login() {
+export default function Login() {
+    const [ isLoading, setIsLoading ] = useState(false);
     const [input, setInput] = useState({
         username: "",
         password: "",
@@ -12,6 +14,7 @@ function Login() {
     const handleSubmitEvent = (e) => {
         e.preventDefault();
         if (input.username !== "" && input.password !== "") {
+            setIsLoading(true);
             auth.loginAction(input);
             return;
         }
@@ -48,14 +51,16 @@ function Login() {
                     type="password"/>
                 <label className="errorLabel">{auth.getErrorMessage()}</label>
 
-                <button type="submit" className={"submitButton"}>Log In</button>
+                <button type="submit" className={"submitButton"} disabled={isLoading}>
+                    {isLoading && //TODO: re-enable log in button after receive response that it cannot access the server
+                    <span className='loader'></span>}
+                    <span className={isLoading ? 'invisible' : ''}>Log In</span>
+                </button>
             </form>
-            {/* <a href="/user/password/reset">Forgot your password?</a> */}
+            <Link to="/user/password/reset" onClick={() => console.log("yo")}>Forgot your password?</Link>
             <div>
-                <p>Don't have an account? <a href="/signup">Register here!</a></p>
+                <p>Don't have an account? <Link to="/signup">Register here!</Link></p> {/*TODO: Abort any requests made to the server if we change pages*/}
             </div>
         </div>
     </div>
 }
-
-export default Login;

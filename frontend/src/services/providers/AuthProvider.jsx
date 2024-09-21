@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const AuthContext = createContext();
+const MAX_RETRIES = 10;
 
 export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(localStorage.getItem("site") || "");
 	const [errorMessage, setErrorMessage] = useState("");
-	const [privileges, setPrivileges] = useState(localStorage.getItem("privileges") || "");
+	let retries = 1;
+
 	const navigate = useNavigate();
 
 	const loginAction = useCallback(async (data) => {
@@ -24,7 +26,6 @@ export default function AuthProvider({ children }) {
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
-				setPrivileges(res.dict);
 				localStorage.setItem("site", res.access_token);
 				localStorage.setItem("privileges", JSON.stringify(res.dict));
 				if(res.organizations === null) { //just for the demo on railway
@@ -40,7 +41,15 @@ export default function AuthProvider({ children }) {
 				setErrorMessage(res.detail);
 			}
 		} catch (err) {
-			console.error(err);
+			if (err instanceof TypeError && retries < MAX_RETRIES) {
+				setErrorMessage("Server is waking up, please wait a moment...");
+				loginAction(data); // retry 10 times till the server is up
+				retries++;
+			} else if (retries === MAX_RETRIES) {
+				setErrorMessage("No response from server, please try again later or contact support.");
+			} else {
+				console.error(err);
+			}
 		}
 	}, [navigate]);
 
@@ -66,7 +75,15 @@ export default function AuthProvider({ children }) {
 				setErrorMessage(res.detail);
 			}
 		} catch (err) {
-			console.error(err);
+			if (err instanceof TypeError && retries < MAX_RETRIES) {
+				setErrorMessage("Server is waking up, please wait a moment...");
+				signUpAction(data); // retry 10 times till the server is up
+				retries++;
+			} else if (retries === MAX_RETRIES) {
+				setErrorMessage("No response from server, please try again later or contact support.");
+			} else {
+				console.error(err);
+			}
 		}
 	}, [loginAction]);
 
@@ -81,10 +98,6 @@ export default function AuthProvider({ children }) {
 		return errorMessage;
 	}, [errorMessage]);
 
-	const getPrivileges = useCallback(() => {
-		return privileges;
-	}, [privileges]);
-
 	const value = useMemo(() => ({
 		token, 
 		user, 
@@ -92,8 +105,7 @@ export default function AuthProvider({ children }) {
 		logOut, 
 		signUpAction, 
 		getErrorMessage, 
-		getPrivileges
-	}), [token, user, loginAction, logOut, signUpAction, getErrorMessage, getPrivileges]);
+	}), [token, user, loginAction, logOut, signUpAction, getErrorMessage]);
 	
 	return (
 		<AuthContext.Provider value={value}>

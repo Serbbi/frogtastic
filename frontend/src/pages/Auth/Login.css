@@ -26,6 +26,17 @@
     height: 100%;
     background-color: #ebebeb;
     color: black;
+
+    a {
+        color: #99BC85;
+        font-size: 0.85rem;
+        margin-left: 5px;
+    }
+
+    p{
+        margin: 5px;
+        font-size: 0.75rem;
+    }
 }
 
 .formContainer {
@@ -50,7 +61,6 @@
 
 .inputField:hover {
     background-color: rgba(0, 0, 0, 0.2);
-    cursor: pointer;
 }
 
 .submitButton {
@@ -82,6 +92,12 @@
     to {
         transform: rotate(359deg);
     }
+}
+
+.errorLabel {
+    font-size: small;
+    margin: 1rem auto 0 auto;
+    width: 80%;
 }
 
 @media screen and (max-width: 768px) {

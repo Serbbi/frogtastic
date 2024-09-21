@@ -1,11 +1,23 @@
 version: "3.8"
-services: 
+services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend # Specify the build context for the React app
+      dockerfile: Dockerfile # Specify the Dockerfile for the React app
     ports:
       - 3000:3000
     volumes:
-      - ./frontend/src:/app/src
+      - type: bind
+        source: ./frontend
+        target: /app
+    working_dir: /app
+    develop:
+      watch:
+        - action: sync # 'build' is another action type
+          path: ./frontend # host directory path
+          target: /app # container directory path to map
+          ignore:
+            - frontend/node_modules/
   backend:
     build: ./backend
     ports:
@@ -36,4 +48,3 @@ services:
 
 volumes:
   database:
-    
