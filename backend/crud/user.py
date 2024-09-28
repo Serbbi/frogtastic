@@ -45,6 +45,7 @@ class UserController(Controller):
     
 
     def update_user(self, user_id: int, user: User):
+        print(user)
         db_user = self.get_user_by_id(user_id)
         db_user.username = user.username
         db_user.hashed_password = user.hashed_password

@@ -19,21 +19,12 @@ app.include_router(tanks.router)
 app.include_router(notifications.router)
 # app.include_router(email.router)
 
-
-origins = [
-    "http://145.97.186.95:3000",
-    "http://100.88.77.29:3000",
-    "http://100.66.180.14:3000",
-    "http://192.168.68.100:3000",
-    "http://145.97.186.95:3000",
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 @app.get("/")

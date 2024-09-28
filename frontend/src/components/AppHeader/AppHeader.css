@@ -40,21 +40,17 @@
     gap: 0.6rem;
     align-items: flex-end;
     padding: 1rem 0;
+}
 
-    button {
-        background-color: var(--background-color);
-        border: none;
-        padding: 0.5rem 0.8rem;
-        cursor: pointer;
-        font-weight: 600;
-        color: #3e3e3e;
-        max-width: 250px;
-        text-align: right;
-    }
-
-    button:hover {
-        color: #006f0f;
-    }
+.profileSettings button {
+    background-color: var(--background-color);
+    border: none;
+    padding: 0.5rem 0.8rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #3e3e3e;
+    max-width: 250px;
+    text-align: right;
 }
 
 .userContainerCenter {

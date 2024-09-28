@@ -19,23 +19,21 @@
 }
 
 
-.formContainerSignup {
-    a {
+.formContainerSignup a {
         color: #99BC85;
         font-size: 0.85rem;
         margin-left: 5px;
-    }
 }
 
 .inputContainer {
     position: relative;
     width: 85%;
+}
 
-    input {
-        width: 100%;
-        box-sizing: border-box;
-        height: 2.5rem;
-    }
+.inputContainer input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 2.5rem;
 }
 
 .inputField {
@@ -135,13 +133,12 @@
 .formContainerSignup {
     display: flex;
     flex-direction: column;
-
-    p{
-        margin: 5px;
-        font-size: 0.75rem;
-    }
 }
 
+.formContainerSignup p{
+    margin: 5px;
+    font-size: 0.75rem;
+}
 
 
 @media screen and (max-width: 768px) {

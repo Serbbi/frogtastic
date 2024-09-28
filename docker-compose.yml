@@ -7,17 +7,10 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - type: bind
-        source: ./frontend
-        target: /app
-    working_dir: /app
-    develop:
-      watch:
-        - action: sync # 'build' is another action type
-          path: ./frontend # host directory path
-          target: /app # container directory path to map
-          ignore:
-            - frontend/node_modules/
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - internal
   backend:
     build: ./backend
     ports:
@@ -33,6 +26,8 @@ services:
       - database
     volumes:
       - ./backend:/app
+    networks:
+      - internal
   database:
     image: postgres:14.11
     restart: always
@@ -45,6 +40,21 @@ services:
       - database:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
       - ./tobeinserted.csv:/tobeinserted.csv
+    networks:
+      - internal
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "8080:80"
 
 volumes:
   database:
+
+networks:
+  internal:
+    driver: bridge
+
+  

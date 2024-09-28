@@ -5,7 +5,7 @@ from sqlalchemy.orm.attributes import flag_modified
 
 class OrganizationController(Controller):
     def create_organization(self, organization: Organization, user):
-        db_organization = Organization(name=organization.name, participants=[user.id], admins=[user.id], table_columns=organization.table_columns, system_parameters={})
+        db_organization = Organization(name=organization.name, participants=[user.id], admins=[user.id], table_columns=organization.table_columns, system_parameters={}, system_parameter_names=organization.system_parameter_names)
         self.db.add(db_organization)
         self.db.commit()
         self.db.refresh(db_organization)
@@ -34,6 +34,7 @@ class OrganizationController(Controller):
         db_organization.table_columns = organization.table_columns
         db_organization.admins = organization.admins
         db_organization.system_parameters = organization.system_parameters
+        db_organization.system_parameter_names = organization.system_parameter_names
         self.db.commit()
         self.db.refresh(db_organization)
         return db_organization

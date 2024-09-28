@@ -26,17 +26,17 @@
     height: 100%;
     background-color: #ebebeb;
     color: black;
+}
 
-    a {
-        color: #99BC85;
-        font-size: 0.85rem;
-        margin-left: 5px;
-    }
+.rightContainer a {
+    color: #99BC85;
+    font-size: 0.85rem;
+    margin-left: 5px;
+}
 
-    p{
-        margin: 5px;
-        font-size: 0.75rem;
-    }
+.rightContainer p {
+    margin: 5px;
+    font-size: 0.75rem;
 }
 
 .formContainer {

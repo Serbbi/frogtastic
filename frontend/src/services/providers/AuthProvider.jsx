@@ -23,6 +23,7 @@ export default function AuthProvider({ children }) {
 				body: `username=${data.username}&password=${data.password}`,
 			});
 			const res = await response.json();
+			console.log(res);
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
@@ -42,8 +43,9 @@ export default function AuthProvider({ children }) {
 			}
 		} catch (err) {
 			if (err instanceof TypeError && retries < MAX_RETRIES) {
+				console.error(err);
 				setErrorMessage("Server is waking up, please wait a moment...");
-				loginAction(data); // retry 10 times till the server is up
+				// loginAction(data); // retry 10 times till the server is up
 				retries++;
 			} else if (retries === MAX_RETRIES) {
 				setErrorMessage("No response from server, please try again later or contact support.");
@@ -69,6 +71,7 @@ export default function AuthProvider({ children }) {
 				}),
 			});
 			const res = await response.json();
+			console.log(res);
 			if(res.username) {
 				loginAction(data);
 			} else {
@@ -76,10 +79,12 @@ export default function AuthProvider({ children }) {
 			}
 		} catch (err) {
 			if (err instanceof TypeError && retries < MAX_RETRIES) {
+				console.error(err);
 				setErrorMessage("Server is waking up, please wait a moment...");
-				signUpAction(data); // retry 10 times till the server is up
+				// signUpAction(data); // retry 10 times till the server is up
 				retries++;
 			} else if (retries === MAX_RETRIES) {
+				console.error(err);
 				setErrorMessage("No response from server, please try again later or contact support.");
 			} else {
 				console.error(err);
