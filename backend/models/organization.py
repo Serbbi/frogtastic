@@ -9,5 +9,6 @@ class Organization(Base):
     participants = Column(ARRAY(Integer, ForeignKey('users.id')), index=True)
     admins = Column(ARRAY(Integer, ForeignKey('users.id')), index=True)
     table_columns = Column(ARRAY(String), index=True)
+    system_parameter_names = Column(ARRAY(String), index=True)
     system_parameters = Column(JSON, default=lambda: {})
 

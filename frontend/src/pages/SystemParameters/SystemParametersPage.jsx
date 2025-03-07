@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { organizationPutRequest } from '../../services/api/organizations/OrganizationPut';
 import './SystemParametersPage.css';
+import SystemParametersTable from '../../components/miniComponents/SystemParametersTable';
 
 export default function SystemParametersPage({ organization }) {
     const [ modifiedOrganization, setModifiedOrganization ] = useState(organization);
@@ -66,33 +67,8 @@ export default function SystemParametersPage({ organization }) {
 
     return (
         <div className="systemParamsContainer">
-            <div className="titleAndButtons">
-                <h1 className="title" onClick={() => console.log(modifiedOrganization.system_parameters)}>System Parameters</h1>
-                <button onClick={handleShowCreateCard}>Add Parameter</button>
-                <button onClick={() => organizationPutRequest(modifiedOrganization).then(data => console.log(data)).catch(error => console.log('Error:', error))}>Save</button>
-            </div>
-            
-            <div className="systemParamsGrid">
-                {showCreateCard && 
-                    <div className="systemParamCard">
-                        <div className='paramTypeAndAccept'>
-                            <input type="text" name="name" value={newParam.name} onChange={updateNewParam} placeholder='Parameter Name'/>
-                            <button onClick={handleAddNewParam} className='paramCardButton'><FontAwesomeIcon icon="fa-solid fa-check" /></button>
-                            <button onClick={() => {setShowCreateCard(false); setNewParam({ name: "", value: ""})}} className='paramCardButton'><FontAwesomeIcon icon="fa-solid fa-xmark" /></button>
-                        </div>
-                        <input type="text" name="value" value={newParam.value} onChange={updateNewParam} placeholder='Parameter Value'/>
-                    </div> 
-                }
-                {modifiedOrganization && Object.keys(modifiedOrganization.system_parameters).map((key) => (
-                    <div key={key} className="systemParamCard">
-                        <div className="paramTypeAndAccept">
-                            <p>{formatLabel(key)}</p>
-                            <button onClick={() => handleDeleteParam(key)} className='paramCardButton'><FontAwesomeIcon icon="fa-solid fa-xmark" /></button>
-                        </div>
-                        <input type="text" name={key} value={modifiedOrganization.system_parameters[key]} onChange={updateField} />
-                    </div>
-                ))}
-            </div>
+            <h1 className='title'>System Parameters</h1>
+            <SystemParametersTable />
         </div>
     );
 }
