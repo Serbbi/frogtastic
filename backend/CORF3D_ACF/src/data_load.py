@@ -44,8 +44,9 @@ def load_images(dataset, resize):
     filenames = []
 
     print("Reading images...")
+    print(os.listdir(dataset))
     for file in os.listdir(dataset):
-        if os.path.splitext(file)[1] != ".png":
+        if os.path.splitext(file)[1] != ".jpg":
             continue
         full_path = os.path.join(dataset, file)
         file = fix_tank10(file)
@@ -54,7 +55,11 @@ def load_images(dataset, resize):
         img = cv2.resize(img, (resize, resize))
         images.append(img)
 
-        label = filename2label(file)
+        # label = filename2label(file)
+        #select the string between B and (
+        file = re.search(r'B(.*?)\(', file).group(0)
+        label = f"frog{file[1]}_tank1"
+        print("Label: ", label)
         if label not in labels_list:
             labels_list.append(label)
         labels.append(label)
@@ -166,12 +171,14 @@ def binarize_labels(labels):
     :param labels: List of labels
     :return: Lists of binarized labels
     """
+    print(f"Labels: {labels}")
 
     flattened_list = np.asarray(labels, dtype="str")
     lb = preprocessing.LabelBinarizer().fit(flattened_list)
     labels = lb.transform(flattened_list)
 
-    with open('labeler.pkl', 'wb') as file:
+    # with open('labeler.pkl', 'wb') as file:
+    with open('labeler_new.pkl', 'wb') as file:
         pickle.dump(lb, file)
 
     return labels, lb

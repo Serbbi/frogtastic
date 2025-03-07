@@ -206,14 +206,16 @@ def main():
     train_index, test_index = five_cross_validation(datasets[0], binarizelabels)
 
     pathlib.Path(os.path.join(args.output_directory, 'plots')).mkdir(exist_ok=True, parents=True)
-    pathlib.Path(os.path.join(args.output_directory, 'models')).mkdir(exist_ok=True, parents=True)
+    # pathlib.Path(os.path.join(args.output_directory, 'models')).mkdir(exist_ok=True, parents=True)
+    pathlib.Path(os.path.join(args.output_directory, 'models_new')).mkdir(exist_ok=True, parents=True)###Change this
 
     input_shape = (args.resize, args.resize, 3)
 
     if len(datasets) == 1:
         for fold in range(len(train_index)):
             print(f'[INFO] Starting fold {fold+1}/{len(train_index)}')
-            model_path = os.path.join(args.output_directory, 'models', f'RGB_{fold+1}.h5')
+            # model_path = os.path.join(args.output_directory, 'models', f'RGB_{fold+1}.h5')
+            model_path = os.path.join(args.output_directory, 'models_new', f'RGB_{fold+1}.h5')
             compiled_model = get_compiled_model(args.trainable, len(labels_list), args.pretrained_dataset,
                                                 args.include_top, args.learning_rate, args.model, input_shape)
             packed_tuple = single_training(datasets[0], fold, train_index, test_index, binarizelabels, compiled_model,
