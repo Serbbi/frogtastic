@@ -57,11 +57,11 @@ def load_images(dataset, resize):
 
         # label = filename2label(file)
         #select the string between B and (
-        file = re.search(r'B(.*?)\(', file).group(0)
-        label = f"frog{file[1]}_tank1"
-        print("Label: ", label)
+        file = re.search(r'B(\d+)\(', file).group(1)
+        label = f"frog{file}_tank1"
         if label not in labels_list:
             labels_list.append(label)
+
         labels.append(label)
         filenames.append(file)
 
@@ -171,11 +171,16 @@ def binarize_labels(labels):
     :param labels: List of labels
     :return: Lists of binarized labels
     """
-    print(f"Labels: {labels}")
 
+    for i in range(len(labels)):
+        print(f'{labels[i]}: {i}')
     flattened_list = np.asarray(labels, dtype="str")
     lb = preprocessing.LabelBinarizer().fit(flattened_list)
     labels = lb.transform(flattened_list)
+
+    #print the labels as strings
+    # for i in range(len(labels)):
+    #     print(f'{flattened_list[i]}: {labels[i]}') 
 
     # with open('labeler.pkl', 'wb') as file:
     with open('labeler_new.pkl', 'wb') as file:
