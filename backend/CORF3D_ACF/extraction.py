@@ -342,6 +342,7 @@ def extract_square_symimage_path(image_path: str, min_threshold=80, max_threshol
         return img_eq_100p.astype(np.uint8)
 
 def extract_square(image=None, threshold=80, progress_path=None, greyscale=False):
+    # img = cv2.imread(image)
     img = image
     height_full, width_full = img.shape[:2]
     img_small = cv2.resize(img, (0, 0), fx=0.2, fy=0.2) # we are using this because it gives way better predictions
@@ -774,3 +775,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# python .\extraction.py "./data/Frogs/RGB_new" "./data/Frogs/Extracted_new"
+# NEED TO CHANGE THE EXTRACT SQUARE TO 
