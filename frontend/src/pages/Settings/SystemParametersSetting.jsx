@@ -1,0 +1,97 @@
+import { useOrganization } from '../../services/providers/OrganizationProvider';
+import { organizationPutRequest } from '../../services/api/organizations/OrganizationPut';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
+import './SettingsPage.css';
+
+export default function SystemParametersSetting() {
+    const { organization } = useOrganization();
+    const [selectedParameters, setSelectedParameters] = useState([]);
+    const [addCustomParameter, setAddCustomParameter] = useState(false);
+    const [customParameter, setCustomParameter] = useState('');
+    const [listOfParametersToAdd, setListOfParametersToAdd] = useState([]);
+
+    function addToParameterList(parameter) {
+        if (!listOfParametersToAdd.includes(parameter) && parameter !== '') {
+            setListOfParametersToAdd([...listOfParametersToAdd, parameter]);
+        }
+    }
+
+    function selectItem(parameter) {
+        if (selectedParameters.includes(parameter)) {
+            setSelectedParameters(selectedParameters.filter((item) => item !== parameter));
+        } else {
+            setSelectedParameters([...selectedParameters, parameter]);
+        }
+
+        if (listOfParametersToAdd.includes(parameter)) {
+            setListOfParametersToAdd(listOfParametersToAdd.filter((item) => item !== parameter));
+        }
+    }
+
+    function handleSave() {
+        organization.system_parameter_names = organization.system_parameter_names.filter((parameter) => !selectedParameters.includes(parameter));
+        Object.keys(organization.system_parameters).forEach((date) => {
+            organization.system_parameters[date] = Object.fromEntries(Object.entries(organization.system_parameters[date]).filter(([key, value]) => !selectedParameters.includes(key)));
+        });
+        listOfParametersToAdd.forEach((parameter) => {
+            organization.system_parameter_names.push(parameter);
+            Object.keys(organization.system_parameters).forEach((date) => {
+                organization.system_parameters[date][parameter] = '';
+            });
+        });
+        console.log(organization);
+        organizationPutRequest(organization)
+            .then((response) => {
+                console.log(response);
+                setSelectedParameters([]);
+                window.location.reload(); // for now
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            addToParameterList(customParameter);
+            setCustomParameter('');
+        }
+    }
+
+    if (!organization) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div className='settingContainer'>
+            <h3>System Parameters</h3>
+            <p>Click to select parameters to remove</p>
+            <ul className='attributeList'>
+                {organization.system_parameter_names.map((parameter) => (
+                    <li key={parameter} className={`attributeItem${selectedParameters.includes(parameter) ? 'Selected' : ''}`} onClick={() => selectItem(parameter)}>{parameter}</li>
+                ))}
+                {listOfParametersToAdd.map((parameter) => (
+                    <li key={parameter} className='attributeItemAdded' onClick={() => selectItem(parameter)}>{parameter}</li>
+                ))}
+            </ul>
+            {!addCustomParameter && <button onClick={() => setAddCustomParameter(!addCustomParameter)}>Add Custom Parameter</button>}
+            {addCustomParameter && <div className="customInput">
+                <input
+                    type="text"
+                    placeholder="Custom Attribute Name"
+                    value={customParameter}
+                    onChange={(e) => setCustomParameter(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                />
+                <div className='icon'>
+                    <FontAwesomeIcon icon="fa-solid fa-circle-question" />
+                    <span className='tooltiptext'>Works best if attribute is formated like: "custom_parameter"</span>
+                </div>
+                <div>
+                    <button onClick={() => { addToParameterList(customParameter); setCustomParameter(""); }}>Add</button>
+                    <button onClick={() => setAddCustomParameter(!addCustomParameter)}>Close</button>
+                </div>
+            </div>}
+            <button onClick={() => handleSave()}>Save</button>
+        </div>
+    );
+}

@@ -1,5 +1,6 @@
 import { useContext, createContext, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useOrganization } from "./OrganizationProvider";
 import PropTypes from "prop-types";
 
 const AuthContext = createContext();
@@ -9,6 +10,7 @@ export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(localStorage.getItem("site") || "");
 	const [errorMessage, setErrorMessage] = useState("");
+	const { setOrganization } = useOrganization();
 	let retries = 1;
 
 	const navigate = useNavigate();
@@ -29,9 +31,10 @@ export default function AuthProvider({ children }) {
 				setToken(res.access_token);
 				localStorage.setItem("site", res.access_token);
 				localStorage.setItem("privileges", JSON.stringify(res.dict));
-				if(res.organizations === null) { //just for the demo on railway
+				if (res.organizations === null) { //just for the demo on railway
 					res.organizations = [];
 				}
+				setOrganization("1");
 				localStorage.setItem("orgs", res.organizations);
 				localStorage.setItem("userId", res.id);
 				localStorage.setItem("username", res.username);
@@ -62,17 +65,17 @@ export default function AuthProvider({ children }) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ 
-					username: data.username, 
-					hashed_password: data.password, 
-					email: data.email, 
-					attributes: {}, 
+				body: JSON.stringify({
+					username: data.username,
+					hashed_password: data.password,
+					email: data.email,
+					attributes: {},
 					organizations: []
 				}),
 			});
 			const res = await response.json();
 			console.log(res);
-			if(res.username) {
+			if (res.username) {
 				loginAction(data);
 			} else {
 				setErrorMessage(res.detail);
@@ -104,14 +107,15 @@ export default function AuthProvider({ children }) {
 	}, [errorMessage]);
 
 	const value = useMemo(() => ({
-		token, 
-		user, 
-		loginAction, 
-		logOut, 
-		signUpAction, 
-		getErrorMessage, 
-	}), [token, user, loginAction, logOut, signUpAction, getErrorMessage]);
-	
+		token,
+		user,
+		loginAction,
+		logOut,
+		signUpAction,
+		getErrorMessage,
+		setErrorMessage,
+	}), [token, user, loginAction, logOut, signUpAction, getErrorMessage, setErrorMessage]);
+
 	return (
 		<AuthContext.Provider value={value}>
 			{children}

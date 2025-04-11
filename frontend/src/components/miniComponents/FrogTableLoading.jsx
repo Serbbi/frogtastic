@@ -7,7 +7,7 @@ export default function FrogTableLoading({ organization }) {
         <table className='frogTable'>
             <thead className='tableHead'>
                 <tr>
-                    {organization && organization.table_columns.map(column => {
+                    {organization && Object.hasOwn(organization, "table_columns") && organization.table_columns.map(column => {
                         if (column === "current_tank") return <th key={column}>Tank</th>;
                         return <th key={column}>{formatColumnName(column)}</th>
                     })}
@@ -16,7 +16,7 @@ export default function FrogTableLoading({ organization }) {
             <tbody>
                 {[...Array(5)].map((_, index) => (
                     <tr key={index} className='tableRow'>
-                        {organization && organization.table_columns.map(column => (
+                        {organization && Object.hasOwn(organization, "table_columns") && organization.table_columns.map(column => (
                             <td key={column} className="te"><span className="rectangleLoader"></span></td>
                         ))}
                     </tr>

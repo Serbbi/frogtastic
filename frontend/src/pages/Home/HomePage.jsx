@@ -12,6 +12,8 @@ import ImageProvider from "../../services/providers/ImageProvider";
 import SystemParametersPage from "../SystemParameters/SystemParametersPage";
 import HelpPage from "../Help/HelpPage";
 import FrogPage from "../Frog/FrogPage";
+import ProfileSettingsPage from "../ProfileSettings/ProfileSettingsPage";
+import { UnsavedChangesProvider } from "../../services/providers/UnsavedChangesProvider";
 import './HomePage.css';
 
 export default function HomePage() {
@@ -20,24 +22,26 @@ export default function HomePage() {
     return (
         <div className="homeContainer">
             <div className="sidebarAndRightSide">
-                <LeftSideBar organization={organization} setOrganization={setOrganization} />
-                <div className="headerAndMainContent">
-                    <ImageProvider>
-                        <AppHeader organization={organization} setOrganization={setOrganization}/>
-                        <Routes>
-                            <Route path="/all-frogs" element={<AllFrogsPage organization={organization} /> } />
-                            <Route path="/tank-frogs" element={<TankFrogsPage organization={organization}/> } />
-                            <Route path="/upload-image" element={<UploadPage organization={organization}/> } />
-                            <Route path="/system-parameters" element={<SystemParametersPage organization={organization} /> } />
-                            <Route path="/join-organization" element={<JoinOrganizationPage/> } />
-                            <Route path="/create-organization" element={<CreateOrganizationPage/> } />
-                            <Route path="/organization-settings" element={<SettingsPage/> } />
-                            <Route path="/frog/:frogId" element={<FrogPage organization={organization} /> } />
-                            <Route path="/help" element={<HelpPage/> } />
-                            <Route path="/profile-settings/:userName" element={<div>Profile Settings</div>} />
-                        </Routes>
-                    </ImageProvider>
-                </div>
+                <UnsavedChangesProvider>
+                    <LeftSideBar organization={organization} setOrganization={setOrganization} />
+                    <div className="headerAndMainContent">
+                        <ImageProvider>
+                            <AppHeader setOrganization={setOrganization} />
+                            <Routes>
+                                <Route path="/all-frogs" element={<AllFrogsPage organization={organization} />} />
+                                <Route path="/tank-frogs" element={<TankFrogsPage organization={organization} />} />
+                                <Route path="/upload-image" element={<UploadPage organization={organization} />} />
+                                <Route path="/system-parameters" element={<SystemParametersPage organization={organization} />} />
+                                <Route path="/join-organization" element={<JoinOrganizationPage />} />
+                                <Route path="/create-organization" element={<CreateOrganizationPage />} />
+                                <Route path="/organization-settings" element={<SettingsPage />} />
+                                <Route path="/frog/:frogId" element={<FrogPage organization={organization} />} />
+                                <Route path="/help" element={<HelpPage />} />
+                                <Route path="/profile-settings/:userName" element={<ProfileSettingsPage />} />
+                            </Routes>
+                        </ImageProvider>
+                    </div>
+                </UnsavedChangesProvider>
             </div>
         </div>
     );

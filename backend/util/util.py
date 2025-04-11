@@ -8,6 +8,7 @@ from schemas.tokendata import TokenData
 from dotenv import load_dotenv
 import os
 from passlib.context import CryptContext
+import time
 
 load_dotenv()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -75,3 +76,25 @@ def get_organization_access_right(org_id: str, privilege: str, current_user: Ann
     if privilege in current_user.attributes[org_id]:
         return current_user.attributes[org_id][privilege]
     return False
+
+def verify_token(token: str = Depends(oauth2_scheme)):
+    if token_is_expired(token):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+def token_is_expired(token: str) -> bool:
+    print(token)
+    if token == "null": return False # At login the token is null so we just skip it for now
+    try:
+        payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
+        print(payload.get("exp"))
+        print(int(time.time()))
+        if payload.get("exp") < int(time.time()) + 59:
+            return True
+        return False
+    except JWTError:
+        print("JWTError")
+        return True # For some reason it gives error when it expires

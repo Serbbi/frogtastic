@@ -12,6 +12,7 @@ router = APIRouter(
     tags=["frogs"],
     responses={
         404: {"description": "Not found"},
+        401: {"description": "Token has expired"},
         400: {"description": "Request was not well-formed, see error details"},
     },
 )
@@ -20,19 +21,23 @@ router = APIRouter(
 async def get_frogs(org_q: Union[int, None] = None, 
                     tank_q: Union[int, None] = None,
                     no_frogs_q: Union[int, None] = None, 
-                    controller: FrogController = Depends(FrogController)):
+                    controller: FrogController = Depends(FrogController),
+                    token: str = Depends(util.verify_token)):
     return controller.get_frogs(org_q, tank_q, no_frogs_q)
 
 
 @router.get("/download-csv")
 async def download_csv(org_q: Union[int, None],
                        tank_q: Union[int, None] = None,
-                       controller: FrogController = Depends(FrogController)):
+                       controller: FrogController = Depends(FrogController),
+                       token: str = Depends(util.verify_token)):
     return controller.download_csv(org_q, tank_q)
 
 
 @router.get("/{frog_id}")
-async def get_frog(frog_id: int, controller: FrogController = Depends(FrogController)):
+async def get_frog(frog_id: int, 
+                   controller: FrogController = Depends(FrogController),
+                   token: str = Depends(util.verify_token)):
     return controller.get_frog(frog_id)
 
 
@@ -40,7 +45,8 @@ async def get_frog(frog_id: int, controller: FrogController = Depends(FrogContro
 async def update_frogs(org_q: int, 
                        attributes: List[str],
                        current_user: User = Depends(util.get_current_user),
-                       controller: FrogController = Depends(FrogController)):
+                       controller: FrogController = Depends(FrogController),
+                       token: str = Depends(util.verify_token)):
     if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
         return controller.update_frogs(attributes, org_q)
     raise_403_exception("You cannot edit these frogs")
@@ -52,10 +58,11 @@ async def update_frog(
     frog: FrogBase,
     org_q: Union[int, None] = None, 
     current_user: User = Depends(util.get_current_user),
-    controller: FrogController = Depends(FrogController)
+    controller: FrogController = Depends(FrogController),
+    token: str = Depends(util.verify_token)
 ):
     if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
-        return controller.update_frog(frog_id, frog)
+        return controller.update_frog(frog_id, frog, current_user.username)
     
     raise_403_exception("You cannot edit this frog")
 
@@ -64,16 +71,29 @@ async def delete_frog(
     frog_id: int, 
     org_q: Union[int, None] = None,
     current_user: User = Depends(util.get_current_user),
-    controller: FrogController = Depends(FrogController)
+    controller: FrogController = Depends(FrogController),
+    token: str = Depends(util.verify_token)
 ):
     if util.get_organization_access_right(str(org_q), "canDeleteFrogs", current_user):
         return controller.delete_frog(frog_id)
     raise_403_exception("You cannot delete this frog")
 
 
+@router.post("")
+async def create_frogs(
+    frogs: List[FrogBase],
+    current_user: User = Depends(util.get_current_user),
+    controller: FrogController = Depends(FrogController),
+):
+    if util.get_organization_access_right("canCreateFrogs", current_user):
+        return controller.create_frogs(frogs)
+    raise_403_exception("You cannot create frogs")
+
+
 @router.post("/train")
 async def train_model(
     file: UploadFile = File(...),
-    controller: FrogController = Depends(FrogController)
+    controller: FrogController = Depends(FrogController),
+    token: str = Depends(util.verify_token)
 ):
     return controller.train_model(file)

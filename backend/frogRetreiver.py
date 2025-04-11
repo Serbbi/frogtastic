@@ -10,7 +10,7 @@ import re
 def retrieve_frog(image):
     if image is None:
         return None
-    model = load_model('./CORF3D_ACF/output/models/RGB_5.h5')
+    model = load_model('./CORF3D_ACF/output/models_clean/RGB_2.h5')
     img = cv2.resize(image, (224, 224))
     y_pred = model.predict(np.array([img]))
 
@@ -23,7 +23,7 @@ def retrieve_frog(image):
                         'top_predictions': top_one_hot,
                         'top_values': top_values})
 
-    with open('./CORF3D_ACF/labeler.pkl', 'rb') as file:
+    with open('./CORF3D_ACF/output/models_clean/labeler_new.pkl', 'rb') as file:
         label_binarizer = pickle.load(file)
     for pred_y in pred_false:
                 pred_labels = label_binarizer.inverse_transform(pred_y['top_predictions'])

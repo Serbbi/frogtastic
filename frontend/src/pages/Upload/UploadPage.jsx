@@ -17,20 +17,23 @@ export default function UploadPage({ organization }) {
 
     function uploadImage() {
         const formData = new FormData();
-        formData.append('file', document.querySelector('input[type="file"]').files[0]);
+        const file = document.querySelector('input[type="file"]').files[0];
+        if (!verifyFile(file)) return;
+
+        formData.append('file', file);
         setIsLoading(true);
 
         imagePostRequest(formData, organization.id)
             .then(data => {
                 setExtractionImageURL(data.image);
-                if(data.error) {
+                if (data.error) {
                     setSuccess("error");
                     setErrorMessage(data.error);
                     return;
                 }
 
                 setSuccess("success");
-                navigate(`/home/frog/${data.frog.id}`);
+                navigate(`/home/frog/${data.frog.id}`, { state: "from upload" });
                 document.querySelector(".uploadContainer").style.display = "block";
             })
             .catch(error => {
@@ -38,6 +41,23 @@ export default function UploadPage({ organization }) {
                 setErrorMessage(error.message);
             })
             .finally(() => setIsLoading(false));
+    }
+
+    function verifyFile(file) {
+        if (!file) {
+            setSuccess("error");
+            setErrorMessage("Please select a file to upload.");
+            return false;
+        }
+
+        const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        if (!validImageTypes.includes(file.type)) {
+            setSuccess("error");
+            setErrorMessage("Invalid image format. Please upload a .jpeg, .jpg, or .png file.");
+            return false;
+        }
+
+        return true;
     }
 
     useEffect(() => {
@@ -85,17 +105,17 @@ export default function UploadPage({ organization }) {
         document.querySelector(".uploadContainer").style.display = "flex";
     }
 
-    if(isLoading) return (<div className="uploadContainer"><Loading /></div>);
+    if (isLoading) return (<div className="uploadContainer"><Loading /></div>);
 
     return (
         <div className="uploadContainer">
-            {success === "error" ? <ErrorContent errorMessage={errorMessage} goBack={goBackToDefault}/> : null}
+            {success === "error" ? <ErrorContent errorMessage={errorMessage} goBack={goBackToDefault} /> : null}
             {success === "default" ?
                 <div className="uploadDefaultElements">
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
                         <p className="orWord">or</p>
-                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName}/>
+                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName} />
                         <span className="browseFilesButton">Browse files</span>
                         <span className="file-name">{fileName}</span>
                     </label>

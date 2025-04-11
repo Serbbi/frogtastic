@@ -8,23 +8,27 @@ import './TankFrogsPage.css';
 
 export default function TankFrogsPage({ organization }) {
     const { tanks } = useTanks(organization ? organization.id : -1);
-    const [selectedNumber, setSelectedNumber] = useState(tanks && tanks.length > 0 ? tanks[0].id : -1);
+    const [selectedNumber, setSelectedNumber] = useState(null);
     const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, selectedNumber, null);
-    const [ tankStatus, setTankStatus ] = useState(false);
+    const [tankStatus, setTankStatus] = useState(false);
 
     useEffect(() => {
-        if(frogs) {
+        if (frogs) {
             setTankStatus(frogs.some(frog => frog.attributes["is_sick"]));
         }
     }, [frogs]);
 
     useEffect(() => {
-        setSelectedNumber(tanks && tanks.length > 0 ? tanks[0].id : -1);
-    }, [organization, tanks]);
+        if (tanks && tanks.length > 0) {
+            const storedNumber = localStorage.getItem('selectedTankNumber');
+            setSelectedNumber(storedNumber ? parseInt(storedNumber) : tanks[0].id);
+        }
+    }, [tanks]);
 
 
     function handleNumberChange(event) {
         setSelectedNumber(parseInt(event.target.value));
+        localStorage.setItem('selectedTankNumber', event.target.value);
     };
 
     if (isLoading) return (<div className="tankFrogsContent"><Loading /></div>);
@@ -42,7 +46,7 @@ export default function TankFrogsPage({ organization }) {
                     })}
                 </select>
             </div>
-            {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization}/>}
+            {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization} />}
         </div>
     );
 }

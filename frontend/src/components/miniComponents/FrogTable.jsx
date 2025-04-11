@@ -7,7 +7,6 @@ import './FrogTable.css';
 export default function FrogTable({ frogs, organization }) {
     const navigate = useNavigate();
     const { tanks } = UseTanks(organization ? organization.id : -1);
-    console.log('rendering FrogTable');
 
     function formatColumnName(columnName) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
@@ -26,15 +25,17 @@ export default function FrogTable({ frogs, organization }) {
             <tbody>
                 {tanks && frogs.map(frog => {
                     return (
-                        <tr key={frog.id} className='tableRow' onClick={() => navigate(`/home/frog/${frog.id}`)}>
+                        <tr key={frog.id} className='tableRow' onClick={() => navigate(`/home/frog/${frog.id}`, { state: "from table" })}>
                             {organization.table_columns.map(column => {
-                                if(column === "frog_number") 
+                                if (column === "id")
+                                    return <td key={column}>F{frog["frog_number"]}_T{frog["tank_id"]}</td>;
+                                if (column === "frog_number")
                                     return <td key={column}>{frog[column]}</td>;
-                                if(column === "current_tank") {
+                                if (column === "current_tank") {
                                     return <td key={column}>{tanks.find(tank => tank.id === frog.current_tank_id) ? tanks.find(tank => tank.id === frog.current_tank_id).tank_name : null}</td>;
                                 }
-                                if(column === "is_sick") 
-                                    return frog.attributes[column] ? <td key={column}><FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus"/></td>
+                                if (column === "is_sick")
+                                    return frog.attributes[column] ? <td key={column}><FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" /></td>
                                         : <td key={column}><FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" /></td>;
                                 return <td key={column}>{frog.attributes[column]}</td>;
                             })}

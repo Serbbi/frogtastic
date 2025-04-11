@@ -8,7 +8,7 @@ fastapi
 uvicorn
 sqlalchemy
 python-dotenv
-psycopg2
+psycopg2-binary
 typing-extensions
 python-jose
 passlib

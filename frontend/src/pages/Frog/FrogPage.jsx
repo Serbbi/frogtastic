@@ -9,22 +9,25 @@ import Loading from "../../components/miniComponents/loading";
 import { useNavigate, useParams } from "react-router-dom";
 import { useImage } from "../../services/providers/ImageProvider";
 import ConfirmationBox from "../../components/miniComponents/ConfirmationBox";
+import ExpiredTokenModal from "../../components/miniComponents/ExpiredTokenModal";
+import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
+import { frogsPutRequest } from "../../services/api/frogs/FrogsPut";
 import "./FrogPage.css";
 
 export default function FrogPage({ organization }) {
     const { addNotification } = useNotification();
     const token = localStorage.getItem('site');
-    const [ saved, setSaved ] = useState(true);
     const { tanks } = useTanks(organization ? organization.id : -1);
-    const [ showHistory, setShowHistory ] = useState(false);
+    const [showHistory, setShowHistory] = useState(false);
     const privileges = JSON.parse(localStorage.getItem('privileges'));
-    const [ canEditFrogs, setCanEditFrogs ] = useState(false);
+    const [canEditFrogs, setCanEditFrogs] = useState(false);
     const { frogId } = useParams();
-    const { frog, isLoading, mutate: mutateFrog } = useFrogs(frogId, null, null, null);
+    const { frog, error, isLoading, mutate: mutateFrog } = useFrogs(frogId, null, null, null);
     const navigate = useNavigate();
     const { extractionImageURL } = useImage();
-    const [ showCompareModal, setShowCompareModal ] = useState(false);
-    const [ confirmationBoxText, setconfirmationBoxText ] = useState("");
+    const [showCompareModal, setShowCompareModal] = useState(window.history.state.usr === "from upload" ? true : false);
+    const [confirmationBoxText, setconfirmationBoxText] = useState("");
+    const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
 
     useEffect(() => {
         if (organization) {
@@ -36,7 +39,7 @@ export default function FrogPage({ organization }) {
         const name = event.target.name;
         const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
-        setSaved(false);
+        setUnsavedChanges(true);
         if (name === "current_tank_id") {
             await mutateFrog(prevFrog => ({ ...prevFrog, current_tank_id: Number(value) }), false);
             return;
@@ -63,7 +66,7 @@ export default function FrogPage({ organization }) {
     function saveFrog() {
         updateRequest()
             .then(data => {
-                setSaved(true);
+                setUnsavedChanges(false);
                 addNotification({ text: "Frog saved", type: "success" });
             })
             .catch((error) => {
@@ -78,7 +81,7 @@ export default function FrogPage({ organization }) {
                 'Authorization': 'Bearer ' + token,
             }
         });
-            
+
         throwIfNotOk(response);
 
         return await response.json();
@@ -99,7 +102,7 @@ export default function FrogPage({ organization }) {
     }
 
     function checkForChanges() {
-        if (!saved) {
+        if (unsavedChanges) {
             setconfirmationBoxText("You have unsaved changes, are you sure you want to leave?");
         } else {
             navigate(-1);
@@ -109,6 +112,8 @@ export default function FrogPage({ organization }) {
     function formatLabel(label) {
         return label.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
     }
+
+    if (error) return <ExpiredTokenModal />;
 
     if (isLoading) return (<div className="allFrogsContainer"><Loading /></div>);
 
@@ -121,7 +126,7 @@ export default function FrogPage({ organization }) {
     }
 
     if (showHistory) {
-        return <HistoryTable id={frog.id} setShowHistory={setShowHistory} showHistory={showHistory} tanks={tanks}/>
+        return <HistoryTable id={frog.id} setShowHistory={setShowHistory} showHistory={showHistory} tanks={tanks} />
     }
 
     return (
@@ -134,14 +139,14 @@ export default function FrogPage({ organization }) {
             <div className="leftRightContainer">
                 <div className="leftDetailsContainer">
                     {frog && Object.entries(frog.attributes).map(([key, value]) => {
-                        if (key === "notes") 
+                        if (key === "notes")
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
                                     <textarea name={key} value={value} disabled={!canEditFrogs} onChange={updateField} />
                                 </div>
                             );
-                        if (key === "is_sick") 
+                        if (key === "is_sick")
                             return (
                                 <div className="frogField" key={key}>
                                     <label>{formatLabel(key)}</label>
@@ -164,7 +169,7 @@ export default function FrogPage({ organization }) {
                     })}
                     <div className="frogField" key="current_tank_id">
                         <label>Current Tank</label>
-                            <select name="current_tank_id" disabled={!canEditFrogs} onChange={updateField}>
+                        <select name="current_tank_id" disabled={!canEditFrogs} onChange={updateField} value={frog.current_tank_id ? frog.current_tank_id : -1}>
                             {!frog.current_tank_id && <option value={-1}></option>}
                             {tanks && tanks.map(tank => (
                                 <option key={tank.id} value={tank.id}>{tank.tank_name}</option>
@@ -192,7 +197,7 @@ export default function FrogPage({ organization }) {
                     </div>
                 </div>
             </div>}
-            {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => navigate(-1)} onCancel={() => setconfirmationBoxText("")} />}
+            {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => { navigate(-1); setUnsavedChanges(false); }} onCancel={() => setconfirmationBoxText("")} />}
         </div>
     );
 }

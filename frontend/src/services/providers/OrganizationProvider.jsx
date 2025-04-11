@@ -4,13 +4,18 @@ const OrganizationContext = createContext();
 
 export const OrganizationProvider = ({ children }) => {
     const [organization, setOrganization] = useState(null);
+    const token = localStorage.getItem('site');
 
     async function fetchAndSetOrganization(id) {
         if (!id) {
             return;
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${id}`);
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
             const data = await response.json();
             setOrganization(data);
         }
@@ -20,7 +25,7 @@ export const OrganizationProvider = ({ children }) => {
     }
 
     return (
-        <OrganizationContext.Provider value={{ organization, setOrganization: fetchAndSetOrganization }}>
+        <OrganizationContext.Provider value={{ organization, setOrganization: fetchAndSetOrganization, modifyOrganization: setOrganization }}>
             {children}
         </OrganizationContext.Provider>
     );

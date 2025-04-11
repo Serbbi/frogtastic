@@ -65,12 +65,21 @@ class FrogController(Controller):
         return db_frog
     
 
+    def create_frogs(self, frogs: list):
+        for frog in frogs:
+            self.create_frog(frog)
+        return {"message": "Frogs created successfully"}
+    
+
     def get_frog_by_image(self, file, organization_id: int):
         if not file.content_type.endswith(("jpg", "jpeg", "png")):
             return {"error": "Only images are allowed"}
 
         nparr = np.frombuffer(file.file.read(), np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        if img.shape[0] < 1500 or img.shape[1] < 1500:
+            return {"error": "Image resolution must be at least 1500x1500"}
 
         extraction_image = extract_image(img)
         result = retrieve_frog(extraction_image)
@@ -100,12 +109,12 @@ class FrogController(Controller):
         return {"frog": db_frog, "image": base64.b64encode(img_bytes.getvalue()).decode('utf-8')}
     
 
-    def update_frog(self, frog_id: int, frog: Frog):
-        if not verify_frog_details(frog):
-            return {"error": "Invalid frog details"}
+    def update_frog(self, frog_id: int, frog: Frog, username: str):
+        # if not verify_frog_details(frog):
+            # return {"error": "Invalid frog details"}
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
 
-        db_frog.history = dict(update_history(db_frog, frog))
+        db_frog.history = dict(update_history(db_frog, frog, username))
         db_frog.current_tank_id = frog.current_tank_id
         flag_modified(db_frog, "history")
         db_frog.attributes = frog.attributes
@@ -153,15 +162,15 @@ class FrogController(Controller):
         return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=frogs.csv"})
 
 
-def update_history(db_frog, frog):
+def update_history(db_frog, frog, username):
     history = db_frog.history
     status_string = ""
 
     if db_frog.current_tank_id != frog.current_tank_id:
-        status_string += f"current_tank_id changed from '{db_frog.current_tank_id}' to '{frog.current_tank_id}'\n"
+        status_string += f"{username} changed current_tank_id from '{db_frog.current_tank_id}' to '{frog.current_tank_id}'\n"
     for key, value in frog.attributes.items():
         if value != db_frog.attributes.get(key):
-            status_string += f"{key} changed from '{db_frog.attributes.get(key)}' to '{value}'\n"
+            status_string += f"{username} changed {key} from '{db_frog.attributes.get(key)}' to '{value}'\n"
     if status_string:
         if datetime.datetime.now().strftime("%Y-%m-%d %H:%M") in history:
             history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] += status_string
@@ -172,9 +181,9 @@ def update_history(db_frog, frog):
 # returns True if the frog details are valid
 def verify_frog_details(frog : Frog):
     if frog.current_tank_id != None and frog.current_tank_id < 0:
-        return False
+        return {"status": False, "error": "Invalid tank id"}
     if "egg_quality" in frog.attributes:
         if frog.attributes["egg_quality"] != "" and int(frog.attributes["egg_quality"]) < 0:
-            return False
+            return {"status": False, "error": "Egg quality must be a positive number greater than 0"}
     # add more if Julia thinks it is necessary
-    return True
+    return {"status": True}

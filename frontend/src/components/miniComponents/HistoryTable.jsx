@@ -13,13 +13,9 @@ export default function HistoryTable({ id, setShowHistory, showHistory, tanks })
             fromTank ? fromTank = fromTank.tank_name : fromTank = 'Unknown Tank';
             let toTank = tanks.find(tank => tank.id === Number(toId));
             toTank ? toTank = toTank.tank_name : toTank = 'Unknown Tank';
-            return `Current tank changed from ${fromTank} to ${toTank}`;
+            return `${event.split(' ')[0]} changed the current tank from ${fromTank} to ${toTank}`;
         }
-
-        return event.charAt(0).toUpperCase() + event.slice(1).split(' ').map(word => {            
-            if (word.includes('_')) return word.split('_').join(' ');
-            return word;
-        }).join(' ');
+        return event;
     }
 
     return (
@@ -42,7 +38,7 @@ export default function HistoryTable({ id, setShowHistory, showHistory, tanks })
                         </tr>
                     ))}
                 </tbody>
-            </table>    
+            </table>
             <button className="saveButton" onClick={() => setShowHistory(!showHistory)}>Hide History</button>
         </div>
     );

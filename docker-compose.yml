@@ -1,9 +1,8 @@
-version: "3.8"
 services:
   frontend:
     build:
-      context: ./frontend # Specify the build context for the React app
-      dockerfile: Dockerfile # Specify the Dockerfile for the React app
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     volumes:
@@ -12,11 +11,13 @@ services:
     networks:
       - internal
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - 8000:8000
     environment:
-      DATABASE_URL: postgresql://postgres:frog4life@database:5432/postgres
+      DATABASE_URL: postgresql+psycopg2://postgres:frog4life@database:5432/postgres
       SECRET_KEY: 3e01bf5381e2c4d794f42e8c23ad8aa268056109f03a5e5582cd5ba105ccc567
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 30
@@ -49,12 +50,13 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin_password
     ports:
       - "8080:80"
+    networks:
+      - internal
 
 volumes:
   database:
 
+
 networks:
   internal:
     driver: bridge
-
-  
