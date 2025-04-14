@@ -26,7 +26,7 @@ async def create_organization(organization: OrganizationBase,
 
 @router.get("")
 async def get_organizations(controller: OrganizationController = Depends(OrganizationController),
-                            token: str = Depends(verify_token)):
+                            _: str = Depends(verify_token)):
     return controller.get_organizations()
 
 @router.get("/{organization_id}")

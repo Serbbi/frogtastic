@@ -107,7 +107,7 @@ export default function AppHeader({ setOrganization }) {
                     }
                     {showOrganizations &&
                         <>
-                            {userOrgs.map((org) => (
+                            {organizations && organizations.length !== 0 && userOrgs.map((org) => (
                                 <button key={org} className='profileSettingsButton' onClick={() => setOrganization(org)}>{getOrganizationName(Number(org))}</button>
                             ))}
                             <button className='profileSettingsButton' onClick={() => setShowOrganizations(false)}>Back</button>
@@ -115,7 +115,7 @@ export default function AppHeader({ setOrganization }) {
                     }
                 </div>
             </div>
-            {error && <ExpiredTokenModal />}
+            {error && error.toString().includes('Token') && <ExpiredTokenModal />}
         </nav>
     );
 }

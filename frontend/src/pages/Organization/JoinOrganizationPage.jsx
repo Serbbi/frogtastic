@@ -7,9 +7,9 @@ import './JoinOrganizationPage.css';
 export default function JoinOrganizationPage() {
     const username = localStorage.getItem('username');
     const userId = localStorage.getItem('userId');
-    const { organizations } = useOrganizations();
-    const [ showModal, setShowModal ] = useState(false);
-    const [ selectedOrganization, setSelectedOrganization ] = useState(null);
+    const { organizations, error } = useOrganizations();
+    const [showModal, setShowModal] = useState(false);
+    const [selectedOrganization, setSelectedOrganization] = useState(null);
     const { addNotification } = useNotification();
     const description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
@@ -42,6 +42,15 @@ export default function JoinOrganizationPage() {
         setShowModal(true);
     }
 
+    if (error) {
+        return (
+            <div className='joinOrganizationMenu'>
+                <h1 className='title'>Join Organization</h1>
+                <p className='error'>Error loading organizations: {error.message}</p>
+            </div>
+        );
+    }
+
     return (
         <div className='joinOrganizationMenu'>
             <h1 className='title'>Join Organization</h1>
@@ -49,7 +58,7 @@ export default function JoinOrganizationPage() {
                 <tbody>
                     {organizations && organizations.map((organization, index) => (
                         <tr key={organization.name} className={index % 2 === 0 ? 'even' : 'odd'} onClick={() => handleOpenModal(organization)}>
-                            <td className='logoColumn'><img src='/Designer.jpeg' alt='Logo' className='organizationLogo'/></td>
+                            <td className='logoColumn'><img src='/Designer.jpeg' alt='Logo' className='organizationLogo' /></td>
                             <td className='nameColumn'>{organization.name}</td>
                             <td className='descriptionColumn'><p>{description.length > 100 ? `${description.slice(0, 100)}...` : description}</p></td>
                         </tr>
