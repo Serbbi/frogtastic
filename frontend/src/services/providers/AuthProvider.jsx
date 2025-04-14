@@ -34,7 +34,7 @@ export default function AuthProvider({ children }) {
 				if (res.organizations === null) { //just for the demo on railway
 					res.organizations = [];
 				}
-				setOrganization("1");
+				setOrganization("1");//TODO: this is hardcoded
 				localStorage.setItem("orgs", res.organizations);
 				localStorage.setItem("userId", res.id);
 				localStorage.setItem("username", res.username);
@@ -46,12 +46,12 @@ export default function AuthProvider({ children }) {
 			}
 		} catch (err) {
 			if (err instanceof TypeError && retries < MAX_RETRIES) {
-				console.error(err);
 				setErrorMessage("Server is waking up, please wait a moment...");
-				// loginAction(data); // retry 10 times till the server is up
+				loginAction(data); // retry 10 times till the server is up
 				retries++;
 			} else if (retries === MAX_RETRIES) {
 				setErrorMessage("No response from server, please try again later or contact support.");
+				retries = 1;
 			} else {
 				console.error(err);
 			}
@@ -82,13 +82,12 @@ export default function AuthProvider({ children }) {
 			}
 		} catch (err) {
 			if (err instanceof TypeError && retries < MAX_RETRIES) {
-				console.error(err);
 				setErrorMessage("Server is waking up, please wait a moment...");
-				// signUpAction(data); // retry 10 times till the server is up
+				signUpAction(data); // retry 10 times till the server is up
 				retries++;
 			} else if (retries === MAX_RETRIES) {
-				console.error(err);
 				setErrorMessage("No response from server, please try again later or contact support.");
+				retries = 1;
 			} else {
 				console.error(err);
 			}

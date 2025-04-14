@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../services/providers/AuthProvider';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Signup.css';
 
 export default function Signup() {
-    const [ passwordVisibility, setPasswordVisibility ] = useState(false);
-    const [ passwordConfirmVisibility, setPasswordConfirmVisibility ] = useState(false);
-    const [ isLoading, setIsLoading ] = useState(false);
+    const [passwordVisibility, setPasswordVisibility] = useState(false);
+    const [passwordConfirmVisibility, setPasswordConfirmVisibility] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState({
         username: "",
         email: "",
@@ -16,6 +16,13 @@ export default function Signup() {
     });
 
     const auth = useAuth();
+
+    useEffect(() => {
+        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("support")) {
+            setIsLoading(false);
+        }
+    }, [auth.getErrorMessage()]);
+
     const handleSubmitEvent = (e) => {
         e.preventDefault();
         if (input.password !== input.passwordConfirm) {
@@ -71,7 +78,7 @@ export default function Signup() {
         } else if (username.length < 3) {
             e.target.nextElementSibling.textContent = "Username must be at least 3 characters long.";
         } else if (!usernameRegex.test(username)) {
-            e.target.nextElementSibling.textContent = "Username can only contain letters, numbers, periods, underscores, and dashes."; 
+            e.target.nextElementSibling.textContent = "Username can only contain letters, numbers, periods, underscores, and dashes.";
         } else {
             e.target.nextElementSibling.textContent = "";
             e.target.classList.remove("errorInput");
@@ -86,7 +93,7 @@ export default function Signup() {
         const password = e.target.value;
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
         if (password === "") {
-            e.target.parentElement.nextElementSibling.textContent = "Please fill out this field."; 
+            e.target.parentElement.nextElementSibling.textContent = "Please fill out this field.";
         } else if (password.length < 8) {
             e.target.parentElement.nextElementSibling.textContent = "Password must be at least 8 characters long.";
         } else if (!passwordRegex.test(password)) {
@@ -129,8 +136,8 @@ export default function Signup() {
                                     className='inputField'
                                     placeholder="Username"
                                     onChange={handleInput}
-                                    name="username" 
-                                    onBlur={validateUsername}/>
+                                    name="username"
+                                    onBlur={validateUsername} />
                                 <p className='errorText'></p>
                             </div>
                         </div>
@@ -140,7 +147,7 @@ export default function Signup() {
                                     className='inputField'
                                     placeholder="Email"
                                     onChange={handleInput}
-                                    name="email" 
+                                    name="email"
                                     type='email'
                                     onBlur={validateEmail} />
                                 <p className='errorText'></p>
@@ -152,9 +159,9 @@ export default function Signup() {
                                     className='inputField'
                                     placeholder="Password"
                                     onChange={handleInput}
-                                    name="password" 
-                                    type={passwordVisibility ? "text" : "password"} 
-                                    onBlur={validatePassword}/>
+                                    name="password"
+                                    type={passwordVisibility ? "text" : "password"}
+                                    onBlur={validatePassword} />
                                 <button type="button" className='eyeButton' onClick={() => togglePasswordVisibility("password")}>
                                     {passwordVisibility ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
                                 </button>
@@ -167,7 +174,7 @@ export default function Signup() {
                                     className='inputField'
                                     placeholder="Confirm Password"
                                     onChange={handleInput}
-                                    name="passwordConfirm" 
+                                    name="passwordConfirm"
                                     type={passwordConfirmVisibility ? "text" : "password"}
                                     onBlur={validateConfirmPassword} />
                                 <button type="button" className='eyeButton' onClick={() => togglePasswordVisibility("passwordConfirm")}>
@@ -181,18 +188,18 @@ export default function Signup() {
 
                         <button type="submit" className={"submitButton"} disabled={isLoading}>
                             {isLoading &&
-                            <span className='loader'></span>}
+                                <span className='loader'></span>}
                             <span className={isLoading ? 'invisible' : ''}>Sign Up</span>
                         </button>
                         <p>Already have an account? <Link to="/">Log in here!</Link></p>
                         <p>By registering, you agree to our<Link to="/terms-of-service" target='_blank' style={{ fontSize: '0.8rem' }}>terms of service</Link>.</p>
                     </form>
-                </div> 
+                </div>
             </div>
             <div className="rightSignUp">
 
             </div>
-            
+
         </div>
     );
 };
