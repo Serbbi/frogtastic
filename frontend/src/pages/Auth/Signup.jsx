@@ -18,7 +18,7 @@ export default function Signup() {
     const auth = useAuth();
 
     useEffect(() => {
-        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("support")) {
+        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("resource")) {
             setIsLoading(false);
         }
     }, [auth.getErrorMessage()]);

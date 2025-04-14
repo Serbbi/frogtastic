@@ -1,6 +1,5 @@
 import { useContext, createContext, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useOrganization } from "./OrganizationProvider";
 import PropTypes from "prop-types";
 
 const AuthContext = createContext();
@@ -10,10 +9,8 @@ export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(localStorage.getItem("site") || "");
 	const [errorMessage, setErrorMessage] = useState("");
-	const { setOrganization } = useOrganization();
-	let retries = 1;
-
 	const navigate = useNavigate();
+	let attempt = 1;
 
 	const loginAction = useCallback(async (data) => {
 		try {
@@ -24,6 +21,11 @@ export default function AuthProvider({ children }) {
 				},
 				body: `username=${data.username}&password=${data.password}`,
 			});
+
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				throw new Error(errorData.detail || "Login failed");
+			}
 			const res = await response.json();
 
 			if (res.access_token) {
@@ -34,7 +36,6 @@ export default function AuthProvider({ children }) {
 				if (res.organizations === null) { //just for the demo on railway
 					res.organizations = [];
 				}
-				setOrganization("1");//TODO: this is hardcoded
 				localStorage.setItem("orgs", res.organizations);
 				localStorage.setItem("userId", res.id);
 				localStorage.setItem("username", res.username);
@@ -42,18 +43,34 @@ export default function AuthProvider({ children }) {
 				navigate("/home");
 				setErrorMessage("");
 			} else {
-				setErrorMessage(res.detail);
+				setErrorMessage(res.detail || "Login failed");
 			}
 		} catch (err) {
-			if (err instanceof TypeError && retries < MAX_RETRIES) {
-				setErrorMessage("Server is waking up, please wait a moment...");
-				loginAction(data); // retry 10 times till the server is up
-				retries++;
-			} else if (retries === MAX_RETRIES) {
-				setErrorMessage("No response from server, please try again later or contact support.");
-				retries = 1;
+			if (attempt < MAX_RETRIES) {
+				let errorMessage = "";
+
+				if (err instanceof TypeError) {
+					errorMessage = "Network issue";
+				} else if (err instanceof SyntaxError) {
+					errorMessage = "Invalid server response";
+				} else if (err.message) {
+					errorMessage = err.message;
+				} else {
+					errorMessage = "Temporary issue";
+				}
+
+				setErrorMessage(`${errorMessage} (attempt ${attempt}/${MAX_RETRIES})...`);
+				const delay = Math.min(1000 * Math.pow(2, attempt++), 30000);
+				await new Promise(resolve => setTimeout(resolve, delay));
+				return loginAction(data);
 			} else {
-				console.error(err);
+				if (err.message) {
+					setErrorMessage(err.message);
+				} else if (err instanceof TypeError) {
+					setErrorMessage("Could not connect to server");
+				} else {
+					setErrorMessage("Login failed");
+				}
 			}
 		}
 	}, [navigate]);
@@ -73,23 +90,43 @@ export default function AuthProvider({ children }) {
 					organizations: []
 				}),
 			});
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				throw new Error(errorData.detail || "Sign up failed");
+			}
 			const res = await response.json();
-			console.log(res);
+
 			if (res.username) {
 				loginAction(data);
 			} else {
-				setErrorMessage(res.detail);
+				setErrorMessage(res.detail || "Sign up failed");
 			}
 		} catch (err) {
-			if (err instanceof TypeError && retries < MAX_RETRIES) {
-				setErrorMessage("Server is waking up, please wait a moment...");
-				signUpAction(data); // retry 10 times till the server is up
-				retries++;
-			} else if (retries === MAX_RETRIES) {
-				setErrorMessage("No response from server, please try again later or contact support.");
-				retries = 1;
+			if (attempt < MAX_RETRIES) {
+				let errorMessage = "";
+
+				if (err instanceof TypeError) {
+					errorMessage = "Network issue";
+				} else if (err instanceof SyntaxError) {
+					errorMessage = "Invalid server response";
+				} else if (err.message) {
+					errorMessage = err.message;
+				} else {
+					errorMessage = "Temporary issue";
+				}
+
+				setErrorMessage(`${errorMessage} (attempt ${attempt}/${MAX_RETRIES})...`);
+				const delay = Math.min(1000 * Math.pow(2, attempt++), 30000);
+				await new Promise(resolve => setTimeout(resolve, delay));
+				return signUpAction(data);
 			} else {
-				console.error(err);
+				if (err.message) {
+					setErrorMessage(err.message);
+				} else if (err instanceof TypeError) {
+					setErrorMessage("Could not connect to server");
+				} else {
+					setErrorMessage("Login failed");
+				}
 			}
 		}
 	}, [loginAction]);

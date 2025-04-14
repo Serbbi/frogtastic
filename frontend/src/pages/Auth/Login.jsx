@@ -13,7 +13,7 @@ export default function Login() {
     const logInButtonCroaks = ["Log In", "Croak", "Oac", "Croak but in german", "Croack but in italian", "Croack but in spanish", "Croack but in french", "Croack but in portuguese", "Croack but in russian", "Croack but in chinese", "Croack but in japanese", "Croack but in korean", "Croack but in arabic", "Croack but in hindi", "Croack but in bengali", "Croack but in punjabi", "Croack but in urdu", "Croack but in turkish", "Croack but in vietnamese", "Croack but in thai", "Croack but in swahili", "Croack but in dutch", "Croack but in greek", "Croack but in hebrew", "Croack but in swedish", "Croack but in danish", "Croack but in norwegian", "Croack but in finnish", "Croack but in icelandic", "Croack but in hungarian", "Croack but in czech", "Croack but in slovak", "Croack but in polish", "Croack but in ukrainian", "Croack but in belarusian", "Croack but in bulgarian"];
 
     useEffect(() => {
-        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("support")) {
+        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("resource")) {
             setIsLoading(false);
         }
     }, [auth.getErrorMessage()]);
@@ -61,7 +61,7 @@ export default function Login() {
                 <label className="errorLabel">{auth.getErrorMessage()}</label>
 
                 <button type="submit" className={"submitButton"} disabled={isLoading}>
-                    {isLoading && //TODO: re-enable log in button after receive response that it cannot access the server
+                    {isLoading &&
                         <span className='loader'></span>}
                     <span className={isLoading ? 'invisible' : ''}>Log In</span>
                 </button>
