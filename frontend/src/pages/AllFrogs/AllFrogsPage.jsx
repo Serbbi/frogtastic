@@ -6,7 +6,7 @@ import './AllFrogsPage.css';
 export default function AllFrogsPage({ organization }) {
     const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, null, null);
 
-    if (isLoading) return (<FrogTableLoading organization={organization} />);
+    if (isLoading || frogs === undefined) return (<FrogTableLoading organization={organization} />);
 
     return (
         <div className="allFrogsContainer">

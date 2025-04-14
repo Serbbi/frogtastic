@@ -25,7 +25,7 @@ export default function AuthProvider({ children }) {
 				body: `username=${data.username}&password=${data.password}`,
 			});
 			const res = await response.json();
-			console.log(res);
+
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
