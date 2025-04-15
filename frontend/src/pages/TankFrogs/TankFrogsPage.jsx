@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import Loading from '../../components/miniComponents/loading';
 import FrogTable from '../../components/miniComponents/FrogTable';
 import useFrogs from '../../hooks/useFrogs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useTanks from '../../hooks/useTanks';
+import FrogTableLoading from '../../components/miniComponents/FrogTableLoading';
 import './TankFrogsPage.css';
 
 export default function TankFrogsPage({ organization }) {
@@ -31,8 +31,6 @@ export default function TankFrogsPage({ organization }) {
         localStorage.setItem('selectedTankNumber', event.target.value);
     };
 
-    if (isLoading) return (<div className="tankFrogsContent"><Loading /></div>);
-
     return (
         <div className="tankFrogsContent">
             <div className="titleAndSelect">
@@ -46,6 +44,7 @@ export default function TankFrogsPage({ organization }) {
                     })}
                 </select>
             </div>
+            {isLoading || frogs === undefined ? <FrogTableLoading organization={organization} /> : null}
             {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization} />}
         </div>
     );

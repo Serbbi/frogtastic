@@ -6,8 +6,14 @@ const fetchWithToken = async (url, token) => {
             'Authorization': `Bearer ${token}`
         }
     });
-    if (res.status === 401) {
-        throw new Error('Token has expired');
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+
+        if (errorData.detail && Array.isArray(errorData.detail)) {
+            throw new Error(errorData.detail[0].msg || res.statusText);
+        }
+
+        throw new Error(errorData.detail || res.statusText);
     }
     return await res.json();
 };
@@ -33,8 +39,6 @@ export default function useFrogs(id = null, organizationId = null, currentTankId
         }
     }
     const { data, error, isLoading, mutate } = useSWR([url, token], ([url, token]) => fetchWithToken(url, token), { revalidateOnFocus: false });
-
-    // console.log(error);
 
     if (Array.isArray(data)) {
         return {
