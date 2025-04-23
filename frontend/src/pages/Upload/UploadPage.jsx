@@ -11,6 +11,7 @@ export default function UploadPage({ organization }) {
     const [fileName, setFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
+    const [modelUsed, setModelUsed] = useState(localStorage.getItem("lastSelectedModel") ? parseInt(localStorage.getItem("lastSelectedModel")) : 1);
     const dropContainer = useRef(null);
     const navigate = useNavigate();
     const { setExtractionImageURL } = useImage();
@@ -23,7 +24,7 @@ export default function UploadPage({ organization }) {
         formData.append('file', file);
         setIsLoading(true);
 
-        imagePostRequest(formData, organization.id)
+        imagePostRequest(formData, organization.id, modelUsed)
             .then(data => {
                 setExtractionImageURL(data.image);
                 if (data.error) {
@@ -105,6 +106,11 @@ export default function UploadPage({ organization }) {
         document.querySelector(".uploadContainer").style.display = "flex";
     }
 
+    function updateModelUsed(event) {
+        localStorage.setItem("lastSelectedModel", event.target.value);
+        setModelUsed(event.target.value);
+    }
+
     if (isLoading) return (<div className="uploadContainer"><Loading /></div>);
 
     return (
@@ -112,6 +118,11 @@ export default function UploadPage({ organization }) {
             {success === "error" ? <ErrorContent errorMessage={errorMessage} goBack={goBackToDefault} /> : null}
             {success === "default" ?
                 <div className="uploadDefaultElements">
+                    <select onChange={updateModelUsed} value={modelUsed}>
+                        <option value={0}>Old</option>
+                        <option value={1}>Clean</option>
+                        <option value={2}>New</option>
+                    </select>
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
                         <p className="orWord">or</p>
