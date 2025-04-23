@@ -10,12 +10,12 @@ export default function TanksSetting({ organization }) {
     const [showInputNewTank, setShowInputNewTank] = useState(false);
     const [newTankName, setNewTankName] = useState("");
     const [editingItemId, setEditingItemId] = useState(null);
-    const { tanks } = useTanks(organization ? organization.id : null);
+    const { tanks, mutate } = useTanks(organization ? organization.id : []);
     const { addNotification } = useNotification();
     const inputRef = useRef(null);
 
     function addTank() {
-        if (newTankName === "") return;
+        if (newTankName === "" || newTankName.trim() === "") return;
         const tank = {
             "tank_name": newTankName,
             "organization_id": organization.id,
@@ -23,10 +23,11 @@ export default function TanksSetting({ organization }) {
             "attributes": {}
         };
         tanksPostRequest(tank)
-            .then(() => { addNotification({ text: 'Tank added', type: 'success' }); })
-            .catch(() => { addNotification({ text: 'Failed to add tank', type: 'error' }); });
+            .then(() => addNotification({ text: 'Tank added', type: 'success' }))
+            .catch(() => addNotification({ text: 'Failed to add tank', type: 'error' }));
 
         tanks.push(tank);
+        mutate(tanks, false);
         setShowInputNewTank(!showInputNewTank);
         setNewTankName("");
     }
@@ -40,8 +41,8 @@ export default function TanksSetting({ organization }) {
         if (newTankName === "") return;
         tank.tank_name = newTankName;
         tanksPutRequest(tank)
-            .then(() => { addNotification({ text: 'Tank updated', type: 'success' }); })
-            .catch(() => { addNotification({ text: 'Failed to update tank', type: 'error' }); });
+            .then(() => addNotification({ text: 'Tank updated', type: 'success' }))
+            .catch(() => addNotification({ text: 'Failed to update tank', type: 'error' }));
 
         setEditingItemId(null);
         setNewTankName("");
@@ -49,11 +50,12 @@ export default function TanksSetting({ organization }) {
 
     function handleDeleteClick(tankId) {
         tanksDeleteRequest(tankId)
-            .then(() => { addNotification({ text: 'Tank deleted', type: 'success' }); })
-            .catch(() => { addNotification({ text: 'Failed to delete tank', type: 'error' }); });
+            .then(() => addNotification({ text: 'Tank deleted', type: 'success' }))
+            .catch(() => addNotification({ text: 'Failed to delete tank', type: 'error' }));
 
         setEditingItemId(null);
         setNewTankName("");
+        mutate(tanks.filter(tank => tank.id !== tankId), false);
     }
 
     useEffect(() => {

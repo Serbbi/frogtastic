@@ -113,6 +113,8 @@ class FrogController(Controller):
         # if not verify_frog_details(frog):
             # return {"error": "Invalid frog details"}
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
+        if db_frog is None:
+            return None
 
         db_frog.history = dict(update_history(db_frog, frog, username))
         db_frog.current_tank_id = frog.current_tank_id
@@ -127,6 +129,8 @@ class FrogController(Controller):
 
     def delete_frog(self, frog_id: int):
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
+        if db_frog is None:
+            return None
         self.db.delete(db_frog)
         self.db.commit()
         return db_frog
