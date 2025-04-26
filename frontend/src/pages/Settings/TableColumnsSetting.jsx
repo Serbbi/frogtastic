@@ -12,7 +12,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     const inputRef = useRef();
 
     function selectColumn(column) {
-        if(listOfTableColumnsToAdd.includes(column)) {
+        if (listOfTableColumnsToAdd.includes(column)) {
             setListOfTableColumnsToAdd(listOfTableColumnsToAdd.filter((item) => item !== column));
         }
 
@@ -65,10 +65,10 @@ export default function TableColumnsSetting({ frog, organization }) {
                 })}
             </ul>
             <button onClick={() => setShowTableColumnOptions(!showTableColumnOptions)}>Add Table Column</button>
-            {showTableColumnOptions && 
+            {showTableColumnOptions &&
                 <div className='predefinedAttributesContainer' ref={inputRef}>
                     <ul className='predefinedAttributes'>
-                        {frog && ['frog_number', 'current_tank', ...Object.keys(frog.attributes)].map((option) => {
+                        {frog && ['id', 'frog_number', 'current_tank', ...Object.keys(frog.attributes)].map((option) => {
                             if (!organization.table_columns.includes(option) && !listOfTableColumnsToAdd.includes(option))
                                 return <li key={option} onClick={() => setListOfTableColumnsToAdd([...listOfTableColumnsToAdd, option])}>{option}</li>;
                             return null;
@@ -81,7 +81,7 @@ export default function TableColumnsSetting({ frog, organization }) {
             }
             <button className='saveButtonSetting' onClick={handleSaveColumns} disabled={isLoading}>
                 {isLoading &&
-                <span className='loader'></span>}
+                    <span className='loader'></span>}
                 <span className={isLoading ? 'invisible' : ''}>Save</span>
             </button>
         </div>

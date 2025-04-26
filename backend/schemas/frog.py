@@ -9,3 +9,4 @@ class FrogBase(BaseModel):
     attributes: dict
     organization_id: int
     history: dict
+    image_path: str

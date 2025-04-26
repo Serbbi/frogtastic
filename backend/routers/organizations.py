@@ -4,7 +4,7 @@ from schemas.organization import OrganizationBase
 from util.organizationsUtil import get_create_organization_access_right
 from util.exceptions import raise_403_exception
 from models.user import User
-from util.util import get_current_user
+from util.util import get_current_user, verify_token
 
 router = APIRouter(
     prefix="/organizations",
@@ -25,11 +25,13 @@ async def create_organization(organization: OrganizationBase,
     raise_403_exception("You do not have the right to create an organization")
 
 @router.get("")
-async def get_organizations(controller: OrganizationController = Depends(OrganizationController)):
+async def get_organizations(controller: OrganizationController = Depends(OrganizationController),
+                            _: str = Depends(verify_token)):
     return controller.get_organizations()
 
 @router.get("/{organization_id}")
-async def get_organization(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
+async def get_organization(organization_id: int, 
+                           controller: OrganizationController = Depends(OrganizationController)):
     return controller.get_organization(organization_id)
 
 @router.put("/{organization_id}")

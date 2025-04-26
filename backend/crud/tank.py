@@ -24,6 +24,8 @@ class TankController(Controller):
     
     def update_tank(self, tank_id: int, tank: Tank):
         db_tank = self.db.query(Tank).filter(Tank.id == tank_id).first()
+        if db_tank is None:
+            return None
         db_tank.tank_name = tank.tank_name
         db_tank.organization_id = tank.organization_id
         self.db.commit()
@@ -33,6 +35,8 @@ class TankController(Controller):
     
     def delete_tank(self, tank_id: int):
         db_tank = self.db.query(Tank).filter(Tank.id == tank_id).first()
+        if db_tank is None:
+            return None
         self.db.delete(db_tank)
         self.db.commit()
         return db_tank

@@ -24,6 +24,14 @@ class UserController(Controller):
 
     def get_user_by_email(self, email: str):
         return self.db.query(User).filter(User.email == email).first()
+    
+
+    def create_admin_user(self, user: User):
+        db_user = User(username=user.username, hashed_password=user.hashed_password, attributes=user.attributes, organizations=user.organizations, email=user.email)
+        self.db.add(db_user)
+        self.db.commit()
+        self.db.refresh(db_user)
+        return db_user
 
     
     def create_user(self, user: User):
@@ -47,7 +55,6 @@ class UserController(Controller):
     def update_user(self, user_id: int, user: User):
         db_user = self.get_user_by_id(user_id)
         db_user.username = user.username
-        db_user.hashed_password = user.hashed_password
         db_user.attributes = user.attributes
         db_user.organizations = user.organizations
         db_user.email = user.email

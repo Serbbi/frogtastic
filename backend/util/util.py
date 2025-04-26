@@ -8,6 +8,7 @@ from schemas.tokendata import TokenData
 from dotenv import load_dotenv
 import os
 from passlib.context import CryptContext
+import time
 
 load_dotenv()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -75,3 +76,24 @@ def get_organization_access_right(org_id: str, privilege: str, current_user: Ann
     if privilege in current_user.attributes[org_id]:
         return current_user.attributes[org_id][privilege]
     return False
+
+def verify_token(token: str = Depends(oauth2_scheme)):
+    try:
+        jwt.decode(
+            token,
+            os.getenv("SECRET_KEY"),
+            algorithms=[os.getenv("ALGORITHM")],
+            options={"leeway": 60}
+        )
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

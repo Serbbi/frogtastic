@@ -15,6 +15,7 @@ export default function CreateOrganizationPage() {
             admins: [],
             table_columns: [],
             system_parameters: {},
+            system_parameter_names: []
             // description: form[1].value,
             // image: form[2].files[0]
         };

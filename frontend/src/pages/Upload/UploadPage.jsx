@@ -11,26 +11,30 @@ export default function UploadPage({ organization }) {
     const [fileName, setFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
+    const [modelUsed, setModelUsed] = useState(localStorage.getItem("lastSelectedModel") ? parseInt(localStorage.getItem("lastSelectedModel")) : 1);
     const dropContainer = useRef(null);
     const navigate = useNavigate();
     const { setExtractionImageURL } = useImage();
 
     function uploadImage() {
         const formData = new FormData();
-        formData.append('file', document.querySelector('input[type="file"]').files[0]);
+        const file = document.querySelector('input[type="file"]').files[0];
+        if (!verifyFile(file)) return;
+
+        formData.append('file', file);
         setIsLoading(true);
 
-        imagePostRequest(formData, organization.id)
+        imagePostRequest(formData, organization.id, modelUsed)
             .then(data => {
                 setExtractionImageURL(data.image);
-                if(data.error) {
+                if (data.error) {
                     setSuccess("error");
                     setErrorMessage(data.error);
                     return;
                 }
 
                 setSuccess("success");
-                navigate(`/home/frog/${data.frog.id}`);
+                navigate(`/home/frog/${data.frog.id}`, { state: "from upload" });
                 document.querySelector(".uploadContainer").style.display = "block";
             })
             .catch(error => {
@@ -38,6 +42,23 @@ export default function UploadPage({ organization }) {
                 setErrorMessage(error.message);
             })
             .finally(() => setIsLoading(false));
+    }
+
+    function verifyFile(file) {
+        if (!file) {
+            setSuccess("error");
+            setErrorMessage("Please select a file to upload.");
+            return false;
+        }
+
+        const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        if (!validImageTypes.includes(file.type)) {
+            setSuccess("error");
+            setErrorMessage("Invalid image format. Please upload a .jpeg, .jpg, or .png file.");
+            return false;
+        }
+
+        return true;
     }
 
     useEffect(() => {
@@ -85,17 +106,27 @@ export default function UploadPage({ organization }) {
         document.querySelector(".uploadContainer").style.display = "flex";
     }
 
-    if(isLoading) return (<div className="uploadContainer"><Loading /></div>);
+    function updateModelUsed(event) {
+        localStorage.setItem("lastSelectedModel", event.target.value);
+        setModelUsed(event.target.value);
+    }
+
+    if (isLoading) return (<div className="uploadContainer"><Loading /></div>);
 
     return (
         <div className="uploadContainer">
-            {success === "error" ? <ErrorContent errorMessage={errorMessage} goBack={goBackToDefault}/> : null}
+            {success === "error" ? <ErrorContent errorMessage={errorMessage} goBack={goBackToDefault} /> : null}
             {success === "default" ?
                 <div className="uploadDefaultElements">
+                    <select onChange={updateModelUsed} value={modelUsed}>
+                        <option value={0}>Old</option>
+                        <option value={1}>Clean</option>
+                        <option value={2}>New</option>
+                    </select>
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
                         <p className="orWord">or</p>
-                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName}/>
+                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName} />
                         <span className="browseFilesButton">Browse files</span>
                         <span className="file-name">{fileName}</span>
                     </label>

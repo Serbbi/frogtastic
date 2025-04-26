@@ -28,6 +28,17 @@
     color: black;
 }
 
+.rightContainer a {
+    color: #99BC85;
+    font-size: 0.85rem;
+    margin-left: 5px;
+}
+
+.rightContainer p {
+    margin: 5px;
+    font-size: 0.75rem;
+}
+
 .formContainer {
     display: flex;
     flex-direction: column;
@@ -50,7 +61,6 @@
 
 .inputField:hover {
     background-color: rgba(0, 0, 0, 0.2);
-    cursor: pointer;
 }
 
 .submitButton {
@@ -83,6 +93,48 @@
         transform: rotate(359deg);
     }
 }
+
+.errorLabel {
+    font-size: small;
+    margin: 1rem auto 0 auto;
+    width: 80%;
+}
+
+.changeLogButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #f36f11;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    text-decoration: none;
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px #f36f11;
+    }
+
+    50% {
+        box-shadow: 0 0 20px #f36f11;
+    }
+
+    100% {
+        box-shadow: 0 0 10px #f36f11;
+    }
+}
+
+/* animate the above button to change colors in a transition */
+.changeLogButton:hover {
+    background-color: #e9853e;
+    color: white;
+    transition: all 0.3s ease;
+}
+
 
 @media screen and (max-width: 768px) {
     /* hide leftContainer */

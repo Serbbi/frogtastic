@@ -52,3 +52,8 @@ For more information regarding MATLAB Engine installation please visit [here](ht
 ```Bash
 python3 ./main.py --model mobilenet --dataset_corf './data/extractions/semi-supervised-corf-sigma-3-75/' --resize 224 --plot-title 'semi-supervised-corf-sigma-3-75'
 ```
+
+
+## Changed for new subset of frogs:
+[] in main.py, changed the models folder
+[] in data_load.py, changed the labeler

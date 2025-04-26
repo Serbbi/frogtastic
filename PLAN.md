@@ -1,23 +1,7 @@
-# Database entities
+## Nice to know
 
-### User
-- username
-- password
-- dict
-    - organization id -> privileges
-- list of organizations
-
-### Organization
-- id 
-- participants
-
-### Frog
-- id
-- frog number
-- current tank id
-- dict (for custom attributes)
-- organization id
-
-### Tank
-- id
-- dict (for custom attributes)
+### Push docker images to registry
+```
+serban@fedora:~/Documents/frogtastic$ docker tag frogtastic-backend registry.webhosting.rug.nl/kamenzlab/frogrepo-backend:latest
+serban@fedora:~/Documents/frogtastic$ docker push registry.webhosting.rug.nl/kamenzlab/frogrepo-backend:latest
+```

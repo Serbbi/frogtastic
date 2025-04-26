@@ -44,25 +44,33 @@
     padding: 12px;
     font-size: smaller;
     transition: all 0.3s ease;
-    color: var(--primary-color);
+    /* color: var(--primary-color); */
 }
 
 .navLink {
     text-align: left;
     text-decoration: none;
-    color: var(--primary-color);
+    /* color: var(--primary-color); */
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     display: flex;
     gap: 15px;
     align-items: center;
+    color: var(--primary-color);
+}
+
+.menuList li {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    cursor: pointer;
 }
 
 .navLink:hover {
     color: var(--hover-color);
 }
 
-.active {
+.navLinkactive {
     color: var(--active-color);
 }
 

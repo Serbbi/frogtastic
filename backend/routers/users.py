@@ -19,7 +19,7 @@ async def get_users(
     current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
+    if util.get_general_access_right("canGetUsers", current_user) or util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
         return controller.get_users(org_q)
     raise_403_exception(ACCESS_RIGHT_MESSAGE)
 
@@ -31,7 +31,7 @@ async def get_user(
     current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
+    if util.get_general_access_right("canGetUsers", current_user) or util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
         return controller.get_user_by_id(user_id)
     raise_403_exception(ACCESS_RIGHT_MESSAGE)
 
@@ -64,9 +64,20 @@ async def update_user(
     current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_organization_access_right(str(org_q), "canEditUsers", current_user):
+    if util.get_general_access_right("canEditUsers", current_user) or util.get_organization_access_right(str(org_q), "canEditUsers", current_user):
         return controller.update_user(user_id, user)
     raise_403_exception(ACCESS_RIGHT_MESSAGE)
+
+@router.patch("/{user_id}")
+async def update_user(
+    user_id: int, 
+    user: UserBase, 
+    current_user: User = Depends(util.get_current_user),
+    controller: UserController = Depends(UserController)
+):
+    if current_user.id == user_id:
+        return controller.update_user(user_id, user)
+    raise_403_exception("User can only update themselves")
 
 
 @router.delete("/{user_id}")
@@ -76,6 +87,6 @@ async def delete_user(
     current_user: User = Depends(util.get_current_user),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_organization_access_right(str(org_q), "canDeleteUsers", current_user):
+    if util.get_general_access_right("canDeleteUsers", current_user) or util.get_organization_access_right(str(org_q), "canDeleteUsers", current_user):
         return controller.delete_user(user_id)
     raise_403_exception(ACCESS_RIGHT_MESSAGE)

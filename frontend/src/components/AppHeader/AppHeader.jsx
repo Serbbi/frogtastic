@@ -3,19 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NotificationItems from './NotificationItems';
 import useOrganizations from '../../hooks/useOrganizations';
 import { useNavigate } from "react-router-dom";
+import ExpiredTokenModal from '../miniComponents/ExpiredTokenModal';
 import './AppHeader.css';
 
-export default function AppHeader({ organization, setOrganization }) {
+export default function AppHeader({ setOrganization }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [ shownNotifications, setShownNotifications ] = useState(0);
+    const [shownNotifications, setShownNotifications] = useState(0);
     const userOrgs = localStorage.getItem('orgs').split(',');
     const username = localStorage.getItem('username');
     const userEmail = localStorage.getItem('email');
-    const [ isProfileSettingsOpen, setIsProfileSettingsOpen ] = useState(false);
+    const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
     const userContainer = document.querySelector('.userContainerAndProfileSettings');
-    const [ showOrganizations, setShowOrganizations ] = useState(false);
-    const { organizations } = useOrganizations();
-    const [ firstTime, setFirstTime ] = useState(true);
+    const [showOrganizations, setShowOrganizations] = useState(false);
+    const { organizations, error } = useOrganizations();
+    const [firstTime, setFirstTime] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -72,48 +73,49 @@ export default function AppHeader({ organization, setOrganization }) {
                 <div className='newDropdown'>
                     <button className='headerButton' onClick={toggleMenu}>
                         <FontAwesomeIcon icon="fa-solid fa-bell" />
-                        {firstTime && <span className='notificationBadge'></span>}    
+                        {firstTime && <span className='notificationBadge'></span>}
                     </button>
-                    
+
                     {isOpen && (
-                            <ul className='notificationList'>
-                                {userOrgs[0] !== "" && userOrgs.map((org) => (
-                                    <NotificationItems organizationId={org} addShownNotifications={addShownNotifications} />
-                                ))}
-                                {shownNotifications === 0 && <li key={0}>No notifications</li>}
-                            </ul>
+                        <ul className='notificationList'>
+                            {userOrgs[0] !== "" && userOrgs.map((org) => (
+                                <NotificationItems key={org} organizationId={org} addShownNotifications={addShownNotifications} />
+                            ))}
+                            {shownNotifications === 0 && <li key={0}>No notifications</li>}
+                        </ul>
                     )}
                 </div>
-                <button id="menuButton" className='headerButton' onClick={handleMenuOpen}><FontAwesomeIcon icon="fa-solid fa-bars"/></button>
+                <button id="menuButton" className='headerButton' onClick={handleMenuOpen}><FontAwesomeIcon icon="fa-solid fa-bars" /></button>
             </div>
             <div className="userContainerAndProfileSettings">
                 <div className="userContainer">
-                    <img src="/user_icon.png" alt="user-icon" className='userIcon'/>
+                    <img src="/user_icon.png" alt="user-icon" className='userIcon' />
                     <div className="userContainerCenter">
                         <p className='userContainerUsername'>{username ? username : 'Username'}</p>
                         <p className='userContainerEmail'>{userEmail}</p>
                     </div>
-                    {isProfileSettingsOpen ? <FontAwesomeIcon icon="fa-solid fa-chevron-up" className='userContainerChevron' onClick={handleProfileSettingsOpen}/> :
-                    <FontAwesomeIcon icon="fa-solid fa-chevron-down" className='userContainerChevron' onClick={handleProfileSettingsOpen}/>}
+                    {isProfileSettingsOpen ? <FontAwesomeIcon icon="fa-solid fa-chevron-up" className='userContainerChevron' onClick={handleProfileSettingsOpen} /> :
+                        <FontAwesomeIcon icon="fa-solid fa-chevron-down" className='userContainerChevron' onClick={handleProfileSettingsOpen} />}
                 </div>
                 <div className="profileSettings">
-                    {!showOrganizations && 
+                    {!showOrganizations &&
                         <>
-                        <button className='profileSettingsButton' onClick={() => navigate(`/home/profile-settings/${username}`)}>Profile Settings</button>
-                        <button className='profileSettingsButton' onClick={() => setShowOrganizations(true)}>Organizations</button>
-                        {/* <button className='profileSettingsButton'>Logout</button> */}
+                            <button className='profileSettingsButton' onClick={() => navigate(`/home/profile-settings/${username}`)}>Profile Settings</button>
+                            <button className='profileSettingsButton' onClick={() => setShowOrganizations(true)}>Organizations</button>
+                            {/* <button className='profileSettingsButton'>Logout</button> */}
                         </>
                     }
                     {showOrganizations &&
-                    <>
-                        {userOrgs.map((org) => (
-                            <button className='profileSettingsButton' onClick={() => setOrganization(org)}>{getOrganizationName(Number(org))}</button>
-                        ))}
-                        <button className='profileSettingsButton' onClick={() => setShowOrganizations(false)}>Back</button>
-                    </>
+                        <>
+                            {organizations && organizations.length !== 0 && userOrgs.map((org) => (
+                                <button key={org} className='profileSettingsButton' onClick={() => setOrganization(org)}>{getOrganizationName(Number(org))}</button>
+                            ))}
+                            <button className='profileSettingsButton' onClick={() => setShowOrganizations(false)}>Back</button>
+                        </>
                     }
                 </div>
             </div>
+            {error && error.toString().includes('Token') && <ExpiredTokenModal />}
         </nav>
     );
 }

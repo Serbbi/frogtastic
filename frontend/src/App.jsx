@@ -8,6 +8,7 @@ import { initializeIcons } from './util/iconLibrary';
 import NotificationProvider from './services/providers/NotificationProvider';
 import NotificationList from './components/miniComponents/NotificationList';
 import { OrganizationProvider } from './services/providers/OrganizationProvider';
+import ChangeLogPage from './pages/ChangeLog/ChangeLogPage';
 import './App.css';
 
 
@@ -18,17 +19,18 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <NotificationProvider>
-          <AuthProvider>
-            <OrganizationProvider>
+          <OrganizationProvider>
+            <AuthProvider>
               <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route element={<PrivateRoute />}>
-                    <Route path="/home/*" element={<HomePage />} />
+                  <Route path="/home/*" element={<HomePage />} />
                 </Route>
+                <Route path="/changelog" element={<ChangeLogPage />} />
               </Routes>
-            </OrganizationProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </OrganizationProvider>
           <NotificationList />
         </NotificationProvider>
       </BrowserRouter>

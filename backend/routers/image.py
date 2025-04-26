@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, File, UploadFile
 from crud.frog import FrogController
 from util.exceptions import raise_404_exception
+from typing import Union
 
 router = APIRouter(
     prefix="/image",
@@ -13,9 +14,10 @@ router = APIRouter(
 )
 
 @router.post("/{organization_id}")
-async def upload_image(organization_id: int, file: UploadFile = File(...), controller: FrogController = Depends(FrogController)):
-    db_frog = controller.get_frog_by_image(file, organization_id)
-
+async def upload_image(organization_id: int, 
+                       model_id: Union[int, None] = 1, 
+                       file: UploadFile = File(...), controller: FrogController = Depends(FrogController)):
+    db_frog = controller.get_frog_by_image(file, organization_id, model_id)
     if db_frog:
         return db_frog
     

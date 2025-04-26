@@ -1,27 +1,39 @@
 .mainContainerSignup{
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
-    background: rgb(60, 134, 80);
-    background: linear-gradient(36deg, rgb(107, 155, 120) 0%, rgb(121, 205, 143) 34%, rgba(232,251,230,1) 100%); 
+    box-sizing: border-box;
+}
+
+.leftSignUp {
+    width: 55%;
+    height: 100%;
+    background-color: rgb(183, 209, 185);
+    /* background-color: #99BC85; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rightSignUp {
+    width: 45%;
 }
 
 
-.formContainerSignup {
-    a {
-        color: rgb(53, 53, 53);
-        font-size: 0.9rem;
-    }
-
-    button {
-        background-color: rgb(53,98,65);
-    }
+.formContainerSignup a {
+        color: #99BC85;
+        font-size: 0.85rem;
+        margin-left: 5px;
 }
 
 .inputContainer {
+    position: relative;
+    width: 85%;
+}
+
+.inputContainer input {
     width: 100%;
+    box-sizing: border-box;
+    height: 2.5rem;
 }
 
 .inputField {
@@ -31,67 +43,107 @@
     margin-top: 15px;
     margin-right: 10px;
 
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
     border: none;
-    border-radius: 10px;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+    /* cursor: text; */
+}
+
+.inputField:focus {
+    outline: none;
+    border: 1px solid #377247;
 }
 
 .inputField:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-    cursor: pointer;
+    /* background-color: #e4e8e2; */
+    background-color: #f2f2f2;
 }
 
 .submitButton {
     width: 40%;
     height: 40px;
-    margin: 15px 0;
+    margin: 15px auto;
 
-    background-color: #3d9349;
+    /* background-color: #99BC85; */
+    background-color: #377247;
     border: none;
-    border-radius: 10px;
+    border-radius: 15px;
     color: white;
-    font-weight: bold;
-}
 
-.submitButton:hover {
-    background-color: #4eb75c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
     cursor: pointer;
 }
 
-.icon {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
+.submitButton:hover {
+    /* background-color: #b2d1a1; */
+    background-color: #5ca56e;
 }
 
-.icon .tooltiptext {
-    visibility: hidden;
-    width: fit-content;
-    background-color: rgb(39, 39, 39);
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-  
-    position: absolute;
-    z-index: 1;
-  }
-  
-  .icon:hover .tooltiptext {
-    visibility: visible;
-  }
+.submitButton:disabled {
+    background-color: #cde2d3;
+    color: #a0a0a0;
+    cursor: default;
+}
 
 .formAndTitle {
-    width: 50%;
+    width: 70%;
+    height: fit-content;
     background-color: whitesmoke;
-    padding: 20px;
-    border-radius: 20px;
+    padding: 10px 30px;
+    border-radius: 30px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
+
+.eyeButton {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: unset;
+    border: none;
+    cursor: pointer;
+}
+
+.errorInput {
+    border: 1px solid salmon;
+}
+
+.errorText {
+    color: salmon;
+    font-size: 0.8rem;
+    margin: 0.2rem 0 0 0;
+}
+
+.inputGroup {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formContainerSignup {
+    display: flex;
+    flex-direction: column;
+}
+
+.formContainerSignup p{
+    margin: 5px;
+    font-size: 0.75rem;
+}
+
 
 @media screen and (max-width: 768px) {
     .formContainerSignup {
-        width: 80%;
+        /* width: 80%; */
     }
 
     .inputField {

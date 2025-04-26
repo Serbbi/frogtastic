@@ -1,8 +1,25 @@
 import useSWR from 'swr';
 
-const fetcher = (...args) => fetch(...args).then(res => res.json());
+const fetchWithToken = async (url, token) => {
+    const res = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+
+        if (errorData.detail && Array.isArray(errorData.detail)) {
+            throw new Error(errorData.detail[0].msg || res.statusText);
+        }
+
+        throw new Error(errorData.detail || res.statusText);
+    }
+    return await res.json();
+};
 
 export default function useFrogs(id = null, organizationId = null, currentTankId = null, nOfFrogs = null) {
+    const token = localStorage.getItem('site');
     let url = `${process.env.REACT_APP_BACKEND_URL}/frogs`;
     if (id) {
         url += `/${id}`;
@@ -21,11 +38,11 @@ export default function useFrogs(id = null, organizationId = null, currentTankId
             url += `?${params.toString()}`;
         }
     }
-    const { data, error, isLoading, mutate } = useSWR(url, fetcher, { revalidateOnFocus: false });
+    const { data, error, isLoading, mutate } = useSWR([url, token], ([url, token]) => fetchWithToken(url, token), { revalidateOnFocus: false });
 
     if (Array.isArray(data)) {
         return {
-            frogs : data,
+            frogs: data,
             isLoading,
             error,
             mutate
@@ -33,7 +50,7 @@ export default function useFrogs(id = null, organizationId = null, currentTankId
     }
 
     return {
-        frog : data,
+        frog: data,
         isLoading,
         error,
         mutate
