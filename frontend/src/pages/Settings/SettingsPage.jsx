@@ -18,7 +18,7 @@ export default function SettingsPage() {
                 <FrogAttributesSetting frog={frogs ? frogs[0] : null} organization={organization} />
                 <TableColumnsSetting frog={frogs ? frogs[0] : null} organization={organization} />
                 <TanksSetting organization={organization} />
-                {/* <UserPrivilegesSetting organizationId={organization ? organization.id : -1} /> */}
+                <UserPrivilegesSetting organizationId={organization ? organization.id : -1} />
                 <SystemParametersSetting />
             </div>
         </div>

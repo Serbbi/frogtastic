@@ -54,6 +54,10 @@ export default function AuthProvider({ children }) {
 				} else if (err instanceof SyntaxError) {
 					errorMessage = "Invalid server response";
 				} else if (err.message) {
+					if (err.message.includes("Incorrect")) {
+						setErrorMessage("Incorrect username or password");
+						return;
+					}
 					errorMessage = err.message;
 				} else {
 					errorMessage = "Temporary issue";
