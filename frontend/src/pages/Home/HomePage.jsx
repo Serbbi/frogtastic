@@ -14,6 +14,7 @@ import HelpPage from "../Help/HelpPage";
 import FrogPage from "../Frog/FrogPage";
 import ProfileSettingsPage from "../ProfileSettings/ProfileSettingsPage";
 import { UnsavedChangesProvider } from "../../services/providers/UnsavedChangesProvider";
+import AdminSettingsPage from "../AdminSettings/AdminSettingsPage";
 import './HomePage.css';
 
 export default function HomePage() {
@@ -38,6 +39,7 @@ export default function HomePage() {
                                 <Route path="/frog/:frogId" element={<FrogPage organization={organization} />} />
                                 <Route path="/help" element={<HelpPage />} />
                                 <Route path="/profile-settings/:userName" element={<ProfileSettingsPage />} />
+                                <Route path="/admin-settings" element={<AdminSettingsPage />} />
                             </Routes>
                         </ImageProvider>
                     </div>

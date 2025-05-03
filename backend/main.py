@@ -7,6 +7,7 @@ from database import SessionLocal
 from sqlalchemy.orm import Session
 from crud.user import UserController
 from models.user import User
+from starlette.middleware.base import BaseHTTPMiddleware
 import os
 
 """
@@ -59,8 +60,16 @@ async def lifespan(_: FastAPI):
     
     yield
 
+class RemoveApiPrefixMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # Check if the path starts with /api
+        if request.scope["path"].startswith("/api"):
+            # Remove the /api prefix
+            request.scope["path"] = request.scope["path"][4:]
+        response = await call_next(request)
+        return response
+
 app = FastAPI(lifespan=lifespan)
-# Base.metadata.create_all(bind=engine)
 
 app.include_router(frogs.router)
 app.include_router(image.router)
@@ -71,9 +80,11 @@ app.include_router(tanks.router)
 app.include_router(notifications.router)
 # app.include_router(email.router)
 
+app.add_middleware(RemoveApiPrefixMiddleware)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "https://frog.web.rug.nl"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

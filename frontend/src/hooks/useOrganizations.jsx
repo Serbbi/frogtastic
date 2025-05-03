@@ -17,11 +17,12 @@ const fetchWithToken = async (url, token) => {
 
 export default function useOrganizations() {
     const token = localStorage.getItem('site');
-    const { data, error, isLoading } = useSWR([`${process.env.REACT_APP_BACKEND_URL}/organizations`, token], ([url, token]) => fetchWithToken(url, token));
+    const { data, error, isLoading, mutate } = useSWR([`${process.env.REACT_APP_BACKEND_URL}/organizations`, token], ([url, token]) => fetchWithToken(url, token));
 
     return {
         organizations: data,
         isLoading,
-        error
+        error,
+        mutate
     };
 }

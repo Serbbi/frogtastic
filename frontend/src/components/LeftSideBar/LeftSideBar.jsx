@@ -7,6 +7,7 @@ import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvid
 export default function LeftSideBar({ organization, setOrganization }) {
     const userId = localStorage.getItem("userId");
     const canCreateOrganization = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canCreateOrganization'];
+    const isAdmin = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canGetUsers'];
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
@@ -105,6 +106,15 @@ export default function LeftSideBar({ organization, setOrganization }) {
                         <span>Organization Settings</span>
                     </li>
                     : null}
+                {isAdmin &&
+                    <li
+                        onClick={() => handleNavigation("/home/admin-settings")}
+                        className={`navLink${isActive("/home/admin-settings") ? "active" : ""}`}
+                    >
+                        {/* <FontAwesomeIcon icon="fa-solid fa-user-shield" className='menuIcon' /> */}
+                        <span>Admin Settings</span>
+                    </li>
+                }
             </ul>
             <button className='logoutButton' onClick={() => logOut()}><FontAwesomeIcon icon="fa-solid fa-right-from-bracket" /><span>Log Out</span></button>
         </div>
