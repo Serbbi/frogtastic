@@ -84,7 +84,7 @@ app.add_middleware(RemoveApiPrefixMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://frog.web.rug.nl"],
+    allow_origins=["http://localhost:3000", "https://frog.web.rug.nl", "https://froggy-frontend-production.up.railway.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
