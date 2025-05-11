@@ -11,6 +11,21 @@
 
 .frogTable th {
     background-color: rgb(183, 209, 185);
+    cursor: pointer;
+}
+
+.frogTable th:hover {
+    background-color: rgb(160, 188, 163);
+}
+.frogTable th::after {
+    content: " ⇅";
+    font-size: 0.9rem;
+    color: #333;
+    visibility: hidden;
+}
+
+.frogTable th:hover::after {
+    visibility: visible;
 }
 
 .frogTable th, .frogTable td {
