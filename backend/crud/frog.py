@@ -155,6 +155,8 @@ class FrogController(Controller):
 
         frogs = query.all()
         df = pd.DataFrame([frog.__dict__ for frog in frogs])
+        if df.empty:
+            return {"error": "No frogs found"}
         df = df.drop(columns=["_sa_instance_state"])
         df["current_tank_id"] = df["current_tank_id"].apply(lambda x: next((tank.tank_name for tank in tanks if tank.id == x), None))
         df = df.rename(columns={"current_tank_id": "current_tank_name"})

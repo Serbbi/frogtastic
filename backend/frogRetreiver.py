@@ -10,7 +10,7 @@ import re
 def retrieve_frog(image, model_id):
     if image is None:
         return None
-    model_folders = ['models/RGB_5.h5', 'models_clean/RGB_2.h5', 'models_new/RGB_5.h5']
+    model_folders = ['models/RGB_5.h5', 'models_clean/RGB_2.h5', 'models_new/RGB_5.h5', "models_oneshot/RGB_4.h5"]
     model = load_model(f"./CORF3D_ACF/output/{model_folders[model_id]}")
     img = cv2.resize(image, (224, 224))
     y_pred = model.predict(np.array([img]))

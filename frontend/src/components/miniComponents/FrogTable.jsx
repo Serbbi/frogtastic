@@ -2,28 +2,66 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import UseTanks from '../../hooks/useTanks';
+import { useState } from 'react';
 import './FrogTable.css';
 
 export default function FrogTable({ frogs, organization }) {
     const navigate = useNavigate();
     const { tanks } = UseTanks(organization ? organization.id : -1);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [sortedFrogs, setSortedFrogs] = useState(frogs);
 
     function formatColumnName(columnName) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
     }
+
+    const sortFrogs = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        console.log("Sorting by: ", key, " in direction: ", direction);
+        setSortConfig({ key, direction });
+
+        const sorted = [...frogs].sort((a, b) => {
+            if (key === "current_tank") {
+                const tankA = tanks.find(tank => tank.id === a.current_tank_id)?.tank_name || '';
+                const tankB = tanks.find(tank => tank.id === b.current_tank_id)?.tank_name || '';
+                return direction === 'asc' ? tankA.localeCompare(tankB) : tankB.localeCompare(tankA);
+            }
+            if (key === "is_sick") {
+                return direction === 'asc' ? a.attributes[key] - b.attributes[key] : b.attributes[key] - a.attributes[key];
+            }
+            if (key === "id") {
+                const valueA = `F${a["frog_number"]}_T${a["tank_id"]}`;
+                const valueB = `F${b["frog_number"]}_T${b["tank_id"]}`;
+                return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+            }
+            const valueA = a.attributes[key] || a[key];
+            const valueB = b.attributes[key] || b[key];
+            if (typeof valueA === 'string' && typeof valueB === 'string') {
+                return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+            }
+            return direction === 'asc' ? valueA - valueB : valueB - valueA;
+        });
+
+        setSortedFrogs(sorted);
+    };
 
     return (
         <table className='frogTable'>
             <thead className='tableHead'>
                 <tr>
                     {organization.table_columns.map(column => {
-                        if (column === "current_tank") return <th key={column}>Tank</th>;
-                        return <th key={column}>{formatColumnName(column)}</th>
+                        if (column === "current_tank") {
+                            return <th key={column} onClick={() => sortFrogs(column)}>Tank</th>;
+                        }
+                        return <th key={column} onClick={() => sortFrogs(column)}>{formatColumnName(column)}</th>;
                     })}
                 </tr>
             </thead>
             <tbody>
-                {tanks && frogs.map(frog => {
+                {tanks && sortedFrogs.map(frog => {
                     return (
                         <tr key={frog.id} className='tableRow' onClick={() => navigate(`/home/frog/${frog.id}`, { state: "from table" })}>
                             {organization.table_columns.map(column => {
