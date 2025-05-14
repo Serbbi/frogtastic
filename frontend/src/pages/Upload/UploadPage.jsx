@@ -122,6 +122,7 @@ export default function UploadPage({ organization }) {
                         <option value={0}>Old</option>
                         <option value={1}>Clean</option>
                         <option value={2}>New</option>
+                        <option value={3}>OneShot</option>
                     </select>
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
