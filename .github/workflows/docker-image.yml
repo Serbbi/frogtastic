@@ -1,0 +1,30 @@
+name: Docker Tag and Push
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  docker-tag-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker registry
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.webhosting.rug.nl -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+
+      - name: Tag Backend image
+        run: docker tag frogtastic-backend registry.webhosting.rug.nl/kamenzlab/frogrepo-backend:latest
+
+      - name: Tag Frontend image
+        run: docker tag frogtastic-backend registry.webhosting.rug.nl/kamenzlab/frogrepo-frontend:latest
+
+      - name: Push Backend image
+        run: docker push registry.webhosting.rug.nl/kamenzlab/frogrepo-backend:latest
+
+      - name: Push Frontend image
+        run: docker push registry.webhosting.rug.nl/kamenzlab/frogrepo-frontend:latest
