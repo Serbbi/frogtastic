@@ -17,11 +17,17 @@ jobs:
       - name: Log in to Docker registry
         run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.webhosting.rug.nl -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
+      - name: Build Backend Docker image
+        run: docker build -t frogtastic-backend ./backend
+
+      - name: Build Frontend Docker image
+        run: docker build -t frogtastic-frontend ./frontend
+
       - name: Tag Backend image
         run: docker tag frogtastic-backend registry.webhosting.rug.nl/kamenzlab/frogrepo-backend:latest
 
       - name: Tag Frontend image
-        run: docker tag frogtastic-backend registry.webhosting.rug.nl/kamenzlab/frogrepo-frontend:latest
+        run: docker tag frogtastic-frontend registry.webhosting.rug.nl/kamenzlab/frogrepo-frontend:latest
 
       - name: Push Backend image
         run: docker push registry.webhosting.rug.nl/kamenzlab/frogrepo-backend:latest
