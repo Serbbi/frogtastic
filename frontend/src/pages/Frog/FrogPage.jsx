@@ -159,10 +159,12 @@ export default function FrogPage({ organization }) {
                     <div>
                         <h2>Extraction Image</h2>
                         <img src={`data:image/png;base64,${extractionImageURL}`} alt="Extraction" />
+                        <button onClick={() => setShowCompareModal(false)}>Accept</button>
                     </div>
                     <div>
                         <h2>Reference Image</h2>
                         <img src={frog.image_path} alt="Reference" />
+                        <button onClick={() => navigate(-1)}>Reject</button>
                     </div>
                 </div>
             </div>}

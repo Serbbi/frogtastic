@@ -40,6 +40,9 @@ __pycache__/
 # Ignore model output
 /backend/CORF3D_ACF/output/plots
 
+# Ignore service account file
+service_account.json
+
 # Ignore sonarqube file
 /.scannerwork/
 
@@ -48,3 +51,4 @@ CORFpushpull
 Preprocessing
 uploaded images
 /backend/progress
+
