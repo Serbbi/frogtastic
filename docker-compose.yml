@@ -41,7 +41,6 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
-      - ./tobeinserted.csv:/tobeinserted.csv
     networks:
       - internal
   pgadmin:

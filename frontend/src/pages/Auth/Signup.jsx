@@ -18,16 +18,14 @@ export default function Signup() {
     const auth = useAuth();
 
     useEffect(() => {
-        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("resource")) {
-            setIsLoading(false);
-        }
-    }, [auth.getErrorMessage()]);
+        setIsLoading(auth.getShouldLoad());
+    }, [auth.getShouldLoad()]);
 
     const handleSubmitEvent = (e) => {
         e.preventDefault();
         if (input.password !== input.passwordConfirm) {
             alert("passwords do not match");
-            return
+            return;
         }
 
         if (input.username !== "" && input.password !== "") {
@@ -91,13 +89,13 @@ export default function Signup() {
 
     function validatePassword(e) {
         const password = e.target.value;
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/;
         if (password === "") {
             e.target.parentElement.nextElementSibling.textContent = "Please fill out this field.";
         } else if (password.length < 8) {
             e.target.parentElement.nextElementSibling.textContent = "Password must be at least 8 characters long.";
         } else if (!passwordRegex.test(password)) {
-            e.target.parentElement.nextElementSibling.textContent = "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
+            e.target.parentElement.nextElementSibling.textContent = "Password must contain at least one uppercase letter, one lowercase letter, one number and one symbol.";
         } else {
             e.target.parentElement.nextElementSibling.textContent = "";
             e.target.classList.remove("errorInput");
@@ -187,8 +185,7 @@ export default function Signup() {
                         <label className="errorLabel">{auth.getErrorMessage()}</label>
 
                         <button type="submit" className={"submitButton"} disabled={isLoading}>
-                            {isLoading &&
-                                <span className='loader'></span>}
+                            {isLoading && <span className='loader'></span>}
                             <span className={isLoading ? 'invisible' : ''}>Sign Up</span>
                         </button>
                         <p>Already have an account? <Link to="/">Log in here!</Link></p>
@@ -199,7 +196,6 @@ export default function Signup() {
             <div className="rightSignUp">
 
             </div>
-
         </div>
     );
 };
