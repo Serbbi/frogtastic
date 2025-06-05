@@ -9,14 +9,14 @@ export default function Notification({ message, type, deleteNotification }) {
       {type === 'trash' && <FontAwesomeIcon icon="fa-solid fa-trash-can" />}
       {type === 'error' && <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" />}
       <p>{message}</p>
-        <button onClick={deleteNotification}>X</button>
+      {/* <button onClick={deleteNotification}>X</button> */}
     </div>
   );
 }
 
 Notification.propTypes = {
-    message: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    deleteNotification: PropTypes.func.isRequired
+  message: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  deleteNotification: PropTypes.func.isRequired
 };
 

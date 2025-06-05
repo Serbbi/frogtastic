@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import UseTanks from '../../hooks/useTanks';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './FrogTable.css';
 
 export default function FrogTable({ frogs, organization }) {
@@ -10,6 +10,10 @@ export default function FrogTable({ frogs, organization }) {
     const { tanks } = UseTanks(organization ? organization.id : -1);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [sortedFrogs, setSortedFrogs] = useState(frogs);
+
+    useEffect(() => {
+        setSortedFrogs(frogs);
+    }, [frogs]);
 
     function formatColumnName(columnName) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
@@ -20,7 +24,6 @@ export default function FrogTable({ frogs, organization }) {
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
         }
-        console.log("Sorting by: ", key, " in direction: ", direction);
         setSortConfig({ key, direction });
 
         const sorted = [...frogs].sort((a, b) => {
@@ -52,7 +55,7 @@ export default function FrogTable({ frogs, organization }) {
         <table className='frogTable'>
             <thead className='tableHead'>
                 <tr>
-                    {organization.table_columns.map(column => {
+                    {organization?.table_columns.map(column => {
                         if (column === "current_tank") {
                             return <th key={column} onClick={() => sortFrogs(column)}>Tank</th>;
                         }
@@ -64,7 +67,7 @@ export default function FrogTable({ frogs, organization }) {
                 {tanks && sortedFrogs.map(frog => {
                     return (
                         <tr key={frog.id} className='tableRow' onClick={() => navigate(`/home/frog/${frog.id}`, { state: "from table" })}>
-                            {organization.table_columns.map(column => {
+                            {organization?.table_columns.map(column => {
                                 if (column === "id")
                                     return <td key={column}>F{frog["frog_number"]}_T{frog["tank_id"]}</td>;
                                 if (column === "frog_number")

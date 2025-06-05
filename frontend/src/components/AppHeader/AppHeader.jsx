@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NotificationItems from './NotificationItems';
 import useOrganizations from '../../hooks/useOrganizations';
@@ -13,15 +13,30 @@ export default function AppHeader({ setOrganization }) {
     const username = localStorage.getItem('username');
     const userEmail = localStorage.getItem('email');
     const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
-    const userContainer = document.querySelector('.userContainerAndProfileSettings');
     const [showOrganizations, setShowOrganizations] = useState(false);
     const { organizations, error } = useOrganizations();
     const [firstTime, setFirstTime] = useState(true);
     const navigate = useNavigate();
+    const profileBoxRef = useRef(null);
 
     useEffect(() => {
         setOrganization(userOrgs[0]);
     }, []);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (profileBoxRef.current && !profileBoxRef.current.contains(event.target)) {
+                setIsOpen(false);
+                setShownNotifications(0);
+                setIsProfileSettingsOpen(false);
+                profileBoxRef.current.style.maxHeight = '45px';
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [profileBoxRef]);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -50,9 +65,9 @@ export default function AppHeader({ setOrganization }) {
 
     function handleProfileSettingsOpen() {
         if (!isProfileSettingsOpen) {
-            userContainer.style.maxHeight = '300px';
+            profileBoxRef.current.style.maxHeight = '300px';
         } else {
-            userContainer.style.maxHeight = '45px';  // Collapsed height
+            profileBoxRef.current.style.maxHeight = '45px';  // Collapsed height
             setShowOrganizations(false);
         }
         setIsProfileSettingsOpen(!isProfileSettingsOpen);
@@ -87,9 +102,9 @@ export default function AppHeader({ setOrganization }) {
                 </div>
                 <button id="menuButton" className='headerButton' onClick={handleMenuOpen}><FontAwesomeIcon icon="fa-solid fa-bars" /></button>
             </div>
-            <div className="userContainerAndProfileSettings">
+            <div className="userContainerAndProfileSettings" ref={profileBoxRef}>
                 <div className="userContainer">
-                    <img src="/user_icon.png" alt="user-icon" className='userIcon' />
+                    <img src="/user_icon.jpg" alt="user-icon" className='userIcon' />
                     <div className="userContainerCenter">
                         <p className='userContainerUsername'>{username ? username : 'Username'}</p>
                         <p className='userContainerEmail'>{userEmail}</p>

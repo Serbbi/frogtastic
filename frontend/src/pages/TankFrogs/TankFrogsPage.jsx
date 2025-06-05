@@ -10,7 +10,7 @@ import './TankFrogsPage.css';
 
 export default function TankFrogsPage({ organization }) {
     const { tanks } = useTanks(organization ? organization.id : -1);
-    const [selectedNumber, setSelectedNumber] = useState(null);
+    const [selectedNumber, setSelectedNumber] = useState(localStorage.getItem('selectedTankNumber') || null);
     const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, selectedNumber, null);
     const { addNotification } = useNotification();
     const [tankStatus, setTankStatus] = useState(false);
@@ -23,11 +23,9 @@ export default function TankFrogsPage({ organization }) {
 
     useEffect(() => {
         if (tanks && tanks.length > 0) {
-            const storedNumber = localStorage.getItem('selectedTankNumber');
-            setSelectedNumber(storedNumber ? parseInt(storedNumber) : tanks[0].id);
+            setSelectedNumber(tanks[0].id);
         }
     }, [tanks]);
-
 
     function handleNumberChange(event) {
         setSelectedNumber(parseInt(event.target.value));
