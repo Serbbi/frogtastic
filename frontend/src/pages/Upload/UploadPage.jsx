@@ -131,7 +131,7 @@ export default function UploadPage({ organization }) {
                         <span className="browseFilesButton">Browse files</span>
                         <span className="file-name">{fileName}</span>
                     </label>
-                    <button onClick={uploadImage} className="uploadButton">Upload</button>
+                    <button onClick={uploadImage} className="primary-button upload-button">Upload</button>
                 </div>
                 : null}
         </div>

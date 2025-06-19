@@ -132,7 +132,7 @@ export default function Signup() {
 
                         <label className="errorLabel">{auth.getErrorMessage()}</label>
 
-                        <button type="submit" className={"submitButton"} disabled={isLoading}>
+                        <button type="submit" className="primary-button" disabled={isLoading}>
                             {isLoading &&
                                 <span className='loader'></span>}
                             <span className={isLoading ? 'invisible' : ''}>Sign Up</span>

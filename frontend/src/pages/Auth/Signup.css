@@ -52,7 +52,7 @@
 
 .inputField:focus {
     outline: none;
-    border: 1px solid #377247;
+    border: 1px solid #dbece0;
 }
 
 .inputField:hover {
@@ -60,31 +60,8 @@
     background-color: #f2f2f2;
 }
 
-.submitButton {
-    width: 40%;
-    height: 40px;
-    margin: 15px auto;
-
-    /* background-color: #99BC85; */
-    background-color: #377247;
-    border: none;
-    border-radius: 15px;
-    color: white;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-}
-
-.submitButton:hover {
-    /* background-color: #b2d1a1; */
-    background-color: #5ca56e;
-}
-
-.submitButton:disabled {
-    background-color: #cde2d3;
+.primary-button:disabled {
+    background-color: var(--disabled-color);
     color: #a0a0a0;
     cursor: default;
 }
@@ -142,15 +119,11 @@
 
 
 @media screen and (max-width: 768px) {
-    .formContainerSignup {
-        /* width: 80%; */
-    }
+    /* .formContainerSignup {
+        width: 80%;
+    } */
 
     .inputField {
         width: 80%;
-    }
-
-    .submitButton {
-        width: 60%;
     }
 }

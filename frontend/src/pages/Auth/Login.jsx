@@ -43,7 +43,7 @@ export default function Login() {
                 className="rotate" width={100} />
         </div>
         <div className="rightContainer">
-            <NavLink to="/changelog" className="changeLogButton">CHANGE LOG</NavLink>
+            {/* <NavLink to="/changelog" className="changeLogButton">CHANGE LOG</NavLink> */}
             <h2>Log In</h2>
             <form onSubmit={handleSubmitEvent} className="formContainer">
                 <input
@@ -60,7 +60,7 @@ export default function Login() {
                     type="password" />
                 <label className="errorLabel">{auth.getErrorMessage()}</label>
 
-                <button type="submit" className={"submitButton"} disabled={isLoading}>
+                <button type="submit" className="primary-button" disabled={isLoading}>
                     {isLoading &&
                         <span className='loader'></span>}
                     <span className={isLoading ? 'invisible' : ''}>Log In</span>

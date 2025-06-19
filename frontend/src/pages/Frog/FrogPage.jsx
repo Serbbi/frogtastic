@@ -147,10 +147,10 @@ export default function FrogPage({ organization }) {
                     </div>
                 </div>
                 <div className="rightDetailsContainer">
-                    <button className="saveButton" onClick={() => setShowCompareModal(true)}>Compare</button>
-                    <button className="saveButton" onClick={saveFrog}>Save</button>
-                    <button className="saveButton" onClick={deleteFrog}>Delete</button>
-                    <button className="saveButton" onClick={() => setShowHistory(!showHistory)}>History</button>
+                    <button className="primary-button frog-page-button" onClick={() => setShowCompareModal(true)}>Compare</button>
+                    <button className="primary-button frog-page-button" onClick={saveFrog}>Save</button>
+                    <button className="primary-button frog-page-button" onClick={deleteFrog}>Delete</button>
+                    <button className="primary-button frog-page-button" onClick={() => setShowHistory(!showHistory)}>History</button>
                 </div>
             </div>
             {showCompareModal && <div className="modalCompareImages">

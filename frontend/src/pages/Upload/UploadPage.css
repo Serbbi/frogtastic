@@ -76,21 +76,9 @@
   background: #333;
 }
 
-.uploadButton {
+.primary-button.upload-button {
   width: 100%;
-  height: 2.5rem;
   margin: 0.5rem 0;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 7px;
-  background-color: #377247;
-  color: white;
-  font-weight: bolder;
-  cursor: pointer;
-}
-
-.uploadButton:hover {
-  background-color: #45a049;
 }
 
 .orWord {

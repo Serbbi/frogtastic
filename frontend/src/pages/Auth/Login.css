@@ -63,23 +63,6 @@
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.submitButton {
-    width: 40%;
-    height: 40px;
-    margin-top: 15px;
-
-    background-color: #3d9349;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-}
-
-.submitButton:hover {
-    background-color: #4eb75c;
-    cursor: pointer;
-}
-
 .rotate {
     animation: rotation 8s infinite linear;
 }
@@ -137,6 +120,7 @@
 
 
 @media screen and (max-width: 768px) {
+
     /* hide leftContainer */
     .leftContainer {
         display: none;
@@ -145,5 +129,5 @@
     .rightContainer {
         width: 100%;
     }
-    
+
 }

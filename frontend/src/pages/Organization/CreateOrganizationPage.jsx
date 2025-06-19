@@ -43,7 +43,7 @@ export default function CreateOrganizationPage() {
                     </div>
                     <input type="file" />
                 </div>
-                <button type="submit">Create</button>
+                <button type="submit" className="primary-button create-organization-button">Create</button>
             </form>
         </div>
     );

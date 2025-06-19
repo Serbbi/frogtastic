@@ -20,20 +20,8 @@
     padding: 0.5rem;
 }
 
-.createOrganizationForm button {
+.primary-button.create-organization-button {
     width: 20%;
-    height: 2.5rem;
-    margin: 0.5rem 0;
-    border: none;
-    border-radius: 7px;
-    background-color: #377247;
-    color: white;
-    font-weight: bolder;
-    cursor: pointer;
-}
-
-.createOrganizationForm button:hover {
-    background-color: #45a049;
 }
 
 .createOrganizationForm input {
