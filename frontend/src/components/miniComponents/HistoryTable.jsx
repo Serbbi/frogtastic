@@ -26,20 +26,24 @@ export default function HistoryTable({ id, setShowHistory, showHistory, tanks })
                     <tr>
                         <th className='dateColumn'>Date</th>
                         <th>Event</th>
+                        <th>Author</th>
                     </tr>
                 </thead>
                 <tbody>
                     {frog && Object.entries(frog.history).map(([date, event]) => (
                         <tr key={date}>
                             <td className='dateColumn'>{date}</td>
-                            <td>{event.split('\n').map((line, index) => (
-                                <div key={index}>{formatEventText(line)}</div>
+                            <td>{Object.entries(event).filter(([key]) => key !== 'author').map(([key, value]) => (
+                                <div key={key}>
+                                    <strong>{key}:</strong> {value} <br />
+                                </div>
                             ))}</td>
+                            <td>{event.author}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <button className="saveButton" onClick={() => setShowHistory(!showHistory)}>Hide History</button>
+            <button className="primary-button frog-page-button" onClick={() => setShowHistory(!showHistory)}>Hide History</button>
         </div>
     );
 }

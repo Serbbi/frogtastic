@@ -25,6 +25,10 @@ async def get_frogs(org_q: Union[int, None] = None,
                     _: str = Depends(util.verify_token)):
     return controller.get_frogs(org_q, tank_q, no_frogs_q)
 
+@router.get("/change")
+async def change_frog(controller: FrogController = Depends(FrogController)):
+    return controller.change_frog_history_format()
+
 
 @router.get("/download-csv")
 async def download_csv(org_q: Union[int, None],

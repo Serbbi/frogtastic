@@ -167,21 +167,82 @@ class FrogController(Controller):
         csv = df.to_csv(index=False)
         return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=frogs.csv"})
 
+    def change_frog_history_format(self):
+        frogs = self.db.query(Frog).all()
+        for frog in frogs:
+            new_history = {}
+            for date in frog.history:
+                if isinstance(frog.history[date], str):
+                    new_attributes = new_attributes_method(frog.history[date])
+                    new_history[date] = {}
+                    if new_attributes["notes"]:
+                        new_history[date]["notes"] = new_attributes["notes"]
+                    if new_attributes["last_injection"]:
+                        new_history[date]["last-injection"] = new_attributes["last_injection"]
+                    if new_attributes["egg_quality"]:
+                        new_history[date]["egg_quality"] = new_attributes["egg_quality"]
+                    if new_attributes["weight"]:
+                        new_history[date]["weight"] = new_attributes["weight"]
+                    if new_attributes["current_tank_id"]:
+                        new_history[date]["current_tank_id"] = new_attributes["current_tank_id"]
+                    if new_attributes["is_sick"]:
+                        new_history[date]["is_sick"] = new_attributes["is_sick"]
+                    new_history[date]["author"] = frog.history[date].split(" ")[0]
+            frog.history = new_history
+            flag_modified(frog, "history")
+        self.db.commit()
+        
+        return {"message": "History format changed successfully"}
+
+def new_attributes_method(item):
+    if "weight" in item:
+        new_weight = item.split("weight")[1].split("\'")[3]
+    else:
+        new_weight = ""
+
+    if "egg_quality" in item:
+        egg_quality = item.split("egg_quality")[1].split("\'")[3]
+    else:
+        egg_quality = ""
+
+    if "last_injection" in item:
+        last_injection = item.split("last_injection")[1].split("\'")[3]
+    else:
+        last_injection = ""
+
+    if "is_sick" in item:
+        is_sick = item.split("is_sick")[1].split("\'")[3]
+    else:
+        is_sick = ""
+
+    if "notes" in item:
+        notes = item.split("notes")[1].split("\'")[3]
+    else:
+        notes = ""
+
+    if "current_tank_id" in item:
+        current_tank_id = item.split("current_tank_id")[1].split("\'")[3]
+    else:
+        current_tank_id = ""
+    
+    return { "weight": new_weight, "egg_quality": egg_quality, 
+             "last_injection": last_injection, "is_sick": is_sick, 
+             "notes": notes, "current_tank_id": current_tank_id }
 
 def update_history(db_frog, frog, username):
     history = db_frog.history
-    status_string = ""
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    if now not in history:  
+        history[now] = {}
 
     if db_frog.current_tank_id != frog.current_tank_id:
-        status_string += f"{username} changed current_tank_id from '{db_frog.current_tank_id}' to '{frog.current_tank_id}'\n"
+        history[now]["current_tank_id"] = frog.current_tank_id
     for key, value in frog.attributes.items():
         if value != db_frog.attributes.get(key):
-            status_string += f"{username} changed {key} from '{db_frog.attributes.get(key)}' to '{value}'\n"
-    if status_string:
-        if datetime.datetime.now().strftime("%Y-%m-%d %H:%M") in history:
-            history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] += status_string
-        else:
-            history[datetime.datetime.now().strftime("%Y-%m-%d %H:%M")] = status_string
+            history[now][key] = value
+    
+    history[now]["author"] = username
     return history
 
 # returns True if the frog details are valid
@@ -193,3 +254,12 @@ def verify_frog_details(frog : Frog):
             return {"status": False, "error": "Egg quality must be a positive number greater than 0"}
     # add more if Julia thinks it is necessary
     return {"status": True}
+
+
+hist = {
+    "01-01-2024": {
+        "notes": "fasdfhsadjkf",
+        "last-injection": "423423",
+        "author": "elena"
+    }
+}
