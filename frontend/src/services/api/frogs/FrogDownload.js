@@ -1,5 +1,10 @@
 export async function frogDownloadRequest(organizationId, tankId) {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/download-csv?org_q=${organizationId}&tank_q=${tankId}`, {
+    let url = `${process.env.REACT_APP_BACKEND_URL}/frogs/download-csv?org_q=${organizationId}`;
+    if (tankId) {
+        url += `&tank_q=${tankId}`;
+    }
+
+    const response = await fetch(url, {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('site')}`
         }
