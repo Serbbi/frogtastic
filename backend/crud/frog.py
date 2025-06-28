@@ -25,7 +25,7 @@ class FrogController(Controller):
         
         if tank_q:
             query = query.filter(Frog.current_tank_id == tank_q)
-        elif org_q:
+        if org_q:
             query = query.filter(Frog.organization_id == org_q)
         
         frogs = query.all()
