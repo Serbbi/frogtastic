@@ -34,6 +34,10 @@ async def get_organization(organization_id: int,
                            controller: OrganizationController = Depends(OrganizationController)):
     return controller.get_organization(organization_id)
 
+@router.get("/{organization_id}/download-csv")
+async def download_parameters(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
+    return controller.download_parameters(organization_id)
+
 @router.put("/{organization_id}")
 async def update_organization(organization_id: int, organization: OrganizationBase, controller: OrganizationController = Depends(OrganizationController)):
     return controller.update_organization(organization_id, organization)

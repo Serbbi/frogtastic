@@ -2,6 +2,9 @@ from crud.controller import Controller
 from models.organization import Organization
 from models.user import User
 from sqlalchemy.orm.attributes import flag_modified
+import pandas as pd
+import io
+from fastapi.responses import StreamingResponse
 
 class OrganizationController(Controller):
     def create_organization(self, organization: Organization, user):
@@ -62,7 +65,20 @@ class OrganizationController(Controller):
         self.db.commit()
         return db_organization
     
+    def download_parameters(self, organization_id: int):
+        db_organization = self.db.query(Organization).filter(Organization.id == organization_id).first()
+        
+        if db_organization.system_parameters:
+            df = pd.DataFrame(db_organization.system_parameters)
+            df.reset_index(inplace=True)
+            df.rename(columns={"index": "Parameter"}, inplace=True)
+        else:
+            return {"error": "No System parameters found"}
 
+        csv = df.to_csv(index=False)
+        return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=system_parameters.csv"})
+
+    
 def privileges_config(is_admin: bool = False):
     return {
     "canCreateFrogs": is_admin,

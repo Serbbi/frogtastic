@@ -163,6 +163,7 @@ class FrogController(Controller):
         df["organization_id"] = organization.name
         df = df.rename(columns={"organization_id": "organization_name"})
         df = df.drop(columns=["id"])
+        df = df.drop(columns=["image_path"])
 
         csv = df.to_csv(index=False)
         return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=frogs.csv"})
