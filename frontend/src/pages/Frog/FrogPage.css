@@ -191,7 +191,6 @@ label {
 .modalCompareImagesContent {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    /* Two columns for larger screens */
     justify-content: center;
     background-color: white;
     border-radius: 10px;
@@ -200,7 +199,6 @@ label {
     height: auto;
     position: relative;
     gap: 20px;
-    /* Space between columns */
 }
 
 .modalCompareImagesContent div {
@@ -215,6 +213,13 @@ label {
 
 .modalCompareImagesContent h2 {
     margin-top: 0;
+}
+
+.compare-modal-buttons {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 @media screen and (max-width: 768px) {
@@ -241,13 +246,10 @@ label {
 
     .modalCompareImagesContent {
         grid-template-columns: 1fr;
-        /* Single column on mobile */
-        width: 90%;
     }
 
-    .modalCompareImagesContent>div {
-        margin-bottom: 20px;
-        /* Add space between the stacked elements */
+    .compare-modal-buttons {
+        grid-column: span 1;
     }
 
 }

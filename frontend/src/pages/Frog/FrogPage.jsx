@@ -11,6 +11,7 @@ import ConfirmationBox from "../../components/miniComponents/ConfirmationBox";
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
 import { frogPutRequest } from "../../services/api/frogs/FrogPut";
 import { frogDeleteRequest } from "../../services/api/frogs/FrogDelete";
+import CompareModal from "./CompareModal";
 import "./FrogPage.css";
 
 export default function FrogPage({ organization }) {
@@ -31,7 +32,7 @@ export default function FrogPage({ organization }) {
         if (organization) {
             setCanEditFrogs(privileges[organization.id]['canEditFrogs']);
         }
-    }, [organization]);
+    }, [organization, privileges]);
 
     async function updateField(event) {
         const name = event.target.name;
@@ -153,21 +154,7 @@ export default function FrogPage({ organization }) {
                     <button className="primary-button frog-page-button" onClick={() => setShowHistory(!showHistory)}>History</button>
                 </div>
             </div>
-            {showCompareModal && <div className="modalCompareImages">
-                <div className="modalCompareImagesContent">
-                    <span className='closeJoinOrg' onClick={() => setShowCompareModal(false)}>&times;</span>
-                    <div>
-                        <h2>Extraction Image</h2>
-                        <img src={`data:image/png;base64,${extractionImageURL}`} alt="Extraction" />
-                        <button onClick={() => setShowCompareModal(false)}>Accept</button>
-                    </div>
-                    <div>
-                        <h2>Reference Image</h2>
-                        <img src={frog.image_path} alt="Reference" />
-                        <button onClick={() => navigate(-1)}>Reject</button>
-                    </div>
-                </div>
-            </div>}
+            {showCompareModal && <CompareModal frog={frog} setShowCompareModal={setShowCompareModal} extractionImageURL={extractionImageURL} />}
             {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => { navigate(-1); setUnsavedChanges(false); }} onCancel={() => setconfirmationBoxText("")} />}
         </div>
     );
