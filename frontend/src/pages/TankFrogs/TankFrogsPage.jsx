@@ -54,20 +54,22 @@ export default function TankFrogsPage({ organization }) {
 
     return (
         <div className="tankFrogsContent">
-            <div className="titleAndSelect">
+            <div className="title-and-buttons">
                 <h1 className='title'>Tank Frogs
                     {!tankStatus ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
                         : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
                 </h1>
-                <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
-                    {tanks && tanks.map(tank => {
-                        return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
-                    })}
-                </select>
+                <div className="right-side-buttons">
+                    <button onClick={handleDownload} className="primary-button all-frogs-button">Download</button>
+                    <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
+                        {tanks && tanks.map(tank => {
+                            return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
+                        })}
+                    </select>
+                </div>
             </div>
             {isLoading || frogs === undefined ? <FrogTableLoading organization={organization} /> : null}
             {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization} />}
-            <button onClick={handleDownload}>Download</button>
         </div>
     );
 }

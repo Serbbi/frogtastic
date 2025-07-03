@@ -16,7 +16,7 @@
 .headerAndMainContent {
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: inherit;
     padding: 1rem;
     box-sizing: border-box;
     /* overflow: hidden; */
@@ -52,4 +52,3 @@
         height: 100%;
     }
 }
-

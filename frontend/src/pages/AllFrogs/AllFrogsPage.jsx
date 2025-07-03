@@ -33,10 +33,12 @@ export default function AllFrogsPage({ organization }) {
 
     return (
         <div className="allFrogsContainer">
-            <h1 className="title">All Frogs</h1>
+            <div className="title-and-buttons">
+                <h1 className="title">All Frogs</h1>
+                <button onClick={handleDownload} className="primary-button all-frogs-button">Download</button>
+            </div>
             {frogs.length === 0 && <h2>No Frogs</h2>}
             {frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization} />}
-            <button onClick={handleDownload}>Download</button>
         </div>
     );
 }

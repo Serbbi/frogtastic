@@ -1,8 +1,8 @@
 .paramsTable {
     border-collapse: separate;
     border-spacing: 0;
-    width: 100%;
-    /* margin: auto; */
+    width: 70%;
+    max-width: 1500px;
     background-color: var(--background-color);
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -13,7 +13,8 @@
     background-color: rgb(183, 209, 185);
 }
 
-.paramsTable th, .paramsTable td {
+.paramsTable th,
+.paramsTable td {
     text-align: left;
     padding: 0.6rem;
 }
@@ -81,4 +82,11 @@
 .infoText {
     font-size: 0.8rem;
     color: #666;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .paramsTable {
+        width: 100%;
+    }
 }

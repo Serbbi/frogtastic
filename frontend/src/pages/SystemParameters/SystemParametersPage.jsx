@@ -1,10 +1,16 @@
-import './SystemParametersPage.css';
 import SystemParametersTable from '../../components/miniComponents/SystemParametersTable';
 import { paramDownloadRequest } from '../../services/api/organizations/OrganizationParamsDownload';
 import { useNotification } from "../../services/providers/NotificationProvider";
+import { organizationPutRequest } from '../../services/api/organizations/OrganizationPut';
+import { useOrganization } from '../../services/providers/OrganizationProvider';
+import { useUnsavedChanges } from '../../services/providers/UnsavedChangesProvider';
+import './SystemParametersPage.css';
 
 export default function SystemParametersPage({ organization }) {
     const { addNotification } = useNotification();
+    const { setUnsavedChanges } = useUnsavedChanges();
+    const { modifyOrganization } = useOrganization();
+
     const handleDownload = () => {
         paramDownloadRequest(organization.id)
             .then((blob) => {
@@ -25,11 +31,42 @@ export default function SystemParametersPage({ organization }) {
             });
     };
 
+    function handleAddRow() {
+        const dates = Object.keys(organization.system_parameters);
+        const lastDate = dates[dates.length - 1];
+        const newRow = { ...organization.system_parameters[lastDate] };
+        const today = new Date();
+        const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+        if (dates.includes(formattedDate)) {
+            alert('A row for today already exists');
+            return;
+        }
+        modifyOrganization({ ...organization, system_parameters: { ...organization.system_parameters, [formattedDate]: newRow } });
+        setUnsavedChanges(true);
+    }
+
+    function handleSave() {
+        organizationPutRequest(organization)
+            .then(data => console.log(data))
+            .catch(error => console.log('Error:', error));
+
+        setUnsavedChanges(false);
+    }
+
     return (
         <div className="systemParamsContainer">
-            <h1 className='title'>System Parameters</h1>
+            <div className="title-and-buttons">
+                <div className="title-and-subtitle">
+                    <h1 className='title'>System Parameters</h1>
+                    <p className='infoText'>Click on the fields in the table to edit them</p>
+                </div>
+                <div className="right-side-buttons">
+                    <button onClick={handleDownload} className="primary-button all-frogs-button">Download</button>
+                    <button onClick={handleAddRow} className="primary-button all-frogs-button">Add Row</button>
+                    <button onClick={handleSave} className="primary-button all-frogs-button">Save</button>
+                </div>
+            </div>
             <SystemParametersTable />
-            <button onClick={handleDownload}>Download</button>
         </div>
     );
 }
