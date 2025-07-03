@@ -2,20 +2,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* this i changed from center for overflow to work */
+    justify-content: flex-start;
     width: 90%;
     max-height: 100%;
     overflow-y: scroll;
     box-sizing: border-box;
     margin: 0 auto;
     position: relative;
+    padding: 1rem;
 }
 
 
 .frogField {
     display: flex;
     flex-direction: row;
-    align-items: stretch; /* Make sure all child elements have the same height */
+    align-items: stretch;
+    /* Make sure all child elements have the same height */
     justify-content: center;
     width: 100%;
     margin: 0.5rem 0;
@@ -27,7 +29,8 @@
     border-radius: 1rem 0 0 1rem;
     font-size: 1.1rem;
     padding: 0.8rem;
-    height: auto; /* Auto height to match the tallest element */
+    height: auto;
+    /* Auto height to match the tallest element */
     display: flex;
     align-items: center;
 }
@@ -39,18 +42,24 @@
     border: 1px solid #ccc;
 }
 
-.frogField input, textarea, select {
+.frogField input,
+textarea,
+select {
     border-left: none;
     border-radius: 0 1rem 1rem 0;
-    height: 100%; /* Match the label's height */
+    height: 100%;
+    /* Match the label's height */
 }
 
-.frogField input, select {
-    height: auto; /* Explicitly set height for input */
+.frogField input,
+select {
+    height: auto;
+    /* Explicitly set height for input */
 }
 
 .frogField textarea {
-    resize: vertical; /* Allow textarea to resize vertically */
+    resize: vertical;
+    /* Allow textarea to resize vertically */
     min-height: 3rem;
 }
 
@@ -181,7 +190,8 @@ label {
 
 .modalCompareImagesContent {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns for larger screens */
+    grid-template-columns: repeat(2, 1fr);
+    /* Two columns for larger screens */
     justify-content: center;
     background-color: white;
     border-radius: 10px;
@@ -189,7 +199,8 @@ label {
     width: 70%;
     height: auto;
     position: relative;
-    gap: 20px; /* Space between columns */
+    gap: 20px;
+    /* Space between columns */
 }
 
 .modalCompareImagesContent div {
@@ -202,7 +213,7 @@ label {
     object-fit: contain;
 }
 
-.modalCompareImagesContent h2 { 
+.modalCompareImagesContent h2 {
     margin-top: 0;
 }
 
@@ -229,12 +240,14 @@ label {
     }
 
     .modalCompareImagesContent {
-        grid-template-columns: 1fr; /* Single column on mobile */
+        grid-template-columns: 1fr;
+        /* Single column on mobile */
         width: 90%;
     }
 
-    .modalCompareImagesContent > div {
-        margin-bottom: 20px; /* Add space between the stacked elements */
+    .modalCompareImagesContent>div {
+        margin-bottom: 20px;
+        /* Add space between the stacked elements */
     }
-    
+
 }
