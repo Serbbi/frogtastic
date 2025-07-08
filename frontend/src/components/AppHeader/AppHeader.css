@@ -19,10 +19,12 @@
     border-radius: 15px;
     box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
     padding: 0.5rem;
-    transition: max-height 0.3s ease; /* Add transition to max-height */
-    overflow: hidden; /* Ensure content doesn't overflow during transition */
+    transition: max-height 0.3s ease;
+    /* Add transition to max-height */
+    overflow: hidden;
+    /* Ensure content doesn't overflow during transition */
     max-height: 45px;
-    height: fit-content; 
+    height: fit-content;
     z-index: 1;
 }
 
@@ -102,7 +104,7 @@
     transition: all 0.3s;
 }
 
-.buttons button{
+.buttons button {
     background-color: #5f9e62;
     color: #fff;
     font-weight: 600;
@@ -111,7 +113,7 @@
     border-radius: 7px;
 }
 
-.buttons button:hover{
+.buttons button:hover {
     background-color: #3d8e3d;
     color: #fff;
 }
@@ -171,6 +173,7 @@
     box-sizing: border-box;
     box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
     transition: all 0.3s ease;
+    right: 0px;
 }
 
 .notificationList li {
@@ -206,20 +209,20 @@
     height: 1.5rem;
 }
 
-.notificationButton.check{
+.notificationButton.check {
     color: #018b13;
 }
 
-.notificationButton.check:hover{
+.notificationButton.check:hover {
     color: #01b519;
 }
 
-.notificationButton.xmark{
+.notificationButton.xmark {
     color: #a10000;
     margin-left: 15%;
 }
 
-.notificationButton.xmark:hover{
+.notificationButton.xmark:hover {
     color: #ff0000;
 }
 
@@ -245,13 +248,13 @@
         display: none;
     }
 
-    .profileSettings button{
+    .profileSettings button {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 150px;
     }
-    
+
     .buttons #menuButton {
         display: block;
     }
@@ -269,4 +272,3 @@
         right: -196px;
     }
 }
-

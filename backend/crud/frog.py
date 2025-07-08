@@ -135,6 +135,14 @@ class FrogController(Controller):
         self.db.commit()
         return db_frog
     
+    
+    def delete_frogs_by_organization(self, org_q: int):
+        frogs = self.db.query(Frog).filter(Frog.organization_id == org_q).all()
+        for frog in frogs:
+            self.db.delete(frog)
+        self.db.commit()
+        return {"message": "Frogs deleted successfully"}
+    
 
     def train_model(self, file):
         with zipfile.ZipFile(file.file, 'r') as zip_ref:

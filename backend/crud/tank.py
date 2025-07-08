@@ -41,6 +41,15 @@ class TankController(Controller):
         self.db.commit()
         return db_tank
     
+
+    def delete_tanks_by_organization(self, organization_id: int):
+        tanks = self.db.query(Tank).filter(Tank.organization_id == organization_id).all()
+        for tank in tanks:
+            self.db.delete(tank)
+        
+        self.db.commit()
+        return {"message": "Tanks deleted successfully"}
+    
     
     def create_tank_attributes(self, organization_id: int, attributes: list):
         tanks = self.db.query(Tank).filter(Tank.organization_id == organization_id).all()

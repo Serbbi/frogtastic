@@ -1,10 +1,13 @@
 from crud.controller import Controller
+from crud.frog import FrogController
+from crud.tank import TankController
 from models.organization import Organization
 from models.user import User
 from sqlalchemy.orm.attributes import flag_modified
 import pandas as pd
 import io
 from fastapi.responses import StreamingResponse
+from fastapi import HTTPException
 
 class OrganizationController(Controller):
     def create_organization(self, organization: Organization, user):
@@ -78,6 +81,49 @@ class OrganizationController(Controller):
         csv = df.to_csv(index=False)
         return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=system_parameters.csv"})
 
+    def quit_organization(self, organization_id: int, user: User):
+        db_organization = self.db.query(Organization).filter(Organization.id == organization_id).first()
+        if not db_organization:
+            return {"error": "Organization not found"}
+
+        is_last_admin = len(db_organization.admins) == 1 and user.id in db_organization.admins
+        is_last_participant = len(db_organization.participants) == 1 and user.id in db_organization.participants
+
+        if is_last_admin and is_last_participant:
+            delete_all_tanks(organization_id, TankController(self.db))
+            delete_all_frogs(organization_id, FrogController(self.db))
+            user.organizations = tuple(o for o in user.organizations if o != organization_id)
+            user.attributes.pop(str(organization_id), None)
+            flag_modified(user, "organizations")
+            flag_modified(user, "attributes")
+            self.db.delete(db_organization)
+            self.db.commit()
+            self.db.refresh(user)
+            return {"message": "Organization deleted successfully."}
+        elif is_last_admin:
+            raise HTTPException(status_code=403, detail="Cannot quit organization as the last admin. Please transfer admin rights first.")
+        else:
+            if user.id in db_organization.participants:
+                db_organization.participants = tuple(p for p in db_organization.participants if p != user.id)
+            if user.id in db_organization.admins:
+                db_organization.admins = tuple(a for a in db_organization.admins if a != user.id)
+
+        if organization_id in user.organizations:
+            user.organizations = tuple(o for o in user.organizations if o != organization_id)
+            user.attributes.pop(str(organization_id), None)
+
+        flag_modified(user, "organizations")
+        flag_modified(user, "attributes")
+        flag_modified(db_organization, "participants")
+        flag_modified(db_organization, "admins")
+
+        self.db.commit()
+        self.db.refresh(user)
+        if db_organization:
+            self.db.refresh(db_organization)
+
+        return db_organization
+
     
 def privileges_config(is_admin: bool = False):
     return {
@@ -89,3 +135,9 @@ def privileges_config(is_admin: bool = False):
     "canEditUsers": is_admin,
     "canDeleteUsers": is_admin,
 }
+
+def delete_all_frogs(organization_id: int, frog_controller: FrogController):
+    return frog_controller.delete_frogs_by_organization(organization_id)
+
+def delete_all_tanks(organization_id: int, tank_controller: TankController):
+    return tank_controller.delete_tanks_by_organization(organization_id)

@@ -28,6 +28,7 @@ import {
     , faEye
     , faEyeSlash
     , faPenToSquare
+    , faEllipsis
 } from '@fortawesome/free-solid-svg-icons';
 
 export function initializeIcons() {
@@ -58,5 +59,6 @@ export function initializeIcons() {
         faXmark,
         faEye,
         faEyeSlash,
-        faPenToSquare);
+        faPenToSquare,
+        faEllipsis);
 }

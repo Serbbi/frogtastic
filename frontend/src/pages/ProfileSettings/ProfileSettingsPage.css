@@ -72,7 +72,7 @@
     box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
 }
 
-.userFields h3 {
+.userFields h2 {
     margin: 1rem;
 }
 
@@ -86,26 +86,17 @@
 .usernameAndEmailFields {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.6rem;
 }
 
 .usernameAndEmailFields p {
     margin: 0;
 }
 
-.profileSettingsSaveButton {
-    padding: 0.5rem;
-
-    border: none;
-    border-radius: 0.5rem;
-
-    background-color: #377247;
-    color: white;
-    cursor: pointer;
-}
-
-.profileSettingsSaveButton:hover {
-    background-color: #45885e;
+.primary-button.profileSettingsSaveButton {
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 200px;
 }
 
 .organzationsList {
@@ -120,10 +111,11 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid #ddd;
 }
 
 .organizationItem:hover {
+
     /* make the leave organization button visible */
     .leaveOrganizationButton {
         visibility: visible;
@@ -160,4 +152,52 @@
 .leaveOrganizationButton:hover {
     background-color: #d32f2f;
     /* visibility: visible; */
+}
+
+.profile-form-label {
+    font-weight: bold;
+    font-size: small;
+    margin: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+}
+
+.org-item-options {
+    font-size: 1.5rem;
+}
+
+.org-item-options-outer {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    position: relative;
+}
+
+.org-item-options-outer:hover {
+    background-color: #f0f0f0;
+    color: rgb(38, 38, 38);
+}
+
+.dropdownMenu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.dropdownItem {
+    display: block;
+    padding: 6px 12px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dropdownItem:hover {
+    background-color: #f0f0f0;
 }

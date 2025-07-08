@@ -12,7 +12,8 @@ export default function NotificationItems({ organizationId, addShownNotification
         }
     }, [notifications, isLoading]);
 
-    async function handleNotification(notification) {
+    async function handleNotification(event, notification) {
+        event.stopPropagation();
         addShownNotifications(-1);
 
         try {
@@ -28,7 +29,8 @@ export default function NotificationItems({ organizationId, addShownNotification
         }
     }
 
-    async function rejectNotification(notification) {
+    async function rejectNotification(event, notification) {
+        event.stopPropagation();
         addShownNotifications(-1);
 
         try {
@@ -60,8 +62,8 @@ export default function NotificationItems({ organizationId, addShownNotification
             <div className='notificationDown'>
                 <p>{notification.description}</p>
                 <div className='notificationDownRight'>
-                    <FontAwesomeIcon icon="fa-solid fa-square-check" className='notificationButton check' onClick={() => handleNotification(notification)} />
-                    <FontAwesomeIcon icon="fa-solid fa-square-xmark" className='notificationButton xmark' onClick={() => rejectNotification(notification)} />
+                    <FontAwesomeIcon icon="fa-solid fa-square-check" className='notificationButton check' onClick={(e) => handleNotification(e, notification)} />
+                    <FontAwesomeIcon icon="fa-solid fa-square-xmark" className='notificationButton xmark' onClick={(e) => rejectNotification(e, notification)} />
                 </div>
             </div>
         </li>

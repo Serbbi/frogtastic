@@ -18,6 +18,7 @@ export default function AppHeader({ setOrganization }) {
     const [firstTime, setFirstTime] = useState(true);
     const navigate = useNavigate();
     const profileBoxRef = useRef(null);
+    const notificationDropdownRef = useRef(null);
 
     useEffect(() => {
         setOrganization(userOrgs[0]);
@@ -25,11 +26,21 @@ export default function AppHeader({ setOrganization }) {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (profileBoxRef.current && !profileBoxRef.current.contains(event.target)) {
-                setIsOpen(false);
-                setShownNotifications(0);
+            const clickedOutsideProfile =
+                profileBoxRef.current &&
+                !profileBoxRef.current.contains(event.target);
+            const clickedOutsideNotifications =
+                notificationDropdownRef.current &&
+                !notificationDropdownRef.current.contains(event.target);
+
+            if (clickedOutsideProfile) {
                 setIsProfileSettingsOpen(false);
                 profileBoxRef.current.style.maxHeight = '45px';
+            }
+
+            if (clickedOutsideNotifications) {
+                setIsOpen(false);
+                setShownNotifications(0);
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
@@ -92,7 +103,7 @@ export default function AppHeader({ setOrganization }) {
                     </button>
 
                     {isOpen && (
-                        <ul className='notificationList'>
+                        <ul className='notificationList' ref={notificationDropdownRef}>
                             {userOrgs[0] !== "" && userOrgs.map((org) => (
                                 <NotificationItems key={org} organizationId={org} addShownNotifications={addShownNotifications} />
                             ))}
