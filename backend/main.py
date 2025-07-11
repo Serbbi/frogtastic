@@ -1,9 +1,8 @@
 from fastapi import FastAPI
-from database import engine, Base
+from database import engine, Base, SessionLocal
 from routers import frogs, image, login, users, organizations, tanks, notifications, email
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from database import SessionLocal
 from sqlalchemy.orm import Session
 from crud.user import UserController
 from models.user import User
