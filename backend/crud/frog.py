@@ -13,6 +13,7 @@ from sqlalchemy.orm.attributes import flag_modified
 import cv2
 import pandas as pd
 import json
+from util.exceptions import raise_404_exception
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -37,7 +38,10 @@ class FrogController(Controller):
     
 
     def get_frog(self, frog_id: int):
-        return self.db.query(Frog).filter(Frog.id == frog_id).first()
+        db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
+        if db_frog is None:
+            raise_404_exception(f"Frog with ID:{frog_id} not found!")
+        return db_frog
     
 
     def update_frogs(self, attributes: list, org_q: int):

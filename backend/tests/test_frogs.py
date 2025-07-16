@@ -22,7 +22,33 @@ def test_get_existing_frog():
     frog = FrogResponse(**res)
     assert frog.id == ID
     assert isinstance(frog, FrogResponse)
-    
+
+def test_get_non_existing_frog():
+    ID = 999
+    token = prepare_token()
+    response = client.get(f"/frogs/{ID}", headers={"Authorization": f"Bearer {token}"})
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 404
+
+def test_get_frog_non_valid_id():
+    ID = "NOT VALID"
+    token = prepare_token()
+    response = client.get(f"/frogs/{ID}", headers={"Authorization": f"Bearer {token}"})
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422
+
+def test_get_frog_no_token():
+    ID = 2
+    response = client.get(f"/frogs/{ID}")
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 401
+
+def test_get_frogs():
+    token = prepare_token()
+    response = client.get("/frogs", headers={"Authorization": f"Bearer {token}"})
+
+def test_delete_frog():
+    token = prepare_token()
 
 def prepare_token():
     response = client.post("/token", 
