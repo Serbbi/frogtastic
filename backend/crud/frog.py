@@ -196,7 +196,10 @@ class FrogController(Controller):
                         new_history[date]["current_tank_id"] = new_attributes["current_tank_id"]
                     if new_attributes["is_sick"]:
                         new_history[date]["is_sick"] = new_attributes["is_sick"]
-                    new_history[date]["author"] = frog.history[date].split(" ")[0]
+                    if frog.history[date].split(" ")[0] not in ['current_tank_id', 'weight', 'egg_quality', 'last_injection', 'is_sick', 'notes']:
+                        new_history[date]["author"] = frog.history[date].split(" ")[0]
+                    else:
+                        new_history[date]["author"] = "Unknown"
             frog.history = new_history
             flag_modified(frog, "history")
         self.db.commit()
@@ -225,7 +228,7 @@ def new_attributes_method(item):
         is_sick = ""
 
     if "notes" in item:
-        notes = item.split("notes")[1].split("\'")[3]
+        notes = item.split("notes")[1].split("\'\n")[0].split("\' to")[1][2:]
     else:
         notes = ""
 

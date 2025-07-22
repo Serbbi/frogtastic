@@ -1,26 +1,47 @@
+import json
 import psycopg2
-from config import load_config
 
-def insert_many_vendors(vendor_list):
-    """ Insert multiple vendors into the vendors table  """
+# Replace with your actual database connection details
+DB_NAME = "postgres"
+DB_USER = "postgres"
+DB_PASSWORD = "frog4life"
+DB_HOST = "localhost"
+DB_PORT = "5432"
 
-    sql = "INSERT INTO vendors(vendor_name) VALUES(%s) RETURNING *"
-    config = load_config()
-    try:
-        with  psycopg2.connect(**config) as conn:
-            with  conn.cursor() as cur:
-                # execute the INSERT statement
-                cur.executemany(sql, vendor_list)
+# Load JSON data from file
+with open("frogs.json", "r") as f:
+    frogs = json.load(f)
 
-            # commit the changes to the database
-            conn.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error) 
+# Connect to PostgreSQL
+conn = psycopg2.connect(
+    dbname=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST,
+    port=DB_PORT
+)
+cur = conn.cursor()
 
-if __name__ == '__main__':
-    vendor_list = [
-        ('HP'),
-        ('IBM'),
-        ('DELL')
-    ]
-    insert_many_vendors(vendor_list)
+# Insert data
+for frog in frogs:
+    cur.execute(
+        """
+        INSERT INTO frogs (frog_number, current_tank_id, tank_id, organization_id, image_path, attributes, history)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """,
+        (
+            frog["frog_number"],
+            frog["current_tank_id"],
+            frog["tank_id"],
+            frog["organization_id"],
+            frog["image_path"],
+            json.dumps(frog["attributes"]),
+            json.dumps(frog["history"])
+        )
+    )
+
+conn.commit()
+cur.close()
+conn.close()
+
+print("Data inserted successfully.")
