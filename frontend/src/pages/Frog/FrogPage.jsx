@@ -27,6 +27,7 @@ export default function FrogPage({ organization }) {
     const [showCompareModal, setShowCompareModal] = useState(window.history.state.usr === "from upload" ? true : false);
     const [confirmationBoxText, setconfirmationBoxText] = useState("");
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
+    const [showModalButtonsOnce, setShowModalButtonsOnce] = useState(true);
 
     useEffect(() => {
         if (organization) {
@@ -154,7 +155,7 @@ export default function FrogPage({ organization }) {
                     <button className="primary-button frog-page-button" onClick={() => setShowHistory(!showHistory)}>History</button>
                 </div>
             </div>
-            {showCompareModal && <CompareModal frog={frog} setShowCompareModal={setShowCompareModal} extractionImageURL={extractionImageURL} />}
+            {showCompareModal && <CompareModal frog={frog} setShowCompareModal={setShowCompareModal} extractionImageURL={extractionImageURL} showButtons={window.history.state.usr === "from upload" && showModalButtonsOnce} setShowModalButtonsOnce={setShowModalButtonsOnce} />}
             {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => { navigate(-1); setUnsavedChanges(false); }} onCancel={() => setconfirmationBoxText("")} />}
         </div>
     );

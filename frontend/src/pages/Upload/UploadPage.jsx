@@ -3,7 +3,7 @@ import Loading from "../../components/miniComponents/loading";
 import ErrorContent from "../../components/miniComponents/ErrorContent";
 import { useNavigate } from "react-router-dom";
 import { useImage } from "../../services/providers/ImageProvider";
-import { imagePostRequest } from "../../services/api/frogs/ImagePost";
+import { imagePostRequest } from "../../services/api/image/ImagePost";
 import './UploadPage.css';
 
 export default function UploadPage({ organization }) {

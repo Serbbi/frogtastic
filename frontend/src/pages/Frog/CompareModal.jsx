@@ -1,7 +1,27 @@
 import { useNavigate } from "react-router-dom";
+import { imagePutRequest } from "../../services/api/image/ImagePut";
+import { useNotification } from "../../services/providers/NotificationProvider";
 
-export default function CompareModal({ frog, setShowCompareModal, extractionImageURL }) {
+export default function CompareModal({ frog, setShowCompareModal, extractionImageURL, showButtons, setShowModalButtonsOnce }) {
     const navigate = useNavigate();
+    const { addNotification } = useNotification();
+
+    async function handleSaveImage(decision) {
+        setShowCompareModal(false);
+        setShowModalButtonsOnce(false);
+        imagePutRequest(decision, frog.id)
+            .then(() => {
+                if (decision === "yes") {
+                    addNotification({ text: "Image saved successfully", type: "success" });
+                } else {
+                    addNotification({ text: "Image accepted without saving", type: "success" });
+                }
+            })
+            .catch(error => {
+                addNotification({ text: error.message, type: "error" });
+            });
+    }
+
     return (
         <div className="modalCompareImages">
             <div className="modalCompareImagesContent">
@@ -14,10 +34,13 @@ export default function CompareModal({ frog, setShowCompareModal, extractionImag
                     <h2>Reference Image</h2>
                     <img src={frog.image_path} alt="Reference" />
                 </div>
-                {/* <div className="compare-modal-buttons">
-                    <button onClick={() => setShowCompareModal(false)} className="primary-button">Accept</button>
-                    <button onClick={() => navigate(-1)} className="primary-button">Reject</button>
-                </div> */}
+                {showButtons &&
+                    <div className="compare-modal-buttons">
+                        <button onClick={() => handleSaveImage("yes")} className="primary-button">Accept and save</button>
+                        <button onClick={() => handleSaveImage("no")} className="secondary-button">Accept without saving</button>
+                        <button onClick={() => navigate(-1)} className="secondary-button">Reject</button>
+                    </div>
+                }
             </div>
         </div>
     )

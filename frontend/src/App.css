@@ -1,7 +1,10 @@
 :root {
     --primary-color: #3c734b;
+    --secondary-color: #e5eae7;
     --hover-color: #60976f;
+    --secondary-hover-color: #d0d8d4;
     --clicked-color: #2c5b39;
+    --secondary-clicked-color: #b0b8b4;
     --disabled-color: #c3d5c8;
     --background-color: #fff;
     --active-color: #55d15d;
@@ -38,4 +41,29 @@
 
 .primary-button:active {
     background-color: var(--clicked-color);
+}
+
+.secondary-button {
+    width: 40%;
+    height: 40px;
+    margin: 15px auto;
+
+    font-weight: bold;
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 12px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.secondary-button:hover {
+    background-color: var(--secondary-hover-color);
+}
+
+.secondary-button:active {
+    background-color: var(--secondary-clicked-color);
 }

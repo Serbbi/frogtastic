@@ -26,7 +26,7 @@ async def upload_image(organization_id: int,
     if frog_composition['frog']:
         file.file.seek(0)
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
-        temp_file_path = f"/tmp/{frog_composition['frog'].id}_{timestamp}"
+        temp_file_path = f"/tmp/{frog_composition['frog'].id}_{timestamp}.{file.content_type.split('/')[-1]}"
         with open(temp_file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         images[frog_composition['frog'].id] = temp_file_path
