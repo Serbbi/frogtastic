@@ -13,6 +13,7 @@ from sqlalchemy.orm.attributes import flag_modified
 import cv2
 import pandas as pd
 import json
+from google.cloud import storage
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -205,6 +206,15 @@ class FrogController(Controller):
         self.db.commit()
         
         return {"message": "History format changed successfully"}
+    
+    def upload_to_gcs(self, file_path: str, destination_blob_name: str) -> str:
+        """Upload a file to GCS and return the public URL."""
+        client = storage.Client()
+        bucket = client.bucket("cool_frog_bucket")
+        blob = bucket.blob(destination_blob_name)
+        blob.upload_from_filename(file_path)
+
+        return blob.public_url
 
 def new_attributes_method(item):
     if "weight" in item:
@@ -266,12 +276,3 @@ def verify_frog_details(frog : Frog):
             return {"status": False, "error": "Egg quality must be a positive number greater than 0"}
     # add more if Julia thinks it is necessary
     return {"status": True}
-
-
-hist = {
-    "01-01-2024": {
-        "notes": "fasdfhsadjkf",
-        "last-injection": "423423",
-        "author": "elena"
-    }
-}

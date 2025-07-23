@@ -41,7 +41,7 @@ __pycache__/
 /backend/CORF3D_ACF/output/plots
 
 # Ignore service account file
-service_account.json
+service-account.json
 
 # Ignore sonarqube file
 /.scannerwork/
