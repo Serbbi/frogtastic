@@ -184,36 +184,7 @@ class FrogController(Controller):
         csv = df.to_csv(index=False)
         return StreamingResponse(io.BytesIO(csv.encode()), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=frogs.csv"})
 
-    def change_frog_history_format(self):
-        frogs = self.db.query(Frog).all()
-        for frog in frogs:
-            new_history = {}
-            for date in frog.history:
-                if isinstance(frog.history[date], str):
-                    new_attributes = new_attributes_method(frog.history[date])
-                    new_history[date] = {}
-                    if new_attributes["notes"]:
-                        new_history[date]["notes"] = new_attributes["notes"]
-                    if new_attributes["last_injection"]:
-                        new_history[date]["last-injection"] = new_attributes["last_injection"]
-                    if new_attributes["egg_quality"]:
-                        new_history[date]["egg_quality"] = new_attributes["egg_quality"]
-                    if new_attributes["weight"]:
-                        new_history[date]["weight"] = new_attributes["weight"]
-                    if new_attributes["current_tank_id"]:
-                        new_history[date]["current_tank_id"] = new_attributes["current_tank_id"]
-                    if new_attributes["is_sick"]:
-                        new_history[date]["is_sick"] = new_attributes["is_sick"]
-                    if frog.history[date].split(" ")[0] not in ['current_tank_id', 'weight', 'egg_quality', 'last_injection', 'is_sick', 'notes']:
-                        new_history[date]["author"] = frog.history[date].split(" ")[0]
-                    else:
-                        new_history[date]["author"] = "Unknown"
-            frog.history = new_history
-            flag_modified(frog, "history")
-        self.db.commit()
-        
-        return {"message": "History format changed successfully"}
-    
+
     def upload_to_gcs(self, file_path: str, destination_blob_name: str) -> str:
         """Upload a file to GCS and return the public URL."""
         client = storage.Client()
@@ -223,40 +194,6 @@ class FrogController(Controller):
 
         return blob.public_url
 
-def new_attributes_method(item):
-    if "weight" in item:
-        new_weight = item.split("weight")[1].split("\'")[3]
-    else:
-        new_weight = ""
-
-    if "egg_quality" in item:
-        egg_quality = item.split("egg_quality")[1].split("\'")[3]
-    else:
-        egg_quality = ""
-
-    if "last_injection" in item:
-        last_injection = item.split("last_injection")[1].split("\'")[3]
-    else:
-        last_injection = ""
-
-    if "is_sick" in item:
-        is_sick = item.split("is_sick")[1].split("\'")[3]
-    else:
-        is_sick = ""
-
-    if "notes" in item:
-        notes = item.split("notes")[1].split("\'\n")[0].split("\' to")[1][2:]
-    else:
-        notes = ""
-
-    if "current_tank_id" in item:
-        current_tank_id = item.split("current_tank_id")[1].split("\'")[3]
-    else:
-        current_tank_id = ""
-    
-    return { "weight": new_weight, "egg_quality": egg_quality, 
-             "last_injection": last_injection, "is_sick": is_sick, 
-             "notes": notes, "current_tank_id": current_tank_id }
 
 def update_history(db_frog, frog, username):
     history = db_frog.history

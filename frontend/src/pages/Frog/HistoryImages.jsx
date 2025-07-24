@@ -22,25 +22,6 @@ export default function HistoryImages({ imageLocations }) {
                         <p className="imageContainerText">{formatCaption(image)}</p>
                     </div>
                 ))}
-                {/* <div className="imageContainer">
-                    <img src="https://storage.googleapis.com/cool_frog_bucket/uploads/232/232_2025-07-23_10-07" className="histFrogImg" />
-                    <p className="imageContainerText">23/07/2025 10:07</p>
-                {/* <div className="imageContainer">
-                    <img src="https://storage.googleapis.com/cool_frog_bucket/uploads/232/232_2025-07-23_10-07" className="histFrogImg" />
-                    <p className="imageContainerText">23/07/2025 10:07</p>
-                </div>
-                <div className="imageContainer">
-                    <img src="https://storage.googleapis.com/cool_frog_bucket/uploads/232/232_2025-07-23_10-07" className="histFrogImg" />
-                    <p className="imageContainerText">23/07/2025 10:07</p>
-                </div>
-                <div className="imageContainer">
-                    <img src="https://storage.googleapis.com/cool_frog_bucket/uploads/232/232_2025-07-23_10-07" className="histFrogImg" />
-                    <p className="imageContainerText">23/07/2025 10:07</p>
-                </div>
-                <div className="imageContainer">
-                    <img src="https://storage.googleapis.com/cool_frog_bucket/uploads/232/232_2025-07-23_10-07" className="histFrogImg" />
-                    <p className="imageContainerText">23/07/2025 10:07</p>
-                </div> */}
             </div>
         </div>
     );
