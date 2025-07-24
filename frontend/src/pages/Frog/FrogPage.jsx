@@ -13,6 +13,7 @@ import { frogPutRequest } from "../../services/api/frogs/FrogPut";
 import { frogDeleteRequest } from "../../services/api/frogs/FrogDelete";
 import CompareModal from "./CompareModal";
 import "./FrogPage.css";
+import HistoryImages from "./HistoryImages";
 
 export default function FrogPage({ organization }) {
     const { addNotification } = useNotification();
@@ -97,7 +98,10 @@ export default function FrogPage({ organization }) {
     }
 
     if (showHistory) {
-        return <HistoryTable id={frog.id} setShowHistory={setShowHistory} showHistory={showHistory} tanks={tanks} />
+        return <>
+            <HistoryTable id={frog.id} setShowHistory={setShowHistory} showHistory={showHistory} tanks={tanks} />
+            <HistoryImages imageLocations={frog.image_history} />
+        </>
     }
 
     return (

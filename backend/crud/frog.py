@@ -5,6 +5,7 @@ from fastapi.responses import StreamingResponse
 import numpy as np
 from crud.controller import Controller
 from models.frog import Frog
+from schemas.frog import FrogResponse
 from models.tank import Tank
 from models.organization import Organization
 from frogRetreiver import retrieve_frog, extract_image, extract_frog_and_tank
@@ -38,7 +39,13 @@ class FrogController(Controller):
     
 
     def get_frog(self, frog_id: int):
-        return self.db.query(Frog).filter(Frog.id == frog_id).first()
+        storage_client = storage.Client()
+        blobs = storage_client.list_blobs("cool_frog_bucket", prefix=f"uploads/{frog_id}")
+
+        db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
+        if db_frog:
+            return FrogResponse.from_orm(db_frog).copy(update={"image_history": ["cool_frog_bucket/" + blob.name for blob in blobs]})
+        return None
     
 
     def update_frogs(self, attributes: list, org_q: int):

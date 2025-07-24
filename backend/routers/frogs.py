@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, UploadFile, File
 from models.user import User
 from crud.frog import FrogController
-from schemas.frog import FrogBase
+from schemas.frog import FrogBase, FrogResponse
 from util import util
 from util.exceptions import raise_403_exception
 from typing import List, Union
@@ -38,7 +38,7 @@ async def download_csv(org_q: Union[int, None],
     return controller.download_csv(org_q, tank_q)
 
 
-@router.get("/{frog_id}")
+@router.get("/{frog_id}", response_model=FrogResponse)
 async def get_frog(frog_id: int, 
                    controller: FrogController = Depends(FrogController),
                    _: str = Depends(util.verify_token)):
