@@ -1,6 +1,9 @@
 import re
 from crud.controller import Controller
 from models.user import User
+from google.cloud import storage
+from PIL import Image
+import io
 
 """
 In this file we have the methods that will perform the CRUD actions for the User on the database.
@@ -72,3 +75,31 @@ class UserController(Controller):
     def verify_email(self, email: str):
         for pattern in email_patterns:
             return re.search(email_patterns[pattern], email)
+        
+    
+    async def update_profile_pic(self, user_id: int, file):
+        if not file.content_type.startswith("image/"):
+            return {"error": "File must be an image"}
+        
+        contents = await file.read()
+        image = Image.open(io.BytesIO(contents))
+
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+
+        image.thumbnail((256, 256))
+        image = image.resize((256, 256))
+
+        output_buffer = io.BytesIO()
+        image.save(output_buffer, format="JPEG", quality=90)
+        output_buffer.seek(0)
+        
+        storage_client = storage.Client()
+        bucket = storage_client.bucket("cool_frog_bucket")
+        blob = bucket.blob(f"user-profile-pics/{user_id}.jpeg")
+
+        blob.cache_control = "no-cache, max-age=0"
+        blob.upload_from_file(output_buffer, content_type="image/jpeg")
+        blob.patch()
+        return blob.public_url
+        

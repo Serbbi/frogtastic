@@ -6,8 +6,9 @@ import { useNotification } from "../../services/providers/NotificationProvider";
 import useOrganizations from "../../hooks/useOrganizations";
 import { validateEmail, validateUsername } from '../../util/validation';
 import { useState, useEffect, useRef } from 'react';
-import './ProfileSettingsPage.css';
 import { organizationQuitRequest } from '../../services/api/organizations/OrganizationQuit';
+import { usersPutProfilePicRequest } from '../../services/api/users/UsersPut';
+import './ProfileSettingsPage.css';
 
 export default function ProfileSettingsPage() {
     const [confirmationBoxText, setConfirmationBoxText] = useState("");
@@ -20,7 +21,8 @@ export default function ProfileSettingsPage() {
     const { addNotification } = useNotification();
     const { organizations } = useOrganizations();
     const dropdownRef = useRef(null);
-
+    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${localStorage.getItem('userId')}.jpeg`);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -35,6 +37,9 @@ export default function ProfileSettingsPage() {
         };
     }, []);
 
+    const handleClickEdit = () => {
+        fileInputRef.current?.click();
+    };
 
     function handleOnChange(event) {
         setUnsavedChanges(true);
@@ -83,6 +88,20 @@ export default function ProfileSettingsPage() {
         setActiveOrganization(null);
     }
 
+    function handleChangeProfilePic(event) {
+        const file = event.target.files[0];
+        if (file) {
+            usersPutProfilePicRequest(file, localStorage.getItem('userId'))
+                .then(() => {
+                    window.location.reload();
+                    addNotification({ text: "Profile picture updated successfully.", type: "success" });
+                })
+                .catch(() => {
+                    addNotification({ text: "Failed to update profile picture. Please try again.", type: "error" });
+                });
+        }
+    }
+
     return (
         <div className="profileSettingsContainer">
             <h1 className="title">Profile Settings</h1>
@@ -90,8 +109,11 @@ export default function ProfileSettingsPage() {
                 <FontAwesomeIcon icon="fa-solid fa-pen-to-square" className="editButton" onClick={() => setIsEditing(!isEditing)} />
                 <div className="profilePicAndInputFields">
                     <div className={"profilePhotoContainer"}>
-                        <img src="/user_icon.jpg" alt="Profile Icon" className={"profilePhotoInput"} />
-                        {isEditing && <span className={"profilePhotoHover"} onClick={() => setConfirmationBoxText("This does not do anything yet :)")}><FontAwesomeIcon icon="fa-solid fa-screwdriver-wrench" className='profileEditIcon' /></span>}
+                        <img src={profilePicSrc} alt="Profile Icon" onError={() => setProfilePicSrc("/user_icon.jpg")} className={"profilePhotoInput"} />
+                        {isEditing && <>
+                            <span className={"profilePhotoHover"} onClick={handleClickEdit}><FontAwesomeIcon icon="fa-solid fa-screwdriver-wrench" className='profileEditIcon' /></span>
+                            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleChangeProfilePic} className={"profilePhotoInput"} style={{ display: "none" }} />
+                        </>}
                     </div>
                     <div className="usernameAndEmailFields">
                         <label className="profile-form-label">Username</label>
@@ -110,10 +132,6 @@ export default function ProfileSettingsPage() {
                     {localStorage.getItem("orgs").split(',').map((org, index) => (
                         <li key={index} className="organizationItem">
                             <span className="organizationName">{organizations?.find((organization) => organization.id == org)?.name || "Unknown Organization"}</span>
-                            {/* <button className="leaveOrganizationButton" onClick={(e) => {
-                                e.preventDefault();
-                                setConfirmationBoxText(`Are you sure you want to leave ${organizations?.find((organization) => organization.id == org)?.name} organization?`);
-                            }}>Leave</button> */}
                             <span className="org-item-options-outer" onClick={() => { setActiveDropdown(activeDropdown === org ? null : org); setActiveOrganization(org); }}>
                                 <FontAwesomeIcon icon="fa-solid fa-ellipsis" className="org-item-options" />
                                 {activeDropdown === org && (

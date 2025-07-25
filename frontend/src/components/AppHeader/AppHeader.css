@@ -135,6 +135,7 @@
 .userIcon {
     border-radius: 50%;
     height: 45px;
+    width: 45px;
     margin: 0 1rem;
 }
 

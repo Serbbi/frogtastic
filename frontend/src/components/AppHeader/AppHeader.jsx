@@ -19,6 +19,7 @@ export default function AppHeader({ setOrganization }) {
     const navigate = useNavigate();
     const profileBoxRef = useRef(null);
     const notificationDropdownRef = useRef(null);
+    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${localStorage.getItem('userId')}.jpeg`);
 
     useEffect(() => {
         setOrganization(userOrgs[0]);
@@ -115,7 +116,7 @@ export default function AppHeader({ setOrganization }) {
             </div>
             <div className="userContainerAndProfileSettings" ref={profileBoxRef}>
                 <div className="userContainer">
-                    <img src="/user_icon.jpg" alt="user-icon" className='userIcon' />
+                    <img src={profilePicSrc} alt="user-icon" onError={() => setProfilePicSrc("/user_icon.jpg")} className='userIcon' />
                     <div className="userContainerCenter">
                         <p className='userContainerUsername'>{username ? username : 'Username'}</p>
                         <p className='userContainerEmail'>{userEmail}</p>

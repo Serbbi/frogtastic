@@ -1,6 +1,6 @@
 # The router that is used from all "/users/*" endpoints.
 from typing import Union
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from crud.user import UserController
 from util import util
 from schemas.user import UserBase
@@ -67,6 +67,19 @@ async def update_user(
     if util.get_general_access_right("canEditUsers", current_user) or util.get_organization_access_right(str(org_q), "canEditUsers", current_user):
         return controller.update_user(user_id, user)
     raise_403_exception(ACCESS_RIGHT_MESSAGE)
+
+
+@router.put("/{user_id}/profile-pic")
+async def update_profile_pic(
+    user_id: int, 
+    file: UploadFile = File(..., size=10_000_000),
+    current_user: User = Depends(util.get_current_user),
+    controller: UserController = Depends(UserController)
+):
+    if current_user.id == user_id:
+        return await controller.update_profile_pic(user_id, file)
+    raise_403_exception("User can only update their own profile picture")
+
 
 @router.patch("/{user_id}")
 async def update_user(
