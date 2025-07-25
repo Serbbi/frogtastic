@@ -104,7 +104,7 @@ export default function ProfileSettingsPage() {
 
     return (
         <div className="profileSettingsContainer">
-            <h1 className="title">Profile Settings</h1>
+            <h1 className="title profileSettingsTitle">Profile Settings</h1>
             <form className="userFields">
                 <FontAwesomeIcon icon="fa-solid fa-pen-to-square" className="editButton" onClick={() => setIsEditing(!isEditing)} />
                 <div className="profilePicAndInputFields">

@@ -24,6 +24,7 @@
     overflow: hidden;
     /* Ensure content doesn't overflow during transition */
     max-height: 45px;
+    /* width: 400px; */
     height: fit-content;
     z-index: 1;
 }

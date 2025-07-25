@@ -43,7 +43,7 @@ export default function LeftSideBar({ organization, setOrganization }) {
 
     return (
         <div className="leftBar" ref={menuRef}>
-            <div className='organizationNameAndLogo'>
+            <div onClick={() => handleNavigation("/home")} className='organizationNameAndLogo'>
                 {organization ? <img src="/frog_logo.jpg" alt="logo" className='logo' /> : null}
                 {organization ? <p>{organization.name}</p> : null}
             </div>

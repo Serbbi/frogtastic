@@ -20,6 +20,7 @@
     justify-content: space-between;
     gap: 15px;
     color: var(--title-color);
+    cursor: pointer;
 }
 
 .logo {
@@ -106,22 +107,24 @@
         display: none;
     }
 
-    .navLink, .logoutButton {
+    .navLink,
+    .logoutButton {
         font-size: large;
         display: flex;
         flex-direction: column;
     }
 
-    .navLink span, .logoutButton span {
+    .navLink span,
+    .logoutButton span {
         /* display: none; */
         font-size: small;
     }
 
-    .navLink { 
+    .navLink {
         flex-direction: row;
     }
 
-    .menuList li{
+    .menuList li {
         margin: 15px 0;
     }
 }

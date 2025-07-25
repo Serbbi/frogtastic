@@ -35,6 +35,15 @@
     cursor: pointer;
 }
 
+.primary-button:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+.primary-button:disabled:hover {
+    background-color: var(--disabled-color);
+}
+
 .primary-button:hover {
     background-color: var(--hover-color);
 }
