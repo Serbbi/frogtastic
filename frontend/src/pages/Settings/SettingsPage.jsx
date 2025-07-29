@@ -6,6 +6,7 @@ import TanksSetting from './TanksSetting';
 import UserPrivilegesSetting from './UserPrivilegesSetting';
 import './SettingsPage.css';
 import SystemParametersSetting from './SystemParametersSetting';
+import LogoSetting from './LogoSetting';
 
 export default function SettingsPage() {
     const { organization } = useOrganization();
@@ -20,6 +21,7 @@ export default function SettingsPage() {
                 <TanksSetting organization={organization} />
                 <UserPrivilegesSetting organizationId={organization ? organization.id : -1} />
                 <SystemParametersSetting />
+                <LogoSetting organization={organization} />
             </div>
         </div>
     );

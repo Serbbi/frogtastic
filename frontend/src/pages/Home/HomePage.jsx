@@ -3,7 +3,6 @@ import AllFrogsPage from "../AllFrogs/AllFrogsPage";
 import TankFrogsPage from "../TankFrogs/TankFrogsPage";
 import AppHeader from "../../components/AppHeader/AppHeader";
 import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
-import CreateOrganizationPage from "../Organization/CreateOrganizationPage";
 import JoinOrganizationPage from "../Organization/JoinOrganizationPage";
 import SettingsPage from "../Settings/SettingsPage";
 import { Route, Routes } from "react-router-dom";
@@ -34,7 +33,6 @@ export default function HomePage() {
                                 <Route path="/upload-image" element={<UploadPage organization={organization} />} />
                                 <Route path="/system-parameters" element={<SystemParametersPage organization={organization} />} />
                                 <Route path="/join-organization" element={<JoinOrganizationPage />} />
-                                <Route path="/create-organization" element={<CreateOrganizationPage />} />
                                 <Route path="/organization-settings" element={<SettingsPage />} />
                                 <Route path="/frog/:frogId" element={<FrogPage organization={organization} />} />
                                 <Route path="/help" element={<HelpPage />} />

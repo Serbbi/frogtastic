@@ -8,6 +8,8 @@ import pandas as pd
 import io
 from fastapi.responses import StreamingResponse
 from fastapi import HTTPException
+from google.cloud import storage
+from PIL import Image
 
 class OrganizationController(Controller):
     def create_organization(self, organization: Organization, user):
@@ -123,6 +125,33 @@ class OrganizationController(Controller):
             self.db.refresh(db_organization)
 
         return db_organization
+    
+
+    async def update_profile_pic(self, organization_id, file):
+        if not file.content_type.startswith("image/"):
+            return {"error": "File must be an image"}
+        
+        contents = await file.read()
+        image = Image.open(io.BytesIO(contents))
+
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+
+        image.thumbnail((256, 256))
+        image = image.resize((256, 256))
+
+        output_buffer = io.BytesIO()
+        image.save(output_buffer, format="JPEG", quality=90)
+        output_buffer.seek(0)
+        
+        storage_client = storage.Client()
+        bucket = storage_client.bucket("cool_frog_bucket")
+        blob = bucket.blob(f"organization-pics/{organization_id}.jpeg")
+
+        blob.cache_control = "no-cache, max-age=0"
+        blob.upload_from_file(output_buffer, content_type="image/jpeg")
+        blob.patch()
+        return blob.public_url
 
     
 def privileges_config(is_admin: bool = False):

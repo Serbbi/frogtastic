@@ -2,15 +2,14 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* height: 100%; */
-    text-align: left;
+    align-items: center;
     padding: 1rem;
     box-sizing: border-box;
     overflow: scroll;
 }
 
 .organizationTable {
-    width: 100%;
+    width: 70%;
     border-collapse: separate;
     border-spacing: 0;
     border-radius: 15px;
@@ -19,20 +18,21 @@
     margin: 20px auto;
 }
 
-.organizationTable tbody tr {
-    background-color: #f9f9f9;
+.org-table-row {
+    background-color: #ffffff;
     display: flex;
     justify-content: column;
     align-items: center;
-}
-
-.organizationTable tbody tr.odd {
-    background-color: #e9e9e9;
-}
-
-.organizationTable tbody tr:hover {
-    background-color: #d9d9d9;
+    border-bottom: 1px solid #ddd;
     cursor: pointer;
+}
+
+.org-table-row.odd {
+    background-color: #f9f9f9;
+}
+
+.org-table-row:hover {
+    background-color: #d9d9d9;
 }
 
 .organizationLogo {
@@ -46,36 +46,21 @@
     display: flex;
     justify-content: center;
     padding: 10px;
-    /* border-right: 1px solid #5a5a5a; */
 }
 
 
 .nameColumn {
-    width: 180px;
-    padding: 0 10px;
+    max-width: 250px;
+    padding-left: 30px;
     font-weight: bold;
     text-align: left;
     height: 100%;
-    overflow: hidden;
-   text-overflow: ellipsis;
-   display: -webkit-box;
-   -webkit-line-clamp: 3; /* number of lines to show */
-           line-clamp: 3;
-   -webkit-box-orient: vertical;
 }
 
-.descriptionColumn {
-    padding: 10px;
-    text-align: left;
-}
-
-.descriptionColumn p {
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-clamp: 3;
+.membersColumn {
+    width: 100%;
+    text-align: right;
+    padding-right: 30px;
 }
 
 .modalJoinOrg {
@@ -114,14 +99,30 @@
     cursor: pointer;
 }
 
-.joinButton {
-    width: 100%;
+.org-table-row.disabledRow {
+    opacity: 0.6;
+    pointer-events: auto;
+    cursor: not-allowed;
+}
+
+.disabledRow:hover {
+    background-color: #ccc;
+}
+
+.createOrgForm {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.formGroup label {
+    padding-left: 0;
+}
+
+.formGroup input {
     padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #5a5a5a;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+    border-radius: 7px;
+    border: 2px solid #ccc;
 }

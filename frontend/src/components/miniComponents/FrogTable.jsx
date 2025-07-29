@@ -64,9 +64,9 @@ export default function FrogTable({ frogs, organization }) {
                 </tr>
             </thead>
             <tbody>
-                {tanks && sortedFrogs.map(frog => {
+                {tanks && sortedFrogs.map((frog, index) => {
                     return (
-                        <tr key={frog.id} className='tableRow' onClick={() => navigate(`/home/frog/${frog.id}`, { state: "from table" })}>
+                        <tr key={frog.id} className={"tableRow" + (index % 2 === 0 ? " even" : " odd")} onClick={() => navigate(`/home/frog/${frog.id}`, { state: "from table" })}>
                             {organization?.table_columns.map(column => {
                                 if (column === "id")
                                     return <td key={column}>F{frog["frog_number"]}_T{frog["tank_id"]}</td>;

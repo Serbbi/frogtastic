@@ -1,16 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import './LeftSideBar.css';
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
 
 export default function LeftSideBar({ organization, setOrganization }) {
     const userId = localStorage.getItem("userId");
-    const canCreateOrganization = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canCreateOrganization'];
     const isAdmin = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canGetUsers'];
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
+    const [OrgPic, setOrgPic] = useState(`https://storage.googleapis.com/cool_frog_bucket/organization-pics/${organization?.id}.jpeg`);
+
+    useEffect(() => {
+        if (organization) {
+            setOrgPic(`https://storage.googleapis.com/cool_frog_bucket/organization-pics/${organization.id}.jpeg`);
+        }
+    }, [organization]);
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -44,7 +50,7 @@ export default function LeftSideBar({ organization, setOrganization }) {
     return (
         <div className="leftBar" ref={menuRef}>
             <div onClick={() => handleNavigation("/home")} className='organizationNameAndLogo'>
-                {organization ? <img src="/frog_logo.jpg" alt="logo" className='logo' /> : null}
+                {organization ? <img src={OrgPic} alt="logo" onError={() => setOrgPic("/org_default_logo.png")} className='logo' /> : null}
                 {organization ? <p>{organization.name}</p> : null}
             </div>
             <ul className='menuList'>
@@ -88,15 +94,6 @@ export default function LeftSideBar({ organization, setOrganization }) {
                     <FontAwesomeIcon icon="plus" className='menuIcon' />
                     <span>Join Organization</span>
                 </li>
-                {canCreateOrganization ?
-                    <li
-                        onClick={() => handleNavigation("/home/create-organization")}
-                        className={`navLink${isActive("/home/create-organization") ? "active" : ""}`}
-                    >
-                        <FontAwesomeIcon icon="building" className='menuIcon' />
-                        <span>Create Organization</span>
-                    </li>
-                    : null}
                 {organization && Object.hasOwn(organization, "admins") && organization.admins.includes(Number(userId)) ?
                     <li
                         onClick={() => handleNavigation("/home/organization-settings")}

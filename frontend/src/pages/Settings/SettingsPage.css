@@ -402,3 +402,38 @@
 .customInput input {
     width: fit-content
 }
+
+.logoInput {
+    border-radius: 15px;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.logoHover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+}
+
+.logoPhotoContainer:hover .logoHover {
+    opacity: 1;
+}
+
+.logoPhotoContainer {
+    position: relative;
+    display: inline-block;
+    width: 150px;
+    margin: 10px;
+}

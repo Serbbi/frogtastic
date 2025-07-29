@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from crud.organization import OrganizationController
 from schemas.organization import OrganizationBase
 from util.organizationsUtil import get_create_organization_access_right
@@ -45,6 +45,14 @@ async def update_organization(organization_id: int, organization: OrganizationBa
 @router.put("/{organization_id}/quit")
 async def quit_organization(organization_id: int, current_user: User = Depends(get_current_user), controller: OrganizationController = Depends(OrganizationController)):
     return controller.quit_organization(organization_id, current_user)
+
+@router.put("/{organization_id}/logo")
+async def update_profile_pic(
+    organization_id: int, 
+    file: UploadFile = File(..., size=10_000_000),
+    controller: OrganizationController = Depends(OrganizationController)
+):
+    return await controller.update_profile_pic(organization_id, file)
 
 @router.delete("/{organization_id}")
 async def delete_organization(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):

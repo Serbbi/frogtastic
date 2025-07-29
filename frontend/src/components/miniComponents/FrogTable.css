@@ -43,6 +43,10 @@
     max-width: 100px;
 }
 
+.tableRow.odd {
+    background-color: #f9f9f9;
+}
+
 .tableRow:last-child td {
     border-bottom: none;
 }
