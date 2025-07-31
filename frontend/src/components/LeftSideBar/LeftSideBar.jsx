@@ -32,6 +32,7 @@ export default function LeftSideBar({ organization, setOrganization }) {
 
     function logOut() {
         localStorage.clear();
+        sessionStorage.clear();
         setOrganization(-1);
         navigate("/");
     }

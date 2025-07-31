@@ -6,7 +6,7 @@ export async function frogDownloadRequest(organizationId, tankId) {
 
     const response = await fetch(url, {
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('site')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
     });
 

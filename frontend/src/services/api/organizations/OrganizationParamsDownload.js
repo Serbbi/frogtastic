@@ -1,7 +1,7 @@
 export async function paramDownloadRequest(organizationId) {
     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${organizationId}/download-csv`, {
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('site')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         }
     });
 

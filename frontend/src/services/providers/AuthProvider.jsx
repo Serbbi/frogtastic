@@ -12,7 +12,7 @@ export default function AuthProvider({ children }) {
 	const navigate = useNavigate();
 	let attempt = 1;
 
-	const loginAction = useCallback(async (data) => {
+	const loginAction = useCallback(async (data, rememberMe) => {
 		try {
 			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/token`, {
 				method: "POST",
@@ -31,7 +31,10 @@ export default function AuthProvider({ children }) {
 			if (res.access_token) {
 				setUser(data.username);
 				setToken(res.access_token);
-				localStorage.setItem("site", res.access_token);
+				sessionStorage.setItem("token", res.access_token);
+				if (rememberMe) {
+					localStorage.setItem("token", res.access_token);
+				}
 				localStorage.setItem("privileges", JSON.stringify(res.dict));
 				if (res.organizations === null) { //just for the demo on railway
 					res.organizations = [];
@@ -135,12 +138,33 @@ export default function AuthProvider({ children }) {
 		}
 	}, [loginAction]);
 
-	const logOut = useCallback(() => {
-		setUser(null);
-		setToken("");
-		localStorage.removeItem("site");
-		navigate("/login");
-	}, [navigate]);
+	const restoreSession = useCallback(async (token) => {
+		try {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/validate-token`, {
+				method: "POST",
+				headers: {
+					"Authorization": `Bearer ${token}`,
+				}
+			});
+			if (!response.ok) {
+				throw new Error("Session restoration failed");
+			}
+			const res = await response.json();
+			if (res.username) {
+				setUser(res.username);
+				setToken(token);
+				sessionStorage.setItem("token", token);
+				localStorage.setItem("privileges", JSON.stringify(res.attributes));
+				localStorage.setItem("orgs", res.organizations);
+				localStorage.setItem("userId", res.id);
+				localStorage.setItem("username", res.username);
+				localStorage.setItem("email", res.email);
+				navigate("/home");
+			}
+		} catch (err) {
+
+		}
+	}, [token]);
 
 	const getErrorMessage = useCallback(() => {
 		return errorMessage;
@@ -150,11 +174,11 @@ export default function AuthProvider({ children }) {
 		token,
 		user,
 		loginAction,
-		logOut,
 		signUpAction,
+		restoreSession,
 		getErrorMessage,
 		setErrorMessage,
-	}), [token, user, loginAction, logOut, signUpAction, getErrorMessage, setErrorMessage]);
+	}), [token, user, loginAction, signUpAction, restoreSession, getErrorMessage, setErrorMessage]);
 
 	return (
 		<AuthContext.Provider value={value}>

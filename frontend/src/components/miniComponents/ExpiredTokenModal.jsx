@@ -4,6 +4,7 @@ import './ExpiredTokenModal.css';
 export default function ExpiredTokenModal() {
     function handleLogOut() {
         localStorage.clear();
+        sessionStorage.clear();
     }
 
     return (

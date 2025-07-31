@@ -3,7 +3,7 @@ export async function usersPatchRequest(user) {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('site')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(user)
     });

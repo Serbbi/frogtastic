@@ -4,7 +4,7 @@ const OrganizationContext = createContext();
 
 export const OrganizationProvider = ({ children }) => {
     const [organization, setOrganization] = useState(null);
-    const token = localStorage.getItem('site');
+    const token = sessionStorage.getItem('token');
 
     async function fetchAndSetOrganization(id) {
         if (!id) {

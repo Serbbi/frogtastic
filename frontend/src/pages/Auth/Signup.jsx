@@ -130,7 +130,7 @@ export default function Signup() {
                             <p className='errorText'></p>
                         </div>
 
-                        <label className="errorLabel">{auth.getErrorMessage()}</label>
+                        <label className="error-label">{auth.getErrorMessage()}</label>
 
                         <button type="submit" className="primary-button" disabled={isLoading}>
                             {isLoading &&

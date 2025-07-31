@@ -20,7 +20,7 @@ services:
       DATABASE_URL: postgresql+psycopg2://postgres:frog4life@database:5432/postgres
       SECRET_KEY: 3e01bf5381e2c4d794f42e8c23ad8aa268056109f03a5e5582cd5ba105ccc567
       ALGORITHM: HS256
-      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      ACCESS_TOKEN_EXPIRE_MINUTES: 1440
       INITIAL_ADMIN_CREDS: admin:$2b$12$5oM984vTwxqYJJAVigz9F.wVg5ClOpg82/NHTTIILT4o5nnhZlLbq
     depends_on:
       - database
