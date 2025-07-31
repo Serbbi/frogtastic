@@ -36,7 +36,7 @@ export default function HistoryTable({ id, setShowHistory, showHistory, tanks })
                                 }
                                 return (
                                     <div key={key}>
-                                        <strong>{key}:</strong> {value} <br />
+                                        <strong>{key}:</strong> {value.toString()} <br />
                                     </div>
                                 );
                             })}</td>
