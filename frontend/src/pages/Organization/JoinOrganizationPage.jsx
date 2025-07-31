@@ -6,14 +6,14 @@ import CreateOrganizationModal from './CreateOrganizationModal';
 import './JoinOrganizationPage.css';
 
 export default function JoinOrganizationPage() {
-    const username = localStorage.getItem('username');
-    const userId = localStorage.getItem('userId');
-    const userOrgs = localStorage.getItem('orgs').split(',').map(orgId => parseInt(orgId));
+    const username = sessionStorage.getItem('username');
+    const userId = sessionStorage.getItem('userId');
+    const userOrgs = sessionStorage.getItem('orgs').split(',').map(orgId => parseInt(orgId));
     const { organizations, error } = useOrganizations();
     const [showModal, setShowModal] = useState(false);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const { addNotification } = useNotification();
-    const canCreateOrganization = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canCreateOrganization'];
+    const canCreateOrganization = JSON.parse(sessionStorage.getItem('privileges'))['general_privileges']['canCreateOrganization'];
     const [showCreateOrgModal, setShowCreateOrgModal] = useState(false);
     const [orgPics, setOrgPics] = useState([]);
 

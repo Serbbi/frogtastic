@@ -6,7 +6,7 @@ import './SettingsPage.css';
 export default function UserPrivilegesSetting({ organizationId }) {
     const { users, mutate: mutateUsers } = useUsers(organizationId);
     const [selectedUser, setSelectedUser] = useState(null);
-    const userId = localStorage.getItem('userId');
+    const userId = sessionStorage.getItem('userId');
 
     function handleAttributeChange(event) {
         const attribute = event.target.previousSibling.textContent;
@@ -31,7 +31,7 @@ export default function UserPrivilegesSetting({ organizationId }) {
             console.log(data);
 
             await mutateUsers((users) =>
-                users.map(user => 
+                users.map(user =>
                     user.id === selectedUser.id ? { ...user, ...selectedUser } : user
                 ),
                 false
@@ -57,9 +57,9 @@ export default function UserPrivilegesSetting({ organizationId }) {
                     {users && users.map(user => {
                         if (user.id == userId) return null;
                         return (
-                            <li 
-                                key={user.id} 
-                                onClick={() => handleSelectUser(user)} 
+                            <li
+                                key={user.id}
+                                onClick={() => handleSelectUser(user)}
                                 className={`user-item ${selectedUser && selectedUser.id === user.id ? 'selected' : ''}`}                            >
                                 {user.username}
                             </li>
@@ -71,9 +71,9 @@ export default function UserPrivilegesSetting({ organizationId }) {
                         {Object.keys(selectedUser.attributes[organizationId]).map(attribute => (
                             <div key={attribute} className="privilegeItem">
                                 <span>{attribute}</span>
-                                <input 
-                                    type="checkbox" 
-                                    checked={selectedUser.attributes[organizationId][attribute]} 
+                                <input
+                                    type="checkbox"
+                                    checked={selectedUser.attributes[organizationId][attribute]}
                                     onChange={handleAttributeChange}
                                 />
                             </div>
@@ -82,7 +82,7 @@ export default function UserPrivilegesSetting({ organizationId }) {
                 )}
             </div>
             {/* <div className="settingButtons"> */}
-                <button onClick={handleSave}>Save</button>
+            <button onClick={handleSave}>Save</button>
             {/* </div> */}
         </div>
     );

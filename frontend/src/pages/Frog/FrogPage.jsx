@@ -19,7 +19,7 @@ export default function FrogPage({ organization }) {
     const { addNotification } = useNotification();
     const { tanks } = useTanks(organization ? organization.id : -1);
     const [showHistory, setShowHistory] = useState(false);
-    const privileges = JSON.parse(localStorage.getItem('privileges'));
+    const privileges = JSON.parse(sessionStorage.getItem('privileges'));
     const [canEditFrogs, setCanEditFrogs] = useState(false);
     const { frogId } = useParams();
     const { frog, isLoading, mutate: mutateFrog } = useFrogs(frogId, null, null, null);

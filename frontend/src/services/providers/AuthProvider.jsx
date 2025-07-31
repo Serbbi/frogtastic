@@ -7,7 +7,7 @@ const MAX_RETRIES = 10;
 
 export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
-	const [token, setToken] = useState(localStorage.getItem("site") || "");
+	const [token, setToken] = useState(sessionStorage.getItem("token") || "");
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 	let attempt = 1;
@@ -35,14 +35,14 @@ export default function AuthProvider({ children }) {
 				if (rememberMe) {
 					localStorage.setItem("token", res.access_token);
 				}
-				localStorage.setItem("privileges", JSON.stringify(res.dict));
+				sessionStorage.setItem("privileges", JSON.stringify(res.dict));
 				if (res.organizations === null) { //just for the demo on railway
 					res.organizations = [];
 				}
-				localStorage.setItem("orgs", res.organizations);
-				localStorage.setItem("userId", res.id);
-				localStorage.setItem("username", res.username);
-				localStorage.setItem("email", res.email);
+				sessionStorage.setItem("orgs", res.organizations);
+				sessionStorage.setItem("userId", res.id);
+				sessionStorage.setItem("username", res.username);
+				sessionStorage.setItem("email", res.email);
 				navigate("/home");
 				setErrorMessage("");
 			} else {
@@ -154,11 +154,11 @@ export default function AuthProvider({ children }) {
 				setUser(res.username);
 				setToken(token);
 				sessionStorage.setItem("token", token);
-				localStorage.setItem("privileges", JSON.stringify(res.attributes));
-				localStorage.setItem("orgs", res.organizations);
-				localStorage.setItem("userId", res.id);
-				localStorage.setItem("username", res.username);
-				localStorage.setItem("email", res.email);
+				sessionStorage.setItem("privileges", JSON.stringify(res.attributes));
+				sessionStorage.setItem("orgs", res.organizations);
+				sessionStorage.setItem("userId", res.id);
+				sessionStorage.setItem("username", res.username);
+				sessionStorage.setItem("email", res.email);
 				navigate("/home");
 			}
 		} catch (err) {

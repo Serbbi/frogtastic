@@ -5,8 +5,8 @@ import './LeftSideBar.css';
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
 
 export default function LeftSideBar({ organization, setOrganization }) {
-    const userId = localStorage.getItem("userId");
-    const isAdmin = JSON.parse(localStorage.getItem('privileges'))['general_privileges']['canGetUsers'];
+    const userId = sessionStorage.getItem("userId");
+    const isAdmin = JSON.parse(sessionStorage.getItem('privileges'))['general_privileges']['canGetUsers'];
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();

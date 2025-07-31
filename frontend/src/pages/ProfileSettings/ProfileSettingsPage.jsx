@@ -12,8 +12,8 @@ import './ProfileSettingsPage.css';
 
 export default function ProfileSettingsPage() {
     const [confirmationBoxText, setConfirmationBoxText] = useState("");
-    const [email, setEmail] = useState(localStorage.getItem("email"));
-    const [username, setUsername] = useState(localStorage.getItem("username"));
+    const [email, setEmail] = useState(sessionStorage.getItem("email"));
+    const [username, setUsername] = useState(sessionStorage.getItem("username"));
     const [isEditing, setIsEditing] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [activeOrganization, setActiveOrganization] = useState(null);
@@ -21,7 +21,7 @@ export default function ProfileSettingsPage() {
     const { addNotification } = useNotification();
     const { organizations } = useOrganizations();
     const dropdownRef = useRef(null);
-    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${localStorage.getItem('userId')}.jpeg`);
+    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${sessionStorage.getItem('userId')}.jpeg`);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -56,15 +56,15 @@ export default function ProfileSettingsPage() {
         const newUserData = {
             email: email,
             username: username,
-            id: localStorage.getItem("userId"),
-            organizations: localStorage.getItem("orgs").split(','),
+            id: sessionStorage.getItem("userId"),
+            organizations: sessionStorage.getItem("orgs").split(','),
             attributes: {},
             hashed_password: "" // this is here just to make the object complete
         };
         usersPatchRequest(newUserData)
             .then(() => {
-                localStorage.setItem("email", email);
-                localStorage.setItem("username", username);
+                sessionStorage.setItem("email", email);
+                sessionStorage.setItem("username", username);
                 window.location.reload();
             })
             .catch(() => {
@@ -75,8 +75,8 @@ export default function ProfileSettingsPage() {
     function handleQuitOrganization() {
         organizationQuitRequest(activeOrganization)
             .then(() => {
-                const orgs = localStorage.getItem("orgs").split(',').filter(org => org !== activeOrganization);
-                localStorage.setItem("orgs", orgs.join(','));
+                const orgs = sessionStorage.getItem("orgs").split(',').filter(org => org !== activeOrganization);
+                sessionStorage.setItem("orgs", orgs.join(','));
                 addNotification({ text: "Successfully left the organization.", type: "success" });
                 window.location.reload();
             })
@@ -91,7 +91,7 @@ export default function ProfileSettingsPage() {
     function handleChangeProfilePic(event) {
         const file = event.target.files[0];
         if (file) {
-            usersPutProfilePicRequest(file, localStorage.getItem('userId'))
+            usersPutProfilePicRequest(file, sessionStorage.getItem('userId'))
                 .then(() => {
                     window.location.reload();
                     addNotification({ text: "Profile picture updated successfully.", type: "success" });
@@ -129,7 +129,7 @@ export default function ProfileSettingsPage() {
             <form className="userFields">
                 <h2>Joined organizations</h2>
                 <ul className="organzationsList">
-                    {localStorage.getItem("orgs").split(',').map((org, index) => (
+                    {sessionStorage.getItem("orgs").split(',').map((org, index) => (
                         <li key={index} className="organizationItem">
                             <span className="organizationName">{organizations?.find((organization) => organization.id == org)?.name || "Unknown Organization"}</span>
                             <span className="org-item-options-outer" onClick={() => { setActiveDropdown(activeDropdown === org ? null : org); setActiveOrganization(org); }}>

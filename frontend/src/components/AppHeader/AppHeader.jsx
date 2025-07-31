@@ -9,9 +9,9 @@ import './AppHeader.css';
 export default function AppHeader({ setOrganization }) {
     const [isOpen, setIsOpen] = useState(false);
     const [shownNotifications, setShownNotifications] = useState(0);
-    const userOrgs = localStorage.getItem('orgs').split(',');
-    const username = localStorage.getItem('username');
-    const userEmail = localStorage.getItem('email');
+    const userOrgs = sessionStorage.getItem('orgs').split(',');
+    const username = sessionStorage.getItem('username');
+    const userEmail = sessionStorage.getItem('email');
     const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
     const [showOrganizations, setShowOrganizations] = useState(false);
     const { organizations, error } = useOrganizations();
@@ -19,7 +19,7 @@ export default function AppHeader({ setOrganization }) {
     const navigate = useNavigate();
     const profileBoxRef = useRef(null);
     const notificationDropdownRef = useRef(null);
-    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${localStorage.getItem('userId')}.jpeg`);
+    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${sessionStorage.getItem('userId')}.jpeg`);
 
     useEffect(() => {
         setOrganization(userOrgs[0]);

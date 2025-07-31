@@ -10,7 +10,7 @@ import './TankFrogsPage.css';
 
 export default function TankFrogsPage({ organization }) {
     const { tanks } = useTanks(organization ? organization.id : -1);
-    const [selectedNumber, setSelectedNumber] = useState(localStorage.getItem('selectedTankNumber') || null);
+    const [selectedNumber, setSelectedNumber] = useState(sessionStorage.getItem('selectedTankNumber') || null);
     const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, selectedNumber, null);
     const { addNotification } = useNotification();
     const [tankStatus, setTankStatus] = useState(false);
@@ -29,7 +29,7 @@ export default function TankFrogsPage({ organization }) {
 
     function handleNumberChange(event) {
         setSelectedNumber(parseInt(event.target.value));
-        localStorage.setItem('selectedTankNumber', event.target.value);
+        sessionStorage.setItem('selectedTankNumber', event.target.value);
     };
 
     const handleDownload = () => {

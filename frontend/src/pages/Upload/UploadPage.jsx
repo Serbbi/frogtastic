@@ -11,7 +11,7 @@ export default function UploadPage({ organization }) {
     const [fileName, setFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
-    const [modelUsed, setModelUsed] = useState(localStorage.getItem("lastSelectedModel") ? parseInt(localStorage.getItem("lastSelectedModel")) : 1);
+    const [modelUsed, setModelUsed] = useState(sessionStorage.getItem("lastSelectedModel") ? parseInt(sessionStorage.getItem("lastSelectedModel")) : 1);
     const dropContainer = useRef(null);
     const navigate = useNavigate();
     const { setExtractionImageURL } = useImage();
@@ -107,7 +107,7 @@ export default function UploadPage({ organization }) {
     }
 
     function updateModelUsed(event) {
-        localStorage.setItem("lastSelectedModel", event.target.value);
+        sessionStorage.setItem("lastSelectedModel", event.target.value);
         setModelUsed(event.target.value);
     }
 
