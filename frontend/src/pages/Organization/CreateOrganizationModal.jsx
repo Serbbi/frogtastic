@@ -47,7 +47,7 @@ export default function CreateOrganizationModal({ show, onClose }) {
                             <label htmlFor="orgName">Organization Name:</label>
                             <input type="text" id="orgName" name="orgName" required onBlur={(e) => validateInput(e)} />
                         </div>
-                        <p className="errorText">{errorMessage}</p>
+                        <p className="error-text">{errorMessage}</p>
                         <button type="submit" className='primary-button' disabled={errorMessage !== ""}>Create</button>
                     </form>
                 </div>

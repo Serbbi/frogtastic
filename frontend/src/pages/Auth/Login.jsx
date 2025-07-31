@@ -45,13 +45,13 @@ export default function Login() {
         }));
     };
 
-    return <div className="main-container-login">
+    return <div className="main-container-auth">
         <div className="left-container"></div>
         <div className="right-container"></div>
         <div className="center-container">
             <div className="center-left-container"></div>
             <div className="center-right-container">
-                <form onSubmit={handleSubmitEvent} className="formContainer">
+                <form onSubmit={handleSubmitEvent} className="form-container">
                     <h2 className="form-title">Log In</h2>
                     <input
                         className="auth-input"

@@ -118,10 +118,10 @@ export default function ProfileSettingsPage() {
                     <div className="usernameAndEmailFields">
                         <label className="profile-form-label">Username</label>
                         <input placeholder={"Username"} value={username} onChange={handleOnChange} className={"profileInput"} name={"username"} onBlur={validateUsername} disabled={!isEditing} />
-                        <p className='errorText'></p>
+                        <p className='error-text'></p>
                         <label className="profile-form-label">Email</label>
                         <input placeholder={"Email"} value={email} onChange={handleOnChange} className={"profileInput"} name={"email"} onBlur={validateEmail} disabled={!isEditing} />
-                        <p className='errorText'></p>
+                        <p className='error-text'></p>
                     </div>
                 </div>
                 {isEditing && <button className="primary-button profileSettingsSaveButton" onClick={handleSave}>Save</button>}

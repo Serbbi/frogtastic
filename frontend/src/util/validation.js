@@ -7,10 +7,10 @@ export function validateEmail(e) {
         e.target.nextElementSibling.textContent = "Please enter an email address.";
     } else {
         e.target.nextElementSibling.textContent = "";
-        e.target.classList.remove("errorInput");
+        e.target.classList.remove("error-input");
     }
     if (e.target.nextElementSibling.textContent !== "") {
-        e.target.classList.add("errorInput");
+        e.target.classList.add("error-input");
     }
 }
 
@@ -25,11 +25,11 @@ export function validateUsername(e) {
         e.target.nextElementSibling.textContent = "Username can only contain letters, numbers, periods, underscores, and dashes.";
     } else {
         e.target.nextElementSibling.textContent = "";
-        e.target.classList.remove("errorInput");
+        e.target.classList.remove("error-input");
     }
 
     if (e.target.nextElementSibling.textContent !== "") {
-        e.target.classList.add("errorInput");
+        e.target.classList.add("error-input");
     }
 }
 
@@ -44,10 +44,26 @@ export function validatePassword(e) {
         e.target.parentElement.nextElementSibling.textContent = "Password must contain at least one uppercase letter, one lowercase letter, one number and one symbol.";
     } else {
         e.target.parentElement.nextElementSibling.textContent = "";
-        e.target.classList.remove("errorInput");
+        e.target.classList.remove("error-input");
     }
 
     if (e.target.parentElement.nextElementSibling.textContent !== "") {
-        e.target.classList.add("errorInput");
+        e.target.classList.add("error-input");
+    }
+}
+
+export function validateConfirmPassword(e, input) {
+    const password = e.target.value;
+    if (password === "") {
+        e.target.parentElement.nextElementSibling.textContent = "Please fill out this field.";
+    } else if (password !== input.password) {
+        e.target.parentElement.nextElementSibling.textContent = "Passwords do not match.";
+    } else {
+        e.target.parentElement.nextElementSibling.textContent = "";
+        e.target.classList.remove("error-input");
+    }
+
+    if (e.target.parentElement.nextElementSibling.textContent !== "") {
+        e.target.classList.add("error-input");
     }
 }
