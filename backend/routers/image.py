@@ -47,7 +47,7 @@ async def save_image(decision: str,
             raise_404_exception("Frog ID not found in images")
 
         temp_file_path = images.pop(frog_id)
-        gcs_path = f"uploads/{frog_id}/{temp_file_path[5:]}"
+        gcs_path = f"{os.getenv('GCS_FROG_IMAGES_LOCATION')}/{frog_id}/{temp_file_path[5:]}"
         public_url = controller.upload_to_gcs(temp_file_path, gcs_path)
         os.remove(temp_file_path)
         return {"url": public_url}

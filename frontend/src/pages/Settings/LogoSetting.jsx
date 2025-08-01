@@ -4,13 +4,13 @@ import { useNotification } from '../../services/providers/NotificationProvider';
 import { organizationPutLogo } from '../../services/api/organizations/OrganizationPut';
 
 export default function LogoSetting({ organization }) {
-    const [orgLogoSrc, setOrgLogoSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/organization-pics/${organization?.id}.jpeg`);
+    const [orgLogoSrc, setOrgLogoSrc] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${organization?.id}.jpeg`);
     const fileInputRef = useRef(null);
     const { addNotification } = useNotification();
 
     useEffect(() => {
         if (organization) {
-            setOrgLogoSrc(`https://storage.googleapis.com/cool_frog_bucket/organization-pics/${organization.id}.jpeg`);
+            setOrgLogoSrc(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${organization.id}.jpeg`);
         }
     }, [organization]);
 

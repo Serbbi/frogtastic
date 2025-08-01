@@ -1,3 +1,4 @@
+import os
 from crud.controller import Controller
 from crud.frog import FrogController
 from crud.tank import TankController
@@ -145,8 +146,8 @@ class OrganizationController(Controller):
         output_buffer.seek(0)
         
         storage_client = storage.Client()
-        bucket = storage_client.bucket("cool_frog_bucket")
-        blob = bucket.blob(f"organization-pics/{organization_id}.jpeg")
+        bucket = storage_client.bucket(os.getenv("GCS_BUCKET_NAME"))
+        blob = bucket.blob(f"{os.getenv('GCS_ORG_LOGO_FOLDER')}/{organization_id}.jpeg")
 
         blob.cache_control = "no-cache, max-age=0"
         blob.upload_from_file(output_buffer, content_type="image/jpeg")

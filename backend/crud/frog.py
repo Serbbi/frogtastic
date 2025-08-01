@@ -1,6 +1,7 @@
 import base64
 import datetime
 import io
+import os
 from fastapi.responses import StreamingResponse
 import numpy as np
 from crud.controller import Controller
@@ -40,7 +41,7 @@ class FrogController(Controller):
 
     def get_frog(self, frog_id: int):
         storage_client = storage.Client()
-        blobs = storage_client.list_blobs("cool_frog_bucket", prefix=f"uploads/{frog_id}")
+        blobs = storage_client.list_blobs("cool_frog_bucket", prefix=f"{os.getenv('GCS_FROG_IMAGES_LOCATION')}/{frog_id}")
 
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
         if db_frog:
@@ -188,7 +189,7 @@ class FrogController(Controller):
     def upload_to_gcs(self, file_path: str, destination_blob_name: str) -> str:
         """Upload a file to GCS and return the public URL."""
         client = storage.Client()
-        bucket = client.bucket("cool_frog_bucket")
+        bucket = client.bucket(os.getenv("GCS_BUCKET_NAME"))
         blob = bucket.blob(destination_blob_name)
         blob.upload_from_filename(file_path)
 

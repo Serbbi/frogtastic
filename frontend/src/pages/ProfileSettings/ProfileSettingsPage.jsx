@@ -21,7 +21,7 @@ export default function ProfileSettingsPage() {
     const { addNotification } = useNotification();
     const { organizations } = useOrganizations();
     const dropdownRef = useRef(null);
-    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${sessionStorage.getItem('userId')}.jpeg`);
+    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_USER_PROFILE_PICS_LOCATION}/${sessionStorage.getItem('userId')}.jpeg`);
     const fileInputRef = useRef(null);
 
     useEffect(() => {

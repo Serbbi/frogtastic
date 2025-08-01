@@ -19,7 +19,7 @@ export default function AppHeader({ setOrganization }) {
     const navigate = useNavigate();
     const profileBoxRef = useRef(null);
     const notificationDropdownRef = useRef(null);
-    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/cool_frog_bucket/user-profile-pics/${sessionStorage.getItem('userId')}.jpeg`);
+    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_USER_PROFILE_PICS_LOCATION}/${sessionStorage.getItem('userId')}.jpeg`);
 
     useEffect(() => {
         setOrganization(userOrgs[0]);

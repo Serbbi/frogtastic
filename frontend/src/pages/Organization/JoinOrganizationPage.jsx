@@ -19,7 +19,7 @@ export default function JoinOrganizationPage() {
 
     useEffect(() => {
         if (organizations) {
-            const pics = organizations.map(org => `https://storage.googleapis.com/cool_frog_bucket/organization-pics/${org.id}.jpeg`);
+            const pics = organizations.map(org => `https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${org.id}.jpeg`);
             setOrgPics(pics);
         }
     }, [organizations]);

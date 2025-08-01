@@ -10,11 +10,11 @@ export default function LeftSideBar({ organization, setOrganization }) {
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
-    const [OrgPic, setOrgPic] = useState(`https://storage.googleapis.com/cool_frog_bucket/organization-pics/${organization?.id}.jpeg`);
+    const [OrgPic, setOrgPic] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${organization?.id}.jpeg`);
 
     useEffect(() => {
         if (organization) {
-            setOrgPic(`https://storage.googleapis.com/cool_frog_bucket/organization-pics/${organization.id}.jpeg`);
+            setOrgPic(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${organization.id}.jpeg`);
         }
     }, [organization]);
 
