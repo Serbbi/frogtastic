@@ -30,9 +30,12 @@ class FrogController(Controller):
             query = query.filter(Frog.organization_id == org_q)
         
         frogs = query.all()
-
+    
         if no_frogs_q:
-            frogs = frogs[:no_frogs_q]
+            if no_frogs_q <= 0:
+                frogs = []
+            else:
+                frogs = frogs[:no_frogs_q]
         
         return frogs
     

@@ -39,6 +39,16 @@ class TestDatabase:
             history={"last_injection": "2024-02-16", "egg_quality": None, "is_laying_eggs": True, "last_priming": None},
             image_path="path/to/image.jpg"
         )
+
+        frog_4 = Frog(
+            frog_number=14,
+            tank_id=11,
+            current_tank_id=2,
+            attributes={"color": "green", "size": "medium"},
+            organization_id=2,
+            history={"last_injection": "2024-02-16", "egg_quality": None, "is_laying_eggs": True, "last_priming": None},
+            image_path="path/to/image.jpg"
+        )
         tank_1 = Tank(
             tank_name="Tank 1",
             organization_id=1
@@ -55,6 +65,16 @@ class TestDatabase:
             system_parameter_names=["param1", "param2"],
             system_parameters={"param1": "value1", "param2": "value2"}
         )
+
+        organization_2 = Organization(
+            name="Test Organization 2",
+            participants = [2],
+            admins = [2],
+            table_columns=["column1", "column2"],
+            system_parameter_names=["param1", "param2"],
+            system_parameters={"param1": "value1", "param2": "value2"}
+        )
+
         user_1 = User(
             username="elena",
             hashed_password="$2b$12$ZOul9f4nNPGOiqk9JAIQxOuCpe5e5yxsJdyAE6FQls3tgc7DIRhla",
@@ -78,13 +98,13 @@ class TestDatabase:
             },
             organizations=[1]
         )
-        self.session.add(organization_1)
+        self.session.add_all([organization_1, organization_2])
         self.session.commit()
         self.session.add(user_1)
         self.session.commit()
         self.session.add_all([tank_1, tank_2])
         self.session.commit()
-        self.session.add_all([frog_1, frog_2, frog_3])
+        self.session.add_all([frog_1, frog_2, frog_3, frog_4])
         self.session.commit()
 
 def override_get_db():
