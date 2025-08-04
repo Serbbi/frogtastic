@@ -16,11 +16,13 @@ export function validateEmail(e) {
 
 export function validateUsername(e) {
     const username = e.target.value;
-    const usernameRegex = /^[a-zA-Z0-9._-]{3,}$/;
+    const usernameRegex = /^[a-zA-Z0-9._-]{3,30}$/;
     if (username === "") {
         e.target.nextElementSibling.textContent = "Please fill out this field.";
     } else if (username.length < 3) {
         e.target.nextElementSibling.textContent = "Username must be at least 3 characters long.";
+    } else if (username.length > 30) {
+        e.target.nextElementSibling.textContent = "Username must be at most 30 characters long.";
     } else if (!usernameRegex.test(username)) {
         e.target.nextElementSibling.textContent = "Username can only contain letters, numbers, periods, underscores, and dashes.";
     } else {

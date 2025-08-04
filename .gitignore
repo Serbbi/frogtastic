@@ -33,6 +33,7 @@ yarn.lock
 
 # Ignore pycache
 __pycache__/
+.pytest_cache
 
 # Ignore image dataset
 /backend/CORF3D_ACF/data

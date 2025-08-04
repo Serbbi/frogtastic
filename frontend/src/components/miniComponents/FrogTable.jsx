@@ -40,8 +40,22 @@ export default function FrogTable({ frogs, organization }) {
                 const valueB = `F${b["frog_number"]}_T${b["tank_id"]}`;
                 return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
             }
+
             const valueA = a.attributes[key] || a[key];
             const valueB = b.attributes[key] || b[key];
+
+            // Check if values look like dates (e.g., 'YYYY-MM-DD')
+            const isDate = (val) => typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val);
+
+            if (isDate(valueA) && isDate(valueB)) {
+                const dateA = new Date(valueA);
+                const dateB = new Date(valueB);
+                return direction === 'asc' ? dateA - dateB : dateB - dateA;
+            }
+
+            if (isDate(valueA) && !isDate(valueB)) return direction === 'asc' ? -1 : 1;
+            if (!isDate(valueA) && isDate(valueB)) return direction === 'asc' ? 1 : -1;
+
             if (typeof valueA === 'string' && typeof valueB === 'string') {
                 return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
             }
