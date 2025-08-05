@@ -109,18 +109,6 @@
     border-radius: 0.5rem;
 }
 
-/* 
-.attributeItem:last-child {
-    font-weight: bold;
-    padding: 0.5rem 0.8rem;
-} */
-
-/* .attributeItem:last-child:hover {
-    background-color: rgb(224, 224, 224);
-    border-color: gray;
-    color: black;
-} */
-
 .attributeItemSelected {
     margin: 0 0.5rem 0.5rem 0;
     padding: 0.5rem;
@@ -192,9 +180,6 @@
 }
 
 .editTankDiv {
-    /* margin: 0 0.5rem 0.5rem 0; */
-    /* padding: 0.5rem; */
-
     display: inline-flex;
     /* justify-content: center; */
     align-items: center;

@@ -10,6 +10,7 @@ export const OrganizationProvider = ({ children }) => {
         if (!id) {
             return;
         }
+        sessionStorage.setItem("selectedOrg", id);
         try {
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/organizations/${id}`, {
                 headers: {

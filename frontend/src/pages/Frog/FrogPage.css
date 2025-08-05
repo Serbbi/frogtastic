@@ -236,8 +236,8 @@ label {
     }
 
     .frogDetailsContainer {
-        /* overflow-x: hidden; */
         align-items: start;
+        width: inherit;
     }
 
     .frogDetailsContainer h1 {
@@ -252,4 +252,11 @@ label {
         grid-column: span 1;
     }
 
+    .secondary-button.compare-modal {
+        height: auto;
+    }
+
+    .primary-button.compare-modal {
+        height: auto;
+    }
 }

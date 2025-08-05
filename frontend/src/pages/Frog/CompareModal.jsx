@@ -36,9 +36,9 @@ export default function CompareModal({ frog, setShowCompareModal, extractionImag
                 </div>
                 {showButtons &&
                     <div className="compare-modal-buttons">
-                        <button onClick={() => handleSaveImage("yes")} className="primary-button">Accept and save</button>
-                        <button onClick={() => handleSaveImage("no")} className="secondary-button">Accept without saving</button>
-                        <button onClick={() => navigate(-1)} className="secondary-button">Reject</button>
+                        <button onClick={() => handleSaveImage("yes")} className="primary-button compare-modal">Accept and save</button>
+                        <button onClick={() => handleSaveImage("no")} className="secondary-button compare-modal">Accept without saving</button>
+                        <button onClick={() => navigate(-1)} className="secondary-button compare-modal">Reject</button>
                     </div>
                 }
             </div>
