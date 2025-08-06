@@ -19,7 +19,7 @@
 }
 
 .org-table-row {
-    background-color: #ffffff;
+    background-color: var(--background-color);
     display: flex;
     justify-content: column;
     align-items: center;
@@ -82,7 +82,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: var(--background-color);
     border-radius: 10px;
     padding: 20px;
     width: 50%;
@@ -125,4 +125,22 @@
     padding: 10px;
     border-radius: 7px;
     border: 2px solid #ccc;
+}
+
+@media (prefers-color-scheme: dark) {
+    .org-table-row {
+        border-bottom: 1px solid #464646;
+    }
+
+    .org-table-row.odd {
+        background-color: #242424;
+    }
+
+    .org-table-row:hover {
+        background-color: #747474;
+    }
+
+    .disabledRow:hover {
+        background-color: #414141;
+    }
 }

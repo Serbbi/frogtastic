@@ -71,7 +71,7 @@
 .settingContainer h3 {
     margin: 0;
     padding: 0.5rem;
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
     border-radius: 15px 15px 0 0;
 }
 

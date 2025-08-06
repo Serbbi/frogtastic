@@ -31,7 +31,7 @@
 }
 
 .drop-container:hover {
-  background: #eee;
+  background: var(--background-color);
   border-color: #111;
 }
 
@@ -90,4 +90,18 @@ video {
   height: auto;
   border-radius: 10px;
   margin: 10px 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .drop-container {
+    color: #e1e1e1;
+  }
+
+  .drop-title {
+    color: #e1e1e1;
+  }
+
+  .drop-container:hover .drop-title {
+    color: #e0e0e0;
+  }
 }

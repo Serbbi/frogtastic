@@ -1,10 +1,8 @@
 .homeContainer {
     display: flex;
     flex-direction: row;
-    /* align-items: center; */
-    /* justify-content: space-between; */
     height: 100vh;
-    background-color: rgb(236, 248, 238);
+    background-color: var(--background-color-content);
 }
 
 .sidebarAndRightSide {
@@ -19,7 +17,6 @@
     width: inherit;
     padding: 1rem;
     box-sizing: border-box;
-    /* overflow: hidden; */
 }
 
 .hideNavButton {

@@ -7,8 +7,35 @@
     --secondary-clicked-color: #b0b8b4;
     --disabled-color: #c3d5c8;
     --background-color: #fff;
+    --background-color-content: #ecf8ee;
     --active-color: #55d15d;
     --title-color: #21512e;
+    --text-color: #373737;
+    --accent-color: #b7d1b9;
+    --accent-color-hover: #a0bca3;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #497556;
+        --clicked-color: #2c5b39;
+        --hover-color: #33503b;
+        --secondary-color: #8f8f8f;
+        --secondary-hover-color: #bfc9c4;
+        --secondary-clicked-color: #7b817e;
+        --disabled-color: #97a89c;
+        --background-color: #151615;
+        --background-color-content: #242724;
+        --active-color: #55d15d;
+        --title-color: #a8ceb3;
+        --text-color: #dadada;
+        --accent-color: #3e493f;
+        --accent-color-hover: #2d352e;
+    }
+
+    html {
+        color-scheme: dark;
+    }
 }
 
 .App {

@@ -10,7 +10,7 @@
 }
 
 .paramsTable th {
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
 }
 
 .paramsTable th,
@@ -88,5 +88,11 @@
 @media screen and (max-width: 768px) {
     .paramsTable {
         width: 100%;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .paramsTable td {
+        border-bottom: 1px solid #464646;
     }
 }

@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 10px;
-    background-color: white;
+    background-color: var(--background-color);
     padding: 10px;
     width: 70%;
     box-sizing: border-box;
@@ -11,7 +11,7 @@
 }
 
 .imagesGridHeader {
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
     width: 70%;
     text-align: left;
     border-radius: 15px 15px 0 0;

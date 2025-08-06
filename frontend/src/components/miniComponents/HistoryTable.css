@@ -10,7 +10,7 @@
 }
 
 .historyTable th {
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
 }
 
 .historyTable th,
@@ -32,6 +32,12 @@
 
 .dateColumn {
     max-width: 100px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .historyTable td {
+        border-bottom: 1px solid #464646;
+    }
 }
 
 @media screen and (max-width: 768px) {

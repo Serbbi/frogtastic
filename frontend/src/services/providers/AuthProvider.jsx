@@ -43,7 +43,7 @@ export default function AuthProvider({ children }) {
 				sessionStorage.setItem("userId", res.id);
 				sessionStorage.setItem("username", res.username);
 				sessionStorage.setItem("email", res.email);
-				navigate("/home");
+				navigate("/home/upload-image");
 				setErrorMessage("");
 			} else {
 				setErrorMessage(res.detail || "Login failed");

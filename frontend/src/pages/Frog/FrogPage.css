@@ -24,7 +24,7 @@
 }
 
 .frogField label {
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
     font-weight: bold;
     border-radius: 1rem 0 0 1rem;
     font-size: 1.1rem;
@@ -87,11 +87,11 @@ select {
 
 .frogField select {
     font-size: 1rem;
+    background-color: var(--background-color);
 }
 
 .frogField select:hover {
     cursor: pointer;
-    background-color: #b4c0b5;
 }
 
 textarea {
@@ -192,7 +192,7 @@ label {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     justify-content: center;
-    background-color: white;
+    background-color: var(--background-color);
     border-radius: 10px;
     padding: 20px;
     width: 70%;
@@ -220,6 +220,22 @@ label {
     display: flex;
     justify-content: center;
     gap: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .modalCompareImages {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
 }
 
 @media screen and (max-width: 768px) {

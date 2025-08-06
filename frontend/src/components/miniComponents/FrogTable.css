@@ -10,12 +10,12 @@
 }
 
 .frogTable th {
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
     cursor: pointer;
 }
 
 .frogTable th:hover {
-    background-color: rgb(160, 188, 163);
+    background-color: var(--accent-color-hover);
 }
 
 .frogTable th::after {
@@ -87,6 +87,16 @@
 
     100% {
         background-position: 100% 0%;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableRow.odd {
+        background-color: #191a19;
+    }
+
+    .frogTable td {
+        border-bottom: 1px solid #464646;
     }
 }
 
