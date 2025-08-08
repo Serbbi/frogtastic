@@ -103,7 +103,7 @@
     align-items: center;
     justify-content: space-between;
     width: 70%;
-    padding: 1rem 0 0 0;
+    /* padding: 1rem 0 0 0; */
 }
 
 .remember-me-container {
@@ -142,6 +142,7 @@
     display: flex;
     flex-direction: row;
     gap: 20px;
+    font-size: 0.9rem;
 }
 
 .line-separator {
@@ -178,6 +179,7 @@
 .error-label {
     font-size: small;
     margin: 1rem auto 0 auto;
+    padding-bottom: 0;
     width: 80%;
 }
 

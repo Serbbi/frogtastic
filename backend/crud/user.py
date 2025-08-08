@@ -61,6 +61,7 @@ class UserController(Controller):
         db_user.username = user.username
         db_user.organizations = user.organizations
         db_user.email = user.email
+        db_user.attributes = user.attributes
         self.db.commit()
         self.db.refresh(db_user)
         return db_user

@@ -1,7 +1,7 @@
 # The router that is used from all "/image/*" endpoints.
 from fastapi import APIRouter, Depends, File, UploadFile
 from crud.frog import FrogController
-from util.exceptions import raise_404_exception, raise_409_exception
+from util.exceptions import raise_404_exception, raise_409_exception, raise_422_exception
 from typing import Union
 import os
 import shutil
@@ -24,6 +24,8 @@ async def upload_image(organization_id: int,
                        file: UploadFile = File(..., size=10_000_000),
                        controller: FrogController = Depends(FrogController)):
     frog_composition = controller.get_frog_by_image(file, organization_id, model_id)
+    if not frog_composition or 'frog' not in frog_composition:
+        raise_422_exception("Could not extract frog from image")
     if frog_composition['frog']:
         file.file.seek(0)
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
