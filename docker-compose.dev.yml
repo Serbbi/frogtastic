@@ -8,7 +8,6 @@ services:
     env_file: ./.env
     volumes:
       - ./frontend:/app
-      - /app/node_modules
     networks:
       - internal
   backend:

@@ -71,7 +71,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 100px;
+    margin-bottom: 20px;
     gap: 0.5rem;
 }
 
@@ -136,6 +136,33 @@
 
 .rotate {
     animation: rotation 8s infinite linear;
+}
+
+.google-separator {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.line-separator {
+    border: none;
+    background-color: rgb(153, 153, 153);
+    width: 60px;
+    height: 2px;
+}
+
+.google-login-btn {
+    background-color: #232323;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 7px;
+    border: none;
+    margin-top: 20px;
+    width: 200px;
+}
+
+.google-login-btn:hover {
+    background-color: #474747;
 }
 
 @keyframes rotation {

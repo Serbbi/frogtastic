@@ -1,174 +1,77 @@
 import { useContext, createContext, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import * as AuthService from '../api/auth/authService';
 
 const AuthContext = createContext();
-const MAX_RETRIES = 10;
 
 export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
 	const [token, setToken] = useState(sessionStorage.getItem("token") || "");
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
-	let attempt = 1;
 
-	const loginAction = useCallback(async (data, rememberMe) => {
-		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/token`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-				body: `username=${data.username}&password=${data.password}`,
-			});
+	const handleLoginSuccess = useCallback((res, rememberMe = false) => {
+		setUser(res.username);
+		setToken(res.access_token);
 
-			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
-				throw new Error(errorData.detail || "Login failed");
-			}
-			const res = await response.json();
+		sessionStorage.setItem("token", res.access_token);
+		sessionStorage.setItem("privileges", JSON.stringify(res.dict || {}));
+		sessionStorage.setItem("orgs", res.organizations || []);
+		sessionStorage.setItem("userId", res.id);
+		sessionStorage.setItem("username", res.username);
+		sessionStorage.setItem("email", res.email);
 
-			if (res.access_token) {
-				setUser(data.username);
-				setToken(res.access_token);
-				sessionStorage.setItem("token", res.access_token);
-				if (rememberMe) {
-					localStorage.setItem("token", res.access_token);
-				}
-				sessionStorage.setItem("privileges", JSON.stringify(res.dict));
-				if (res.organizations === null) { //just for the demo on railway
-					res.organizations = [];
-				}
-				sessionStorage.setItem("orgs", res.organizations);
-				sessionStorage.setItem("userId", res.id);
-				sessionStorage.setItem("username", res.username);
-				sessionStorage.setItem("email", res.email);
-				navigate("/home/upload-image");
-				setErrorMessage("");
-			} else {
-				setErrorMessage(res.detail || "Login failed");
-			}
-		} catch (err) {
-			if (attempt < MAX_RETRIES) {
-				let errorMessage = "";
-
-				if (err instanceof TypeError) {
-					errorMessage = "Network issue";
-				} else if (err instanceof SyntaxError) {
-					errorMessage = "Invalid server response";
-				} else if (err.message) {
-					if (err.message.includes("Incorrect")) {
-						setErrorMessage("Incorrect username or password");
-						return;
-					}
-					errorMessage = err.message;
-				} else {
-					errorMessage = "Temporary issue";
-				}
-
-				setErrorMessage(`${errorMessage} (attempt ${attempt}/${MAX_RETRIES})...`);
-				const delay = Math.min(1000 * Math.pow(2, attempt++), 30000);
-				await new Promise(resolve => setTimeout(resolve, delay));
-				return loginAction(data);
-			} else {
-				if (err.message) {
-					setErrorMessage(err.message);
-				} else if (err instanceof TypeError) {
-					setErrorMessage("Could not connect to server");
-				} else {
-					setErrorMessage("Login failed");
-				}
-			}
+		if (rememberMe) {
+			localStorage.setItem("token", res.access_token);
 		}
+
+		navigate("/home/upload-image");
+		setErrorMessage("");
 	}, [navigate]);
+
+	const loginAction = useCallback(async (data, rememberMe = false) => {
+		try {
+			const res = await AuthService.login(data);
+			handleLoginSuccess(res, rememberMe);
+		} catch (err) {
+			setErrorMessage(err.message);
+		}
+	}, [handleLoginSuccess]);
 
 	const signUpAction = useCallback(async (data) => {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					username: data.username,
-					hashed_password: data.password,
-					email: data.email,
-					attributes: {},
-					organizations: []
-				}),
-			});
-			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
-				throw new Error(errorData.detail || "Sign up failed");
-			}
-			const res = await response.json();
-
+			const res = await AuthService.signUp(data);
 			if (res.username) {
-				loginAction(data);
+				await loginAction(data);
 			} else {
-				setErrorMessage(res.detail || "Sign up failed");
+				setErrorMessage("Sign up failed");
 			}
 		} catch (err) {
-			if (attempt < MAX_RETRIES) {
-				let errorMessage = "";
-
-				if (err instanceof TypeError) {
-					errorMessage = "Network issue";
-				} else if (err instanceof SyntaxError) {
-					errorMessage = "Invalid server response";
-				} else if (err.message) {
-					errorMessage = err.message;
-				} else {
-					errorMessage = "Temporary issue";
-				}
-
-				setErrorMessage(`${errorMessage} (attempt ${attempt}/${MAX_RETRIES})...`);
-				const delay = Math.min(1000 * Math.pow(2, attempt++), 30000);
-				await new Promise(resolve => setTimeout(resolve, delay));
-				return signUpAction(data);
-			} else {
-				if (err.message) {
-					setErrorMessage(err.message);
-				} else if (err instanceof TypeError) {
-					setErrorMessage("Could not connect to server");
-				} else {
-					setErrorMessage("Login failed");
-				}
-			}
+			setErrorMessage(err.message);
 		}
 	}, [loginAction]);
 
-	const restoreSession = useCallback(async (token) => {
+	const restoreSession = useCallback(async (storedToken) => {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/validate-token`, {
-				method: "POST",
-				headers: {
-					"Authorization": `Bearer ${token}`,
-				}
-			});
-			if (!response.ok) {
-				throw new Error("Session restoration failed");
-			}
-			const res = await response.json();
-			if (res.username) {
-				setUser(res.username);
-				setToken(token);
-				sessionStorage.setItem("token", token);
-				sessionStorage.setItem("privileges", JSON.stringify(res.attributes));
-				sessionStorage.setItem("orgs", res.organizations);
-				sessionStorage.setItem("userId", res.id);
-				sessionStorage.setItem("username", res.username);
-				sessionStorage.setItem("email", res.email);
-				navigate("/home");
-			}
+			const res = await AuthService.validateToken(storedToken);
+			handleLoginSuccess({ ...res, access_token: storedToken });
 		} catch (err) {
-
+			console.warn("Session restoration failed:", err.message);
 		}
-	}, [token]);
+	}, [handleLoginSuccess]);
 
-	const getErrorMessage = useCallback(() => {
-		return errorMessage;
-	}, [errorMessage]);
+	const googleLoginAction = useCallback(async (google_token) => {
+		try {
+			const res = await AuthService.googleLogin(google_token);
+			handleLoginSuccess(res, true); // always remember for Google
+		} catch (err) {
+			console.error(err);
+			setErrorMessage(err.message);
+		}
+	}, [handleLoginSuccess]);
+
+	const getErrorMessage = useCallback(() => errorMessage, [errorMessage]);
 
 	const value = useMemo(() => ({
 		token,
@@ -176,9 +79,10 @@ export default function AuthProvider({ children }) {
 		loginAction,
 		signUpAction,
 		restoreSession,
+		googleLoginAction,
 		getErrorMessage,
 		setErrorMessage,
-	}), [token, user, loginAction, signUpAction, restoreSession, getErrorMessage, setErrorMessage]);
+	}), [token, user, loginAction, signUpAction, restoreSession, googleLoginAction, getErrorMessage, setErrorMessage]);
 
 	return (
 		<AuthContext.Provider value={value}>

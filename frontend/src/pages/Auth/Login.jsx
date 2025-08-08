@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../services/providers/AuthProvider";
 import { Link } from "react-router-dom";
+import GoogleLoginButton from "./GoogleLoginButton";
 import "./Login.css";
 
 export default function Login() {
@@ -84,6 +85,12 @@ export default function Login() {
                     </button>
                     <p className="signup-prompt">Don't have an account? <Link to="/signup" className="signup-link">Register here!</Link></p> {/*TODO: Abort any requests made to the server if we change pages*/}
                 </form>
+                <div className="google-separator">
+                    <hr className="line-separator" />
+                    or log in with
+                    <hr className="line-separator" />
+                </div>
+                <GoogleLoginButton />
             </div>
         </div>
     </div>
