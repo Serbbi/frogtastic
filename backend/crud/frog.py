@@ -13,7 +13,7 @@ from sqlalchemy.orm.attributes import flag_modified
 import cv2
 import pandas as pd
 import json
-from util.exceptions import raise_404_exception
+from util.exceptions import raise_404_exception, raise_403_exception
 
 """
 In this file we have the methods that will perform the CRUD actions for the Frog on the database.
@@ -116,12 +116,17 @@ class FrogController(Controller):
         return {"frog": db_frog, "image": base64.b64encode(img_bytes.getvalue()).decode('utf-8')}
     
 
-    def update_frog(self, frog_id: int, frog: Frog, username: str):
+    def update_frog(self, frog_id: int, frog: Frog, username: str, org_id: str):
         # if not verify_frog_details(frog):
             # return {"error": "Invalid frog details"}
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
         if db_frog is None:
-            return None
+            raise_404_exception(f"Frog with ID:{frog_id} not found!")
+        if str(db_frog.organization_id) != org_id:
+            raise_403_exception("You cannot edit this frog")
+        db_tank = self.db.query(Tank).filter(Tank.id == frog.current_tank_id).first()
+        if db_tank is None or db_tank.organization_id != frog.organization_id:
+            raise_404_exception(f"Tank with ID:{frog.current_tank_id} not found!")
 
         db_frog.history = dict(update_history(db_frog, frog, username))
         db_frog.current_tank_id = frog.current_tank_id

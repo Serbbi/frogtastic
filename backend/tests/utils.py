@@ -16,7 +16,7 @@ class TestDatabase:
             current_tank_id=1,
             attributes={"color": "green", "size": "medium"},
             organization_id=1,
-            history={"last_injection": "2024-02-16", "egg_quality": None, "is_laying_eggs": True, "last_priming": None},
+            history={},
             image_path="path/to/image.jpg"
         )
         
@@ -57,6 +57,10 @@ class TestDatabase:
             tank_name="Tank 2",
             organization_id=1
         )
+        tank_3 = Tank(
+            tank_name="Tank 3",
+            organization_id=2
+        )
         organization_1 = Organization(
             name="Test Organization",
             participants = [1, 2, 3],
@@ -94,15 +98,24 @@ class TestDatabase:
                     "canGetUsers": True,
                     "canEditUsers": True,
                     "canDeleteUsers": True
+                },
+                "2": {
+                    "canCreateFrogs": False,
+                    "canEditFrogs": False,
+                    "canDeleteFrogs": False,
+                    "canRetrainModel": False,
+                    "canGetUsers": False,
+                    "canEditUsers": False,
+                    "canDeleteUsers": False
                 }
             },
-            organizations=[1]
+            organizations=[1, 2]
         )
         self.session.add_all([organization_1, organization_2])
         self.session.commit()
         self.session.add(user_1)
         self.session.commit()
-        self.session.add_all([tank_1, tank_2])
+        self.session.add_all([tank_1, tank_2, tank_3])
         self.session.commit()
         self.session.add_all([frog_1, frog_2, frog_3, frog_4])
         self.session.commit()

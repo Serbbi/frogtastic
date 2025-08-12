@@ -66,7 +66,7 @@ async def update_frog(
     _: str = Depends(util.verify_token)
 ):
     if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
-        return controller.update_frog(frog_id, frog, current_user.username)
+        return controller.update_frog(frog_id, frog, current_user.username, str(org_q))
     
     raise_403_exception("You cannot edit this frog")
 
