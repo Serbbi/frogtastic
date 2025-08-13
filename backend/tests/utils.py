@@ -123,8 +123,14 @@ class TestDatabase:
 def override_get_db():
     test_engine = create_engine("postgresql://postgres:frog4life@localhost:5432/testing")
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-    db = SessionLocal()
+
+    connection = test_engine.connect()
+    transaction = connection.begin()
+
+    db = SessionLocal(bind=connection)
     try:
         yield db
     finally:
+        transaction.rollback()
         db.close()
+        connection.close()
