@@ -59,7 +59,9 @@ class FrogController(Controller):
             flag_modified(db_frog, "attributes")
 
         self.db.commit()
-        return {"message": "Frogs updated successfully"}
+        for frog in frogs:
+            self.db.refresh(frog)
+        return frogs
 
     def create_frog(self, frog: Frog):
         already_exists = (

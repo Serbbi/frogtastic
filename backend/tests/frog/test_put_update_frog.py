@@ -159,3 +159,58 @@ def test_update_frog_history_manipulation():
     frog = FrogResponse(**res)
     assert isinstance(frog, FrogResponse)
     assert "bla bla" not in list(frog.history.keys())
+
+
+def test_update_frog_no_body():
+    FROG_ID = 1
+    ORG_ID = 1
+    new_frog["id"] = FROG_ID
+    token = prepare_token(client)
+    response = client.put(
+        f"/frogs/{FROG_ID}?org_q={ORG_ID}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422
+
+
+def test_update_frog_invalid_frog_id():
+    FROG_ID = "invalid"
+    ORG_ID = 1
+    new_frog["id"] = FROG_ID
+    token = prepare_token(client)
+    response = client.put(
+        f"/frogs/{FROG_ID}?org_q={ORG_ID}",
+        headers={"Authorization": f"Bearer {token}"},
+        json=new_frog,
+    )
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422
+
+
+def test_update_frog_invalid_organization_id():
+    FROG_ID = 1
+    ORG_ID = "invalid"
+    new_frog["id"] = FROG_ID
+    token = prepare_token(client)
+    response = client.put(
+        f"/frogs/{FROG_ID}?org_q={ORG_ID}",
+        headers={"Authorization": f"Bearer {token}"},
+        json=new_frog,
+    )
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422
+
+
+def test_update_frog_invalid_frog_and_organization_id():
+    FROG_ID = "invalid"
+    ORG_ID = "invalid"
+    new_frog["id"] = FROG_ID
+    token = prepare_token(client)
+    response = client.put(
+        f"/frogs/{FROG_ID}?org_q={ORG_ID}",
+        headers={"Authorization": f"Bearer {token}"},
+        json=new_frog,
+    )
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422

@@ -54,3 +54,4 @@ uploaded images
 /backend/venv
 
 .ruff_cache/
+.pytest_cache/

@@ -69,3 +69,36 @@ def test_delete_frog_no_privilege():
     )
     logger.debug(f"Response: {response.text}")
     assert response.status_code == 403
+
+
+def test_delete_frog_invalid_frog_id():
+    FROG_ID = "invalid"
+    ORG_ID = 1
+    token = prepare_token(client)
+    response = client.delete(
+        f"/frogs/{FROG_ID}?org_q={ORG_ID}", headers={"Authorization": f"Bearer {token}"}
+    )
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422
+
+
+def test_delete_frog_invalid_organization_id():
+    FROG_ID = 3
+    ORG_ID = "invalid"
+    token = prepare_token(client)
+    response = client.delete(
+        f"/frogs/{FROG_ID}?org_q={ORG_ID}", headers={"Authorization": f"Bearer {token}"}
+    )
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422
+
+
+def test_delete_frog_invalid_frog_and_organization_id():
+    FROG_ID = "invalid"
+    ORG_ID = "invalid"
+    token = prepare_token(client)
+    response = client.delete(
+        f"/frogs/{FROG_ID}?org_q={ORG_ID}", headers={"Authorization": f"Bearer {token}"}
+    )
+    logger.debug(f"Response: {response.text}")
+    assert response.status_code == 422

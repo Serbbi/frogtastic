@@ -95,19 +95,6 @@ async def delete_frog(
     raise_403_exception("You cannot delete this frog")
 
 
-@router.post("")
-async def create_frogs(
-    frogs: List[FrogBase],
-    current_user: User = Depends(util.get_current_user),
-    controller: FrogController = Depends(FrogController),
-):
-    if util.get_organization_access_right(
-        str(frogs[0].organization_id), "canCreateFrogs", current_user
-    ):
-        return controller.create_frogs(frogs)
-    raise_403_exception("You cannot create frogs")
-
-
 @router.post("/train")
 async def train_model(
     file: UploadFile = File(...),
