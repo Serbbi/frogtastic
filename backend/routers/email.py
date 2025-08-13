@@ -2,10 +2,8 @@ from fastapi import APIRouter
 import os
 import resend
 
-router = APIRouter(
-    prefix="/email",
-    tags=["email"]
-)
+router = APIRouter(prefix="/email", tags=["email"])
+
 
 @router.post("/send")
 async def send_email():

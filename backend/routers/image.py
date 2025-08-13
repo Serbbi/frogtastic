@@ -15,13 +15,17 @@ router = APIRouter(
 
 images = []
 
+
 @router.post("/{organization_id}")
-async def upload_image(organization_id: int, 
-                       model_id: Union[int, None] = 1, 
-                       file: UploadFile = File(..., size=10_000_000), controller: FrogController = Depends(FrogController)):
+async def upload_image(
+    organization_id: int,
+    model_id: Union[int, None] = 1,
+    file: UploadFile = File(..., size=10_000_000),
+    controller: FrogController = Depends(FrogController),
+):
     db_frog = controller.get_frog_by_image(file, organization_id, model_id)
     if db_frog:
         images.append(file)
         return db_frog
-    
+
     raise_404_exception("Frog not found")

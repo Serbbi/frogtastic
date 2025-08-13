@@ -320,7 +320,7 @@ def update_history(db_frog, frog, username):
 
 # returns True if the frog details are valid
 def verify_frog_details(frog: Frog):
-    if frog.current_tank_id != None and frog.current_tank_id < 0:
+    if frog.current_tank_id is not None and frog.current_tank_id < 0:
         return {"status": False, "error": "Invalid tank id"}
     if "egg_quality" in frog.attributes:
         if (

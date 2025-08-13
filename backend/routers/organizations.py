@@ -15,37 +15,64 @@ router = APIRouter(
     },
 )
 
+
 @router.post("")
-async def create_organization(organization: OrganizationBase, 
-                              access_right: bool = Depends(get_create_organization_access_right),
-                              current_user: User = Depends(get_current_user),
-                              controller: OrganizationController = Depends(OrganizationController)):
+async def create_organization(
+    organization: OrganizationBase,
+    access_right: bool = Depends(get_create_organization_access_right),
+    current_user: User = Depends(get_current_user),
+    controller: OrganizationController = Depends(OrganizationController),
+):
     if access_right:
         return controller.create_organization(organization, current_user)
     raise_403_exception("You do not have the right to create an organization")
 
+
 @router.get("")
-async def get_organizations(controller: OrganizationController = Depends(OrganizationController),
-                            _: str = Depends(verify_token)):
+async def get_organizations(
+    controller: OrganizationController = Depends(OrganizationController),
+    _: str = Depends(verify_token),
+):
     return controller.get_organizations()
 
+
 @router.get("/{organization_id}")
-async def get_organization(organization_id: int, 
-                           controller: OrganizationController = Depends(OrganizationController)):
+async def get_organization(
+    organization_id: int,
+    controller: OrganizationController = Depends(OrganizationController),
+):
     return controller.get_organization(organization_id)
 
+
 @router.get("/{organization_id}/download-csv")
-async def download_parameters(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
+async def download_parameters(
+    organization_id: int,
+    controller: OrganizationController = Depends(OrganizationController),
+):
     return controller.download_parameters(organization_id)
 
+
 @router.put("/{organization_id}")
-async def update_organization(organization_id: int, organization: OrganizationBase, controller: OrganizationController = Depends(OrganizationController)):
+async def update_organization(
+    organization_id: int,
+    organization: OrganizationBase,
+    controller: OrganizationController = Depends(OrganizationController),
+):
     return controller.update_organization(organization_id, organization)
 
+
 @router.put("/{organization_id}/quit")
-async def quit_organization(organization_id: int, current_user: User = Depends(get_current_user), controller: OrganizationController = Depends(OrganizationController)):
+async def quit_organization(
+    organization_id: int,
+    current_user: User = Depends(get_current_user),
+    controller: OrganizationController = Depends(OrganizationController),
+):
     return controller.quit_organization(organization_id, current_user)
 
+
 @router.delete("/{organization_id}")
-async def delete_organization(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
+async def delete_organization(
+    organization_id: int,
+    controller: OrganizationController = Depends(OrganizationController),
+):
     return controller.delete_organization(organization_id)

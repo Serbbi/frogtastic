@@ -4,10 +4,9 @@ import matlab.engine
 import numpy as np
 import cv2
 from sklearn import preprocessing
-import matplotlib.pyplot as plt
+
 
 def corf_feature_map(image_path, sigma, beta, inhibition_factor, highthresh):
-
     print("Initializing Matlab engine...")
     m = matlab.engine.start_matlab()
     print("Matlab engine initialized")
@@ -31,12 +30,13 @@ def corf_feature_map(image_path, sigma, beta, inhibition_factor, highthresh):
     m.addpath(os.path.join(os.path.dirname(__file__), "CORFpushpull"), nargout=0)
 
     img = m.imread(image_path)
-    binarymap, corfresponse = m.CORFContourDetection(img, sigma, beta, inhibition_factor, highthresh, nargout=2)
+    binarymap, corfresponse = m.CORFContourDetection(
+        img, sigma, beta, inhibition_factor, highthresh, nargout=2
+    )
     return np.array(corfresponse)
 
 
 def corf_feature_maps(dataset_path, sigma, beta, inhibitionFactor, highthresh):
-
     print("Initializing Matlab engine...")
     m = matlab.engine.start_matlab()
     print("Matlab engine initialized")
@@ -63,21 +63,21 @@ def corf_feature_maps(dataset_path, sigma, beta, inhibitionFactor, highthresh):
     m.addpath(os.path.join(os.path.dirname(__file__), "CORFpushpull"), nargout=0)
 
     n_files = len(os.listdir(dataset_path))
-    padding = int(np.log10(n_files))+1
-    log_steps = np.linspace(int(n_files/10), n_files, 10, dtype=np.uint)
+    padding = int(np.log10(n_files)) + 1
+    log_steps = np.linspace(int(n_files / 10), n_files, 10, dtype=np.uint)
     log_step = 0
     for i, image in enumerate(os.listdir(dataset_path)):
         if os.path.splitext(image)[1].lower() not in [".jpg", ".jpeg", ".png"]:
             continue
         retrieve_dir = os.path.join(dataset_path, image)
         image = m.imread(retrieve_dir)
-        binarymap, corfresponse = m.CORFContourDetection(image, sigma, beta, inhibitionFactor,
-                                                         highthresh, nargout=2)
-
+        binarymap, corfresponse = m.CORFContourDetection(
+            image, sigma, beta, inhibitionFactor, highthresh, nargout=2
+        )
 
         response_maps.append(corfresponse)
         if i == log_steps[log_step]:
-            print(f'Done {i: {padding}} out of {n_files}...')
+            print(f"Done {i: {padding}} out of {n_files}...")
             log_step += 1
 
         if i == 3:
@@ -87,7 +87,6 @@ def corf_feature_maps(dataset_path, sigma, beta, inhibitionFactor, highthresh):
 
 
 def temp_feature_maps(dataset):
-
     """
 
     Function to return an list of temperature feature maps
@@ -107,7 +106,7 @@ def temp_feature_maps(dataset):
 
     data_dir_list = os.listdir(dataset)
     for folder_name in data_dir_list:
-        img_list = os.listdir(dataset + '/' + folder_name)
+        img_list = os.listdir(dataset + "/" + folder_name)
         for image in img_list:
             retrieve_dir = dataset + "/" + folder_name + "/" + image
             temp_map = m.temp_segmentation(retrieve_dir)
@@ -121,7 +120,6 @@ def temp_feature_maps(dataset):
 
 
 def feature_normalization(feature_maps):
-
     """
 
     Function to return a list of scaled feature maps
@@ -143,7 +141,6 @@ def feature_normalization(feature_maps):
 
 
 def feature_stack(feature_maps_one, feature_map_two, feature_map_three):
-
     """
 
     Function to return an list of stacked feature maps
@@ -159,14 +156,15 @@ def feature_stack(feature_maps_one, feature_map_two, feature_map_three):
     list_concatenate = []
 
     for i in range(len(feature_maps_one)):
-        concatenate_features = np.stack([feature_maps_one[i], feature_map_two[i], feature_map_three[i]], axis=-1)
+        concatenate_features = np.stack(
+            [feature_maps_one[i], feature_map_two[i], feature_map_three[i]], axis=-1
+        )
         list_concatenate.append(concatenate_features)
 
     return np.array(list_concatenate)
 
 
 def feature_fusion(feature_maps_one, feature_map_two):
-
     """
 
     Function to return an list of fused feature maps

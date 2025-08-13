@@ -3,7 +3,6 @@ import os
 
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.pyplot as plt
-import numpy as np
 from skimage.color import rgb2gray
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
@@ -11,7 +10,6 @@ from sklearn.preprocessing import StandardScaler
 
 
 def visualize_scatter_with_images(X_2d_data, images, figsize=(50, 50), image_zoom=0.2):
-
     """
 
     Function to plot scatter of images
@@ -29,7 +27,7 @@ def visualize_scatter_with_images(X_2d_data, images, figsize=(50, 50), image_zoo
     for xy, i in zip(X_2d_data, images):
         x0, y0 = xy
         img = OffsetImage(i, zoom=image_zoom)
-        ab = AnnotationBbox(img, (x0, y0), xycoords='data', frameon=False)
+        ab = AnnotationBbox(img, (x0, y0), xycoords="data", frameon=False)
         artists.append(ax.add_artist(ab))
     ax.update_datalim(X_2d_data)
     ax.autoscale()
@@ -37,7 +35,6 @@ def visualize_scatter_with_images(X_2d_data, images, figsize=(50, 50), image_zoo
 
 
 def tsne(images, labels):
-
     """
 
     Function to return scaled tsne and its labels
@@ -67,7 +64,6 @@ def tsne(images, labels):
 
 
 def plot_data_graph(hist, counter, model_name, feature_map, out_dir):
-
     """
 
     Function to save and visualize plots
@@ -81,36 +77,60 @@ def plot_data_graph(hist, counter, model_name, feature_map, out_dir):
 
     """
 
-    train_loss = hist.history['loss']
-    val_loss = hist.history['val_loss']
-    train_acc = hist.history['categorical_accuracy']
-    val_acc = hist.history['val_categorical_accuracy']
-    with open(os.path.join(out_dir, 'plots', f'{model_name}_{feature_map}_{counter}_train_loss.json'), 'w') as f:
+    train_loss = hist.history["loss"]
+    val_loss = hist.history["val_loss"]
+    train_acc = hist.history["categorical_accuracy"]
+    val_acc = hist.history["val_categorical_accuracy"]
+    with open(
+        os.path.join(
+            out_dir, "plots", f"{model_name}_{feature_map}_{counter}_train_loss.json"
+        ),
+        "w",
+    ) as f:
         json.dump(train_loss, f)
-    with open(os.path.join(out_dir, 'plots', f'{model_name}_{feature_map}_{counter}_val_loss.json'), 'w') as f:
+    with open(
+        os.path.join(
+            out_dir, "plots", f"{model_name}_{feature_map}_{counter}_val_loss.json"
+        ),
+        "w",
+    ) as f:
         json.dump(val_loss, f)
-    with open(os.path.join(out_dir, 'plots', f'{model_name}_{feature_map}_{counter}_train_acc.json'), 'w') as f:
+    with open(
+        os.path.join(
+            out_dir, "plots", f"{model_name}_{feature_map}_{counter}_train_acc.json"
+        ),
+        "w",
+    ) as f:
         json.dump([float(x) for x in train_acc], f)
-    with open(os.path.join(out_dir, 'plots', f'{model_name}_{feature_map}_{counter}_val_acc.json'), 'w') as f:
+    with open(
+        os.path.join(
+            out_dir, "plots", f"{model_name}_{feature_map}_{counter}_val_acc.json"
+        ),
+        "w",
+    ) as f:
         json.dump([float(x) for x in val_acc], f)
     xc = range(1, len(train_acc) + 1)
 
     plt.figure(figsize=(12, 10))
     plt.plot(xc, train_loss)
     plt.plot(xc, val_loss)
-    plt.xlabel('num of Epochs')
-    plt.ylabel('loss')
-    plt.title('train_loss vs val_loss')
+    plt.xlabel("num of Epochs")
+    plt.ylabel("loss")
+    plt.title("train_loss vs val_loss")
     plt.grid(True)
-    plt.legend(['train', 'val'])
-    plt.savefig(os.path.join(out_dir, 'plots', f'{model_name}_{feature_map}_{counter}_loss'))
+    plt.legend(["train", "val"])
+    plt.savefig(
+        os.path.join(out_dir, "plots", f"{model_name}_{feature_map}_{counter}_loss")
+    )
 
     plt.figure(figsize=(12, 10))
     plt.plot(xc, train_acc)
     plt.plot(xc, val_acc)
-    plt.xlabel('num of Epochs')
-    plt.ylabel('loss')
-    plt.title('train_acc vs val_acc')
+    plt.xlabel("num of Epochs")
+    plt.ylabel("loss")
+    plt.title("train_acc vs val_acc")
     plt.grid(True)
-    plt.legend(['train', 'val'])
-    plt.savefig(os.path.join(out_dir, 'plots', f'{model_name}_{feature_map}_{counter}_acc'))
+    plt.legend(["train", "val"])
+    plt.savefig(
+        os.path.join(out_dir, "plots", f"{model_name}_{feature_map}_{counter}_acc")
+    )

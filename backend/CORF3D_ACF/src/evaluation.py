@@ -3,7 +3,6 @@ from sklearn import preprocessing
 
 
 def printWrongPredictions(pred, y_test, labels):
-
     """
 
     Function to print list of incorrectly classified labels
@@ -36,7 +35,6 @@ def printWrongPredictions(pred, y_test, labels):
 
 
 def model_predictions(model, X_test):
-
     """
 
     Function to predictions

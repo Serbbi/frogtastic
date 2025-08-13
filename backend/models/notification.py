@@ -1,6 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from database import Base
 
+
 class Notification(Base):
     __tablename__ = "notifications"
 
@@ -9,5 +10,3 @@ class Notification(Base):
     description = Column(String, index=True)
     organization_id = Column(Integer, ForeignKey("organizations.id"), index=True)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
-
-

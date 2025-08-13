@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 from dependencies import get_db
-from tests.session_fixture import create_and_delete_database
 from tests.utils import override_get_db
 from tests.prepare import prepare_token
 from schemas.frog import FrogResponse
@@ -11,6 +10,7 @@ logger = logging.getLogger("frog_logger")
 
 app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
+
 
 def test_get_existing_frog():
     ID = 2
@@ -24,6 +24,7 @@ def test_get_existing_frog():
     assert frog.id == ID
     assert isinstance(frog, FrogResponse)
 
+
 def test_get_non_existing_frog():
     ID = 999
     token = prepare_token(client)
@@ -31,12 +32,14 @@ def test_get_non_existing_frog():
     logger.debug(f"Response: {response.text}")
     assert response.status_code == 404
 
+
 def test_get_frog_non_valid_id():
     ID = "NOT VALID"
     token = prepare_token(client)
     response = client.get(f"/frogs/{ID}", headers={"Authorization": f"Bearer {token}"})
     logger.debug(f"Response: {response.text}")
     assert response.status_code == 422
+
 
 def test_get_frog_no_token():
     ID = 2

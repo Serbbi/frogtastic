@@ -11,6 +11,7 @@ privileges_config = {
     "canDeleteUsers": True,
 }
 
+
 class User(Base):
     __tablename__ = "users"
 

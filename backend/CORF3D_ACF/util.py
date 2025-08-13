@@ -1,17 +1,17 @@
 import json
 import re
 
-RE_FROG_TANK = re.compile(r'(?P<frog>frog\d+)_(?P<tank>tank\d+)')
+RE_FROG_TANK = re.compile(r"(?P<frog>frog\d+)_(?P<tank>tank\d+)")
 
 
 def merge_coords():
     with open("head_tail_coords/coords.json", "r") as f:
         data = json.load(f)
     for i, frog in enumerate(data):
-        frog['head'] = [frog['x'][0], frog['y'][0]]
-        frog['tail'] = [frog['x'][1], frog['y'][1]]
-        del frog['x']
-        del frog['y']
+        frog["head"] = [frog["x"][0], frog["y"][0]]
+        frog["tail"] = [frog["x"][1], frog["y"][1]]
+        del frog["x"]
+        del frog["y"]
         data[i] = frog
     with open("head_tail_coords/coords2.json", "r") as f:
         data.extend(json.load(f))

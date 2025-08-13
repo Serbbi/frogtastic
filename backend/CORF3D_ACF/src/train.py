@@ -1,14 +1,9 @@
-import os.path
-
 from keras.callbacks import ModelCheckpoint, EarlyStopping
-from sklearn.model_selection import StratifiedShuffleSplit, LeaveOneGroupOut, StratifiedKFold
-import numpy as np
+from sklearn.model_selection import LeaveOneGroupOut, StratifiedKFold
 import pandas as pd
-from sklearn.model_selection import GroupKFold
 
 
 def train_test_split(n_split, random_state=None):
-
     """
 
     Function to return train and test sets
@@ -25,7 +20,17 @@ def train_test_split(n_split, random_state=None):
     return skf
 
 
-def train_model(model, X_train, y_train, batch_size, num_epochs, X_test, y_test, model_path, early_stopping=False):
+def train_model(
+    model,
+    X_train,
+    y_train,
+    batch_size,
+    num_epochs,
+    X_test,
+    y_test,
+    model_path,
+    early_stopping=False,
+):
     """
 
     Function to Train model
@@ -45,15 +50,25 @@ def train_model(model, X_train, y_train, batch_size, num_epochs, X_test, y_test,
     callbacks_list = []
 
     if early_stopping:
-        earlyStopping = EarlyStopping(monitor='val_categorical_accuracy', patience=7, verbose=2,
-                                      mode='auto')
+        earlyStopping = EarlyStopping(
+            monitor="val_categorical_accuracy", patience=7, verbose=2, mode="auto"
+        )
         callbacks_list.append(earlyStopping)
     # checkpoint = ModelCheckpoint(filepath, save_weights_only=True, save_best_only=True,
-    checkpoint = ModelCheckpoint(model_path, save_best_only=True, monitor='val_categorical_accuracy', mode='auto')
+    checkpoint = ModelCheckpoint(
+        model_path, save_best_only=True, monitor="val_categorical_accuracy", mode="auto"
+    )
     callbacks_list.append(checkpoint)
 
-    hist = model.fit(X_train, y_train, batch_size=batch_size, epochs=num_epochs,
-                     verbose=2, validation_data=(X_test, y_test), callbacks=callbacks_list)
+    hist = model.fit(
+        X_train,
+        y_train,
+        batch_size=batch_size,
+        epochs=num_epochs,
+        verbose=2,
+        validation_data=(X_test, y_test),
+        callbacks=callbacks_list,
+    )
 
     # model.load_model(filepath)
     # model.load_weights(filepath)
@@ -61,7 +76,7 @@ def train_model(model, X_train, y_train, batch_size, num_epochs, X_test, y_test,
     y_pred = model.predict(X_test)
 
     loss, accuracy = model.evaluate(X_test, y_test, batch_size=batch_size, verbose=2)
-    print(f'[INFO] loss={loss:.4f}, accuracy: {accuracy*100:.4f}%')
+    print(f"[INFO] loss={loss:.4f}, accuracy: {accuracy*100:.4f}%")
 
     return model, hist, loss, accuracy, y_pred
 
@@ -91,20 +106,20 @@ def five_cross_validation(dataset, labels):
 def leave_one_day_out(timestamps, dataset, labels):
     """
 
-      Function to return index of leave one day out method
+    Function to return index of leave one day out method
 
-      :param timestamps: timestamps of the captured images
-      :param dataset: Dataset used for training and testing
-      :param labels: Dataset labels
+    :param timestamps: timestamps of the captured images
+    :param dataset: Dataset used for training and testing
+    :param labels: Dataset labels
 
-      :return: index of training and testing data
+    :return: index of training and testing data
 
     """
 
-    df = pd.read_excel(timestamps, engine='openpyxl')
+    df = pd.read_excel(timestamps, engine="openpyxl")
 
     data_list = []
-    data_list.extend(df['Day no'].tolist())
+    data_list.extend(df["Day no"].tolist())
 
     train_index = []
     test_index = []

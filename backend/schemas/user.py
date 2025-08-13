@@ -10,6 +10,7 @@ privilegesConfig = {
     "canDeleteUsers": False,
 }
 
+
 class UserBase(BaseModel):
     username: str
     hashed_password: str

@@ -13,14 +13,7 @@ class Models(object):
 
     """
 
-    def __init__(
-            self,
-            trainable,
-            num_classes,
-            weights,
-            include_top,
-            learning_rate
-    ):
+    def __init__(self, trainable, num_classes, weights, include_top, learning_rate):
         """
 
         :param trainable: Number of layers to be trained
@@ -45,11 +38,13 @@ class Models(object):
 
         """
 
-        base_model = DenseNet121(weights=self.weights, include_top=self.include_top,
-                                 pooling='avg')
+        base_model = DenseNet121(
+            weights=self.weights, include_top=self.include_top, pooling="avg"
+        )
         x = base_model.layers[-1]
-        out = Dense(units=self.num_classes, activation='softmax', name='output',
-                    use_bias=True)(x.output)
+        out = Dense(
+            units=self.num_classes, activation="softmax", name="output", use_bias=True
+        )(x.output)
 
         self.model_out = Model(inputs=base_model.input, outputs=out)
 
@@ -60,11 +55,16 @@ class Models(object):
 
         """
 
-        base_model = MobileNet(weights=self.weights, include_top=self.include_top,
-                               pooling='avg', input_shape=input_shape)
+        base_model = MobileNet(
+            weights=self.weights,
+            include_top=self.include_top,
+            pooling="avg",
+            input_shape=input_shape,
+        )
         x = base_model.layers[-1]
-        out = Dense(units=self.num_classes, activation='softmax', name='output',
-                    use_bias=True)(x.output)
+        out = Dense(
+            units=self.num_classes, activation="softmax", name="output", use_bias=True
+        )(x.output)
 
         self.model_out = Model(inputs=base_model.input, outputs=out)
 
@@ -75,11 +75,13 @@ class Models(object):
 
         """
 
-        base_model = Xception(weights=self.weights, include_top=self.include_top,
-                              pooling='avg')
+        base_model = Xception(
+            weights=self.weights, include_top=self.include_top, pooling="avg"
+        )
         x = base_model.layers[-1]
-        out = Dense(units=self.num_classes, activation='softmax', name='output',
-                    use_bias=True)(x.output)
+        out = Dense(
+            units=self.num_classes, activation="softmax", name="output", use_bias=True
+        )(x.output)
 
         self.model_out = Model(inputs=base_model.input, outputs=out)
 
@@ -94,13 +96,13 @@ class Models(object):
             layer.trainable = self.trainable
 
     def model_compile(
-            self,
-            learning_rate,
-            beta1: float = 0.9,
-            beta2: float = 0.999,
-            epsilon: float = 1e-20,
-            decay: float = 0.0000001,
-            amsgrad = False
+        self,
+        learning_rate,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        epsilon: float = 1e-20,
+        decay: float = 0.0000001,
+        amsgrad=False,
     ):
         """
 
@@ -114,7 +116,14 @@ class Models(object):
 
         """
 
-        adam = Adam(lr=learning_rate, beta_1=beta1, beta_2=beta2, epsilon=epsilon, decay=decay, amsgrad=amsgrad)
+        adam = Adam(
+            lr=learning_rate,
+            beta_1=beta1,
+            beta_2=beta2,
+            epsilon=epsilon,
+            decay=decay,
+            amsgrad=amsgrad,
+        )
         self.model_out.compile(
             loss="categorical_crossentropy",
             optimizer=adam,

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class FrogBase(BaseModel):
     frog_number: int
     tank_id: int

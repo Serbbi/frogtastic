@@ -1,0 +1,8 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.8  # Use the latest version from https://github.com/astral-sh/ruff-pre-commit/releases
+    hooks:
+      - id: ruff
+        args: [--fix, "--exclude=backend/CORF3D_ACF/"]
+      - id: ruff-format
+        args: ["--exclude=backend/CORF3D_ACF/"]

@@ -8,12 +8,11 @@ from schemas.tokendata import TokenData
 from dotenv import load_dotenv
 import os
 from passlib.context import CryptContext
-import time
 
 load_dotenv()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-GENERAL_PRIVILEGES = 'general_privileges'
+GENERAL_PRIVILEGES = "general_privileges"
 
 """
 This file contains utility functions for the login router.
@@ -28,7 +27,9 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def authenticate_user(username: str, password: str, controller: UserController = Depends(UserController)):
+def authenticate_user(
+    username: str, password: str, controller: UserController = Depends(UserController)
+):
     user = controller.get_user_by_username(username)
     if not user:
         return False
@@ -37,14 +38,19 @@ def authenticate_user(username: str, password: str, controller: UserController =
     return user
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], controller: UserController = Depends(UserController)):
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    controller: UserController = Depends(UserController),
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
+        payload = jwt.decode(
+            token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")]
+        )
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -57,25 +63,35 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], contro
     return user
 
 
-def get_access_right(privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
-    if privilege in current_user.attributes['privileges']:
-        return current_user.attributes['privileges'][privilege]
+def get_access_right(
+    privilege: str, current_user: Annotated[User, Depends(get_current_user)]
+):
+    if privilege in current_user.attributes["privileges"]:
+        return current_user.attributes["privileges"][privilege]
     return False
 
 
-def get_general_access_right(privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
+def get_general_access_right(
+    privilege: str, current_user: Annotated[User, Depends(get_current_user)]
+):
     if GENERAL_PRIVILEGES not in current_user.attributes:
         return False
     if privilege in current_user.attributes[GENERAL_PRIVILEGES]:
         return current_user.attributes[GENERAL_PRIVILEGES][privilege]
     return False
 
-def get_organization_access_right(org_id: str, privilege: str, current_user: Annotated[User, Depends(get_current_user)]):
+
+def get_organization_access_right(
+    org_id: str,
+    privilege: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
     if org_id not in current_user.attributes:
         return False
     if privilege in current_user.attributes[org_id]:
         return current_user.attributes[org_id][privilege]
     return False
+
 
 def verify_token(token: str = Depends(oauth2_scheme)):
     try:
@@ -83,7 +99,7 @@ def verify_token(token: str = Depends(oauth2_scheme)):
             token,
             os.getenv("SECRET_KEY"),
             algorithms=[os.getenv("ALGORITHM")],
-            options={"leeway": 60}
+            options={"leeway": 60},
         )
     except jwt.ExpiredSignatureError:
         raise HTTPException(

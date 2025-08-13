@@ -1,5 +1,4 @@
 import os
-import re
 
 import cv2
 import numpy as np
@@ -9,12 +8,10 @@ import pickle
 
 from src.feature_maps import feature_stack
 
-import matplotlib.pyplot as plt
-
 
 def filename2label(filename: str):
-    filename_elements = filename.split('_')
-    return f'{filename_elements[1]}_{filename_elements[2]}'  # frogX_tankX
+    filename_elements = filename.split("_")
+    return f"{filename_elements[1]}_{filename_elements[2]}"  # frogX_tankX
 
 
 def fix_tank10(file):
@@ -56,7 +53,7 @@ def load_images(dataset, resize):
         images.append(img)
 
         label = filename2label(file)
-        #select the string between B and (
+        # select the string between B and (
         # file = re.search(r'B(\d+)\(', file).group(1)
         # label = f"frog{file}_tank1"
         if label not in labels_list:
@@ -108,19 +105,27 @@ def load_corf_arrays(dataset, resize):
     """
 
     if os.path.exists(os.path.join(dataset, "corf_0.0.npz")):
-        corf_0 = np.load(os.path.join(dataset, "corf_0.0.npz"), allow_pickle=True)['data']
-        corf_1 = np.load(os.path.join(dataset, "corf_1.8.npz"), allow_pickle=True)['data']
-        corf_2 = np.load(os.path.join(dataset, "corf_3.6.npz"), allow_pickle=True)['data']
-        filenames = np.load(os.path.join(dataset, "labels.npz"), allow_pickle=True)['data']
+        corf_0 = np.load(os.path.join(dataset, "corf_0.0.npz"), allow_pickle=True)[
+            "data"
+        ]
+        corf_1 = np.load(os.path.join(dataset, "corf_1.8.npz"), allow_pickle=True)[
+            "data"
+        ]
+        corf_2 = np.load(os.path.join(dataset, "corf_3.6.npz"), allow_pickle=True)[
+            "data"
+        ]
+        filenames = np.load(os.path.join(dataset, "labels.npz"), allow_pickle=True)[
+            "data"
+        ]
     else:
-        corf_0 = scipy.io.loadmat(os.path.join(dataset, "corf_0.0.mat"))['arrout']
-        corf_1 = scipy.io.loadmat(os.path.join(dataset, "corf_1.8.mat"))['arrout']
-        corf_2 = scipy.io.loadmat(os.path.join(dataset, "corf_3.6.mat"))['arrout']
+        corf_0 = scipy.io.loadmat(os.path.join(dataset, "corf_0.0.mat"))["arrout"]
+        corf_1 = scipy.io.loadmat(os.path.join(dataset, "corf_1.8.mat"))["arrout"]
+        corf_2 = scipy.io.loadmat(os.path.join(dataset, "corf_3.6.mat"))["arrout"]
         filenames_mat = scipy.io.loadmat(os.path.join(dataset, "labels.mat"))
         if "d" in filenames_mat:
-            filenames = [fix_tank10(x[0][0][0]) for x in filenames_mat['d']]
+            filenames = [fix_tank10(x[0][0][0]) for x in filenames_mat["d"]]
         else:
-            filenames = [fix_tank10(x[0]) for x in filenames_mat['files'][0]]
+            filenames = [fix_tank10(x[0]) for x in filenames_mat["files"][0]]
 
     corf_stack = feature_stack(corf_0, corf_1, corf_2)
 
@@ -151,7 +156,7 @@ def load_feature_maps(dataset, resize):
 
     data_dir_list = os.listdir(dataset)
     for folder_name in data_dir_list:
-        feature_list = os.listdir(dataset + '/' + folder_name)
+        feature_list = os.listdir(dataset + "/" + folder_name)
         for feature_maps in feature_list:
             retrieve_dir = dataset + "/" + folder_name + "/" + feature_maps
             feature_maps = np.load(retrieve_dir)
@@ -173,20 +178,20 @@ def binarize_labels(labels):
     """
 
     for i in range(len(labels)):
-        print(f'{labels[i]}: {i}')
+        print(f"{labels[i]}: {i}")
     flattened_list = np.asarray(labels, dtype="str")
     lb = preprocessing.LabelBinarizer().fit(flattened_list)
     labels = lb.transform(flattened_list)
 
-    #print the labels as strings
+    # print the labels as strings
     # for i in range(len(labels)):
-    #     print(f'{flattened_list[i]}: {labels[i]}') 
+    #     print(f'{flattened_list[i]}: {labels[i]}')
 
     # with open('labeler.pkl', 'wb') as file:
-    with open('labeler_new.pkl', 'wb') as file:
+    with open("labeler_new.pkl", "wb") as file:
         pickle.dump(lb, file)
 
-    #print labeler classes
+    # print labeler classes
     print(lb.classes_)
 
     return labels, lb
