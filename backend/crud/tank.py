@@ -1,6 +1,7 @@
-from crud.controller import Controller
 from models.tank import Tank
 from sqlalchemy.orm.attributes import flag_modified
+
+from crud.controller import Controller
 
 
 class TankController(Controller):

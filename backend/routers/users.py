@@ -1,10 +1,11 @@
 # The router that is used from all "/users/*" endpoints.
 from typing import Union
-from fastapi import APIRouter, Depends
+
 from crud.user import UserController
-from util import util
-from schemas.user import UserBase
+from fastapi import APIRouter, Depends
 from models.user import User
+from schemas.user import UserBase
+from util import util
 from util.exceptions import raise_400_exception, raise_403_exception
 
 ACCESS_RIGHT_MESSAGE = "User does not have access right"

@@ -1,5 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
 from database import Base
+from sqlalchemy import Column, ForeignKey, Integer, String
 
 
 class Notification(Base):

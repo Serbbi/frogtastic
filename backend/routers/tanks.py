@@ -1,7 +1,8 @@
 from typing import List, Union
+
+from crud.tank import TankController
 from fastapi import APIRouter, Depends
 from schemas.tank import TankBase
-from crud.tank import TankController
 
 router = APIRouter(
     prefix="/tanks",

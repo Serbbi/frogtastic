@@ -1,14 +1,15 @@
 # The router that is used for the login endpoint.
+import os
 from datetime import datetime, timedelta
 from typing import Union
-from typing_extensions import Annotated
+
+from crud.user import UserController
+from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
-from crud.user import UserController
+from typing_extensions import Annotated
 from util.util import authenticate_user
-from dotenv import load_dotenv
-import os
 
 load_dotenv()
 

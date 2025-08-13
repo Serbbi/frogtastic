@@ -1,8 +1,9 @@
 # The router that is used from all "/image/*" endpoints.
-from fastapi import APIRouter, Depends, File, UploadFile
-from crud.frog import FrogController
-from util.exceptions import raise_404_exception
 from typing import Union
+
+from crud.frog import FrogController
+from fastapi import APIRouter, Depends, File, UploadFile
+from util.exceptions import raise_404_exception
 
 router = APIRouter(
     prefix="/image",

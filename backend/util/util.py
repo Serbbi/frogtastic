@@ -1,13 +1,14 @@
-from typing_extensions import Annotated
+import os
+
+from crud.user import UserController
+from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from models.user import User
-from crud.user import UserController
 from jose import JWTError, jwt
-from schemas.tokendata import TokenData
-from dotenv import load_dotenv
-import os
+from models.user import User
 from passlib.context import CryptContext
+from schemas.tokendata import TokenData
+from typing_extensions import Annotated
 
 load_dotenv()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

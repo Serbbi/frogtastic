@@ -1,9 +1,10 @@
 import pytest
+from database import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import close_all_sessions
-from sqlalchemy_utils import create_database, drop_database, database_exists
-from database import Base
+from sqlalchemy_utils import create_database, database_exists, drop_database
+
 from tests.utils import TestDatabase
 
 TEST_DATABASE_URL = "postgresql://postgres:frog4life@localhost:5432/testing"

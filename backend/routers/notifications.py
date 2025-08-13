@@ -1,9 +1,10 @@
 from typing import Union
+
+from crud.notification import NotificationController
 from fastapi import APIRouter, Depends
 from models.user import User
-from util.util import get_current_user
-from crud.notification import NotificationController
 from schemas.notification import NotificationBase
+from util.util import get_current_user
 
 router = APIRouter(
     prefix="/notifications",

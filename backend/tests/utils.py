@@ -1,9 +1,9 @@
+from models.frog import Frog
+from models.organization import Organization
+from models.tank import Tank
+from models.user import User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
-from models.frog import Frog
-from models.tank import Tank
-from models.organization import Organization
-from models.user import User
 
 
 class TestDatabase:

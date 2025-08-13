@@ -1,6 +1,8 @@
 import re
-from crud.controller import Controller
+
 from models.user import User
+
+from crud.controller import Controller
 
 """
 In this file we have the methods that will perform the CRUD actions for the User on the database.

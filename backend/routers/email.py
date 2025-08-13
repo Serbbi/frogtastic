@@ -1,6 +1,7 @@
-from fastapi import APIRouter
 import os
+
 import resend
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/email", tags=["email"])
 

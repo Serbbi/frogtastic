@@ -1,9 +1,11 @@
-from fastapi.testclient import TestClient
-from dependencies import get_db
-from tests.utils import override_get_db
-from tests.prepare import prepare_token
 import logging
+
+from dependencies import get_db
+from fastapi.testclient import TestClient
 from main import app
+
+from tests.prepare import prepare_token
+from tests.utils import override_get_db
 
 logger = logging.getLogger("frog_logger")
 

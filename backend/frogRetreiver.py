@@ -1,10 +1,11 @@
-from CORF3D_ACF.extraction import extract_square
-from keras.models import load_model
+import pickle
+import re
+import sys
+
 import cv2
 import numpy as np
-import pickle
-import sys
-import re
+from CORF3D_ACF.extraction import extract_square
+from keras.models import load_model
 
 
 def retrieve_frog(image, model_id):
@@ -37,7 +38,7 @@ def retrieve_frog(image, model_id):
         pred_labels = label_binarizer.inverse_transform(pred_y["top_predictions"])
         predictions = "\n".join(
             [
-                f' {pred_labels[x]}' f' {pred_y["top_values"][x]}'
+                f" {pred_labels[x]} {pred_y['top_values'][x]}"
                 for x in range(len(pred_y["top_predictions"]))
             ]
         )

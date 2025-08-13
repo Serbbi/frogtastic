@@ -1,5 +1,5 @@
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String, ARRAY
 from database import Base
+from sqlalchemy import ARRAY, JSON, Column, ForeignKey, Integer, String
 
 
 class Organization(Base):

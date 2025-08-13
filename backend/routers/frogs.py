@@ -1,11 +1,12 @@
 # The router that is used from all "/frogs/*" endpoints.
-from fastapi import APIRouter, Depends, UploadFile, File
-from models.user import User
+from typing import List, Union
+
 from crud.frog import FrogController
+from fastapi import APIRouter, Depends, File, UploadFile
+from models.user import User
 from schemas.frog import FrogBase
 from util import util
 from util.exceptions import raise_403_exception
-from typing import List, Union
 
 router = APIRouter(
     prefix="/frogs",

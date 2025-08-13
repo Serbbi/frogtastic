@@ -1,8 +1,9 @@
+from models.notification import Notification
+from util.exceptions import raise_403_exception, raise_409_exception
+from util.notification_types import NotificationTypes
+
 from crud.controller import Controller
 from crud.organization import OrganizationController
-from models.notification import Notification
-from util.notification_types import NotificationTypes
-from util.exceptions import raise_403_exception, raise_409_exception
 
 
 class NotificationController(Controller):

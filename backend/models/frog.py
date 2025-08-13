@@ -1,5 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, JSON, String
 from database import Base
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String
 
 
 class Frog(Base):

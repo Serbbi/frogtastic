@@ -1,5 +1,5 @@
-from sqlalchemy import JSON, Column, Integer, String, ARRAY
 from database import Base
+from sqlalchemy import ARRAY, JSON, Column, Integer, String
 
 privileges_config = {
     "canCreateFrogs": True,
