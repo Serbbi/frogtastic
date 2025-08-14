@@ -16,12 +16,13 @@ export default function Signup() {
         passwordConfirm: "",
     });
     const auth = useAuth();
+    const errorMessage = auth.getErrorMessage();
 
     useEffect(() => {
-        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("resource") || auth.getErrorMessage().includes("registered")) {
+        if (errorMessage.match(/Incorrect|resource|registered/)) {
             setIsLoading(false);
         }
-    }, [auth.getErrorMessage()]);
+    }, [errorMessage]);
 
     const handleSubmitEvent = (e) => {
         e.preventDefault();

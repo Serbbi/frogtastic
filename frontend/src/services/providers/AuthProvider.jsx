@@ -55,7 +55,7 @@ export default function AuthProvider({ children }) {
 	const restoreSession = useCallback(async (storedToken) => {
 		try {
 			const res = await AuthService.validateToken(storedToken);
-			handleLoginSuccess({ ...res, access_token: storedToken });
+			handleLoginSuccess({ ...res, access_token: storedToken, dict: res.attributes });
 		} catch (err) {
 			console.warn("Session restoration failed:", err.message);
 		}
@@ -73,16 +73,20 @@ export default function AuthProvider({ children }) {
 
 	const getErrorMessage = useCallback(() => errorMessage, [errorMessage]);
 
-	const value = useMemo(() => ({
-		token,
-		user,
+	const functions = useMemo(() => ({
 		loginAction,
 		signUpAction,
 		restoreSession,
 		googleLoginAction,
 		getErrorMessage,
 		setErrorMessage,
-	}), [token, user, loginAction, signUpAction, restoreSession, googleLoginAction, getErrorMessage, setErrorMessage]);
+	}), [loginAction, signUpAction, restoreSession, googleLoginAction, getErrorMessage, setErrorMessage]);
+
+	const value = useMemo(() => ({
+		token,
+		user,
+		...functions
+	}), [token, user, functions]);
 
 	return (
 		<AuthContext.Provider value={value}>

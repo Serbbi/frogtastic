@@ -55,7 +55,7 @@ export default function UserPrivilegesSetting({ organizationId }) {
             <div className="usersAndPrivileges">
                 <ul className="userList">
                     {users && users.map(user => {
-                        if (user.id == userId) return null;
+                        if (toString(user.id) === userId) return null;
                         return (
                             <li
                                 key={user.id}

@@ -24,7 +24,7 @@ export default function HistoryTable({ id, setShowHistory, showHistory, tanks })
                             <td className='dateColumn'>{date}</td>
                             <td>{Object.entries(event).filter(([key]) => key !== 'author').map(([key, value]) => {
                                 if (key === 'current_tank_id') {
-                                    const tank = tanks.find(t => t.id == value);
+                                    const tank = tanks.find(t => t.id === value);
                                     if (tank) {
                                         return (
                                             <div key={key}>

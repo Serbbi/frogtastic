@@ -53,3 +53,5 @@ Preprocessing
 uploaded images
 /backend/progress
 /backend/venv
+
+.ruff_cache

@@ -131,7 +131,7 @@ export default function ProfileSettingsPage() {
                 <ul className="organzationsList">
                     {sessionStorage.getItem("orgs").split(',').map((org, index) => (
                         <li key={index} className="organizationItem">
-                            <span className="organizationName">{organizations?.find((organization) => organization.id == org)?.name || "Unknown Organization"}</span>
+                            <span className="organizationName">{organizations?.find((organization) => toString(organization.id) === org)?.name || "Unknown Organization"}</span>
                             <span className="org-item-options-outer" onClick={() => { setActiveDropdown(activeDropdown === org ? null : org); setActiveOrganization(org); }}>
                                 <FontAwesomeIcon icon="fa-solid fa-ellipsis" className="org-item-options" />
                                 {activeDropdown === org && (

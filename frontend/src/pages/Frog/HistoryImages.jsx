@@ -31,7 +31,7 @@ export default function HistoryImages({ imageLocations }) {
                 {imageLocations.map((image, index) => (
                     <div className="imageContainer" key={index}>
                         <input type="checkbox" className="imageCheckbox" onChange={() => handleSelectImage(image)} />
-                        <img src={`https://storage.googleapis.com/${image}`} className="histFrogImg" alt={`Frog image ${index + 1}`} />
+                        <img src={`https://storage.googleapis.com/${image}`} className="histFrogImg" alt={`Frog pattern ${index + 1}`} />
                         <p className="imageContainerText">{formatCaption(image)}</p>
                     </div>
                 ))}

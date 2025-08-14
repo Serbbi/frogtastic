@@ -12,20 +12,22 @@ export default function Login() {
     });
     const [rememberMe, setRememberMe] = useState(false);
     const auth = useAuth();
-
-    useEffect(() => {
-        if (auth.getErrorMessage().includes("Incorrect") || auth.getErrorMessage().includes("resource") || auth.getErrorMessage().includes("failed")) {
-            setIsLoading(false);
-        }
-    }, [auth.getErrorMessage()]);
+    const { restoreSession } = auth;
+    const errorMessage = auth.getErrorMessage();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-
         if (token) {
-            auth.restoreSession(token);
+            restoreSession(token);
         }
-    }, []);
+    }, [restoreSession]);
+
+    useEffect(() => {
+        if (errorMessage.match(/Incorrect|resource|failed/)) {
+            setIsLoading(false);
+        }
+    }, [errorMessage]);
+
 
     const handleSubmitEvent = (e) => {
         e.preventDefault();
