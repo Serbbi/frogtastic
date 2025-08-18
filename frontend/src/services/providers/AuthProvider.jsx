@@ -58,6 +58,8 @@ export default function AuthProvider({ children }) {
 			handleLoginSuccess({ ...res, access_token: storedToken, dict: res.attributes });
 		} catch (err) {
 			console.warn("Session restoration failed:", err.message);
+			localStorage.clear();
+			sessionStorage.clear();
 		}
 	}, [handleLoginSuccess]);
 

@@ -127,7 +127,7 @@ export default function UploadPage({ organization }) {
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
                         <p className="orWord">or</p>
-                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName} />
+                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName} accept=".jpeg, .jpg, .png" />
                         <span className="browseFilesButton">Browse files</span>
                         <span className="file-name">{fileName}</span>
                     </label>

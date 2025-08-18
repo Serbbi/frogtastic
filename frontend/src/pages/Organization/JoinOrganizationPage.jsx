@@ -13,7 +13,7 @@ export default function JoinOrganizationPage() {
     const [showModal, setShowModal] = useState(false);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const { addNotification } = useNotification();
-    const canCreateOrganization = JSON.parse(sessionStorage.getItem('privileges'))['general_privileges']['canCreateOrganization'];
+    const canCreateOrganization = JSON.parse(sessionStorage.getItem('privileges'))?.['general_privileges']?.['canCreateOrganization'];
     const [showCreateOrgModal, setShowCreateOrgModal] = useState(false);
     const [orgPics, setOrgPics] = useState([]);
 

@@ -77,7 +77,7 @@ export default function Login() {
                             <input type="checkbox" className="remember-me-checkbox" />
                             <span className="remember-me-label">Remember me</span>
                         </label>
-                        <Link to="/user/password/reset" onClick={() => console.log("yo")} className="forgot-password-link">Forgot password?</Link>
+                        {/* <Link to="/user/password/reset" onClick={() => console.log("yo")} className="forgot-password-link">Forgot password?</Link> */}
                     </div>
 
                     <button type="submit" className="primary-button auth-button" disabled={isLoading}>

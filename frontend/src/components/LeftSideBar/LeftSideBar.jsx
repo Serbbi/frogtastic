@@ -7,7 +7,7 @@ import './LeftSideBar.css';
 
 export default function LeftSideBar({ organization, setOrganization }) {
     const userId = sessionStorage.getItem("userId");
-    const isAdmin = JSON.parse(sessionStorage.getItem('privileges'))['general_privileges']['canGetUsers'];
+    const isAdmin = JSON.parse(sessionStorage.getItem('privileges'))?.['general_privileges']?.['canGetUsers'];
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
