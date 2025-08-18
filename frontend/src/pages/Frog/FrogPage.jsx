@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNotification } from "../../services/providers/NotificationProvider";
 import useTanks from "../../hooks/useTanks";
-import HistoryTable from "../../components/miniComponents/HistoryTable";
+import HistoryTable from "./HistoryTable";
 import useFrogs from "../../hooks/useFrogs";
 import Loading from "../../components/miniComponents/loading";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,8 +12,8 @@ import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvid
 import { frogPutRequest } from "../../services/api/frogs/FrogPut";
 import { frogDeleteRequest } from "../../services/api/frogs/FrogDelete";
 import CompareModal from "./CompareModal";
-import "./FrogPage.css";
 import HistoryImages from "./HistoryImages";
+import "./FrogPage.css";
 
 export default function FrogPage({ organization }) {
     const { addNotification } = useNotification();
@@ -26,9 +26,10 @@ export default function FrogPage({ organization }) {
     const navigate = useNavigate();
     const { extractionImageURL } = useImage();
     const [showCompareModal, setShowCompareModal] = useState(window.history.state.usr === "from upload" ? true : false);
-    const [confirmationBoxText, setconfirmationBoxText] = useState("");
+    const [confirmationBoxText, setConfirmationBoxText] = useState("");
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
     const [showModalButtonsOnce, setShowModalButtonsOnce] = useState(true);
+    const [onConfirmAction, setOnConfirmAction] = useState(null);
 
     useEffect(() => {
         if (organization) {
@@ -61,23 +62,26 @@ export default function FrogPage({ organization }) {
     }
 
     function deleteFrog() {
-        const confirmation = window.confirm("Are you sure you want to delete this frog?");
-        if (!confirmation) return;
-
-        frogDeleteRequest(frog.id, organization.id)
-            .then(_ => {
+        setConfirmationBoxText("Are you sure you want to delete this frog?");
+        setOnConfirmAction(() => async () => {
+            try {
+                await frogDeleteRequest(frog.id, organization.id);
                 addNotification({ text: "Frog deleted", type: "trash" });
                 setUnsavedChanges(false);
                 navigate(-1);
-            })
-            .catch((error) => {
+            } catch (error) {
                 addNotification({ text: error.message, type: "error" });
-            });
+            }
+        });
     }
 
     function checkForChanges() {
         if (unsavedChanges) {
-            setconfirmationBoxText("You have unsaved changes, are you sure you want to leave?");
+            setConfirmationBoxText("You have unsaved changes, are you sure you want to leave?");
+            setOnConfirmAction(() => () => {
+                navigate(-1);
+                setUnsavedChanges(false);
+            });
         } else {
             navigate(-1);
         }
@@ -160,7 +164,16 @@ export default function FrogPage({ organization }) {
                 </div>
             </div>
             {showCompareModal && <CompareModal frog={frog} setShowCompareModal={setShowCompareModal} extractionImageURL={extractionImageURL} showButtons={window.history.state.usr === "from upload" && showModalButtonsOnce} setShowModalButtonsOnce={setShowModalButtonsOnce} />}
-            {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => { navigate(-1); setUnsavedChanges(false); }} onCancel={() => setconfirmationBoxText("")} />}
+            {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => {
+                if (onConfirmAction) {
+                    onConfirmAction();
+                }
+                setConfirmationBoxText("");
+                setOnConfirmAction(null);
+            }} onCancel={() => {
+                setConfirmationBoxText("");
+                setOnConfirmAction(null);
+            }} />}
         </div>
     );
 }

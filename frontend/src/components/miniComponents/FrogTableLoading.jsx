@@ -9,7 +9,8 @@ export default function FrogTableLoading({ organization }) {
                 <tr>
                     {organization && Object.hasOwn(organization, "table_columns") && organization.table_columns.map(column => {
                         if (column === "current_tank") return <th key={column}>Tank</th>;
-                        return <th key={column}>{formatColumnName(column)}</th>
+                        if (column === "is_sick") return <th key={column}>Health Status</th>;
+                        return <th key={column}>{formatColumnName(column)}</th>;
                     })}
                 </tr>
             </thead>

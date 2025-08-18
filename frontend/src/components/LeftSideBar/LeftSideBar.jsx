@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRef, useEffect, useState } from "react";
-import './LeftSideBar.css';
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
+import ConfirmationBox from "../miniComponents/ConfirmationBox";
+import './LeftSideBar.css';
 
 export default function LeftSideBar({ organization, setOrganization }) {
     const userId = sessionStorage.getItem("userId");
@@ -11,6 +12,8 @@ export default function LeftSideBar({ organization, setOrganization }) {
     const menuRef = useRef(null);
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
     const [OrgPic, setOrgPic] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${organization?.id}.jpeg`);
+    const [confirmationBoxText, setConfirmationBoxText] = useState("");
+    const [pendingPath, setPendingPath] = useState(null);
 
     useEffect(() => {
         if (organization) {
@@ -39,11 +42,11 @@ export default function LeftSideBar({ organization, setOrganization }) {
 
     function handleNavigation(path) {
         if (unsavedChanges) {
-            const confirmLeave = window.confirm("You have unsaved changes. Do you really want to leave?");
-            if (!confirmLeave) return;
-            setUnsavedChanges(false);
+            setConfirmationBoxText("You have unsaved changes. Do you really want to leave?");
+            setPendingPath(path);
+        } else {
+            navigate(path);
         }
-        navigate(path);
     }
 
     const isActive = (path) => window.location.pathname === path;
@@ -115,6 +118,19 @@ export default function LeftSideBar({ organization, setOrganization }) {
                 }
             </ul>
             <button className='logoutButton' onClick={() => logOut()}><FontAwesomeIcon icon="fa-solid fa-right-from-bracket" /><span>Log Out</span></button>
+            {confirmationBoxText && (
+                <ConfirmationBox message={confirmationBoxText} onConfirm={() => {
+                    if (pendingPath) {
+                        navigate(pendingPath);
+                        setUnsavedChanges(false);
+                    }
+                    setConfirmationBoxText("");
+                    setPendingPath(null);
+                }} onCancel={() => {
+                    setConfirmationBoxText("");
+                    setPendingPath(null);
+                }} />
+            )}
         </div>
     );
 }

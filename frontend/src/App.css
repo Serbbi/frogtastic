@@ -13,6 +13,10 @@
     --text-color: #373737;
     --accent-color: #b7d1b9;
     --accent-color-hover: #a0bca3;
+    --success-color: #299d48;
+    --error-color: #d3302f;
+    --warning-color: #ff9800;
+    --information-color: #2196f3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -31,6 +35,10 @@
         --text-color: #dadada;
         --accent-color: #3e493f;
         --accent-color-hover: #2d352e;
+        --success-color: #27753c;
+        --error-color: #aa3333;
+        --warning-color: #d18109;
+        --information-color: #2971ac;
     }
 
     html {

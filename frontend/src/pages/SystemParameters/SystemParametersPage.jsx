@@ -1,4 +1,4 @@
-import SystemParametersTable from '../../components/miniComponents/SystemParametersTable';
+import SystemParametersTable from './SystemParametersTable';
 import { paramDownloadRequest } from '../../services/api/organizations/OrganizationParamsDownload';
 import { useNotification } from "../../services/providers/NotificationProvider";
 import { organizationPutRequest } from '../../services/api/organizations/OrganizationPut';
@@ -38,7 +38,7 @@ export default function SystemParametersPage({ organization }) {
         const today = new Date();
         const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
         if (dates.includes(formattedDate)) {
-            alert('A row for today already exists');
+            addNotification({ text: "A row for today already exists!", type: "error" });
             return;
         }
         modifyOrganization({ ...organization, system_parameters: { ...organization.system_parameters, [formattedDate]: newRow } });

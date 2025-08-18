@@ -73,6 +73,9 @@ export default function FrogTable({ frogs, organization }) {
                         if (column === "current_tank") {
                             return <th key={column} onClick={() => sortFrogs(column)}>Tank</th>;
                         }
+                        if (column === "is_sick") {
+                            return <th key={column} onClick={() => sortFrogs(column)}>Health Status</th>
+                        }
                         return <th key={column} onClick={() => sortFrogs(column)}>{formatColumnName(column)}</th>;
                     })}
                 </tr>
