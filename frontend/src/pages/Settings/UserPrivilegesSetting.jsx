@@ -1,12 +1,14 @@
 import useUsers from "../../hooks/useUsers";
 import { useState } from "react";
 import { usersPutRequest } from "../../services/api/users/UsersPut";
+import { useNotification } from "../../services/providers/NotificationProvider";
 import './SettingsPage.css';
 
 export default function UserPrivilegesSetting({ organizationId }) {
     const { users, mutate: mutateUsers } = useUsers(organizationId);
     const [selectedUser, setSelectedUser] = useState(null);
     const userId = sessionStorage.getItem('userId');
+    const { addNotification } = useNotification();
 
     function handleAttributeChange(event) {
         const attribute = event.target.previousSibling.textContent;
@@ -25,20 +27,18 @@ export default function UserPrivilegesSetting({ organizationId }) {
         });
     }
 
-    async function handleSave() {
-        try {
-            const data = await usersPutRequest(selectedUser, organizationId);
-            console.log(data);
-
-            await mutateUsers((users) =>
-                users.map(user =>
-                    user.id === selectedUser.id ? { ...user, ...selectedUser } : user
-                ),
-                false
-            );
-        } catch (error) {
-            console.error(error);
-        }
+    function handleSave() {
+        usersPutRequest(selectedUser, organizationId)
+            .then(() => {
+                mutateUsers((users) =>
+                    users.map(user =>
+                        user.id === selectedUser.id ? { ...user, ...selectedUser } : user
+                    ),
+                    false
+                );
+                addNotification({ text: "User updated successfully!", type: "success" })
+            })
+            .catch((error) => addNotification({ text: error.message, type: "error" }));
     }
 
     function handleSelectUser(user) {

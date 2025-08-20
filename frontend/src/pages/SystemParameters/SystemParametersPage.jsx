@@ -26,10 +26,7 @@ export default function SystemParametersPage({ organization }) {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
             })
-            .catch((error) => {
-                console.error('Download error:', error);
-                addNotification({ text: "Error downloading file", type: "error" });
-            });
+            .catch(() => addNotification({ text: "Error downloading file", type: "error" }));
     };
 
     function handleAddRow() {

@@ -102,8 +102,6 @@ export default function ProfileSettingsPage() {
         }
     }
 
-    console.log(sessionStorage.getItem("orgs").split(','))
-
     return (
         <div className="profileSettingsContainer">
             <h1 className="title profileSettingsTitle">Profile Settings</h1>

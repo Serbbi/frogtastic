@@ -24,8 +24,7 @@ export default function AllFrogsPage({ organization }) {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
             })
-            .catch((error) => {
-                console.error('Download error:', error);
+            .catch(() => {
                 addNotification({ text: "Error downloading file", type: "error" });
             });
     };

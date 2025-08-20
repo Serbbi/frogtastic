@@ -73,7 +73,6 @@ export default function AuthProvider({ children }) {
 			const res = await AuthService.googleLogin(google_token);
 			handleLoginSuccess(res, true); // always remember for Google
 		} catch (err) {
-			console.error(err);
 			setErrorMessage(err.message);
 		}
 	}, [handleLoginSuccess]);

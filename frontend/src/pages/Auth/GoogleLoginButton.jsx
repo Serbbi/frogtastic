@@ -10,7 +10,6 @@ export default function GoogleLoginButton() {
     });
 
     function handleLogin(tokenResponse) {
-        console.log(tokenResponse);
         auth.googleLoginAction(tokenResponse.access_token);
     }
 

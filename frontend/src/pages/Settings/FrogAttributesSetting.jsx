@@ -27,9 +27,6 @@ export default function FrogAttributeSettings({ frog, organization }) {
             addToAttributeList(customAttribute);
             setCustomAttribute('');
         }
-        // if (event.key) {
-        //     console.log("Key pressed: " + event.key);
-        // }
     }
 
     function handleSave() {

@@ -1,6 +1,7 @@
 import { useOrganization } from '../../services/providers/OrganizationProvider';
 import { organizationPutRequest } from '../../services/api/organizations/OrganizationPut';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNotification } from '../../services/providers/NotificationProvider';
 import { useState } from 'react';
 import './SettingsPage.css';
 
@@ -10,6 +11,7 @@ export default function SystemParametersSetting() {
     const [addCustomParameter, setAddCustomParameter] = useState(false);
     const [customParameter, setCustomParameter] = useState('');
     const [listOfParametersToAdd, setListOfParametersToAdd] = useState([]);
+    const { addNotification } = useNotification();
 
     function addToParameterList(parameter) {
         if (!listOfParametersToAdd.includes(parameter) && parameter !== '') {
@@ -40,14 +42,12 @@ export default function SystemParametersSetting() {
                 organization.system_parameters[date][parameter] = '';
             });
         });
-        console.log(organization);
         organizationPutRequest(organization)
-            .then((response) => {
-                console.log(response);
+            .then(() => {
                 setSelectedParameters([]);
                 window.location.reload(); // for now
             })
-            .catch((error) => console.error(error));
+            .catch((error) => addNotification({ text: error.message, type: "error" }));
     }
 
     function handleKeyDown(event) {

@@ -36,7 +36,6 @@ export default function JoinOrganizationPage() {
 
         notificationsPostRequest(notification)
             .then(data => {
-                console.log(data);
                 if (data.detail) throw new Error(data.detail);
                 if (data.error) throw new Error(data.error);
                 addNotification({ text: "Join request sent", type: "success" });
