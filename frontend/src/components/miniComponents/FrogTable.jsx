@@ -19,8 +19,6 @@ export default function FrogTable({ frogs, organization }) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
     }
 
-    console.log(sortedFrogs.slice(0, 11))
-
     const sortFrogs = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
