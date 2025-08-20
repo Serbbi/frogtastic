@@ -36,6 +36,7 @@ export default function HomePage() {
                                 <Route path="/organization-settings" element={<SettingsPage />} />
                                 <Route path="/frog/:frogId" element={<FrogPage organization={organization} />} />
                                 <Route path="/help" element={<HelpPage />} />
+                                <Route path="/help/:category" element={<HelpPage />} />
                                 <Route path="/profile-settings/:userName" element={<ProfileSettingsPage />} />
                                 <Route path="/admin-settings" element={<AdminSettingsPage />} />
                             </Routes>

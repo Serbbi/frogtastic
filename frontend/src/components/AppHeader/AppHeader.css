@@ -27,7 +27,7 @@
     max-height: 45px;
     /* width: 400px; */
     height: fit-content;
-    z-index: 1;
+    z-index: 2;
 }
 
 .userContainer {
