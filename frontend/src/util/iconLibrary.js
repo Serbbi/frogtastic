@@ -30,6 +30,7 @@ import {
     , faPenToSquare
     , faEllipsis
     , faInfo
+    , faUserShield
 } from '@fortawesome/free-solid-svg-icons';
 
 export function initializeIcons() {
@@ -62,5 +63,6 @@ export function initializeIcons() {
         faEyeSlash,
         faPenToSquare,
         faEllipsis,
-        faInfo);
+        faInfo,
+        faUserShield);
 }

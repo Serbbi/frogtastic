@@ -47,8 +47,8 @@ export default function SystemParametersPage({ organization }) {
 
     function handleSave() {
         organizationPutRequest(organization)
-            .then(data => console.log(data))
-            .catch(error => console.log('Error:', error));
+            .then(addNotification({ text: "Parameters saved successfully!", type: "success" }))
+            .catch((error) => addNotification({ text: error, type: "error" }));
 
         setUnsavedChanges(false);
     }

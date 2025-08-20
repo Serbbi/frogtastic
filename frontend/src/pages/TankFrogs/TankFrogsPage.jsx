@@ -23,7 +23,7 @@ export default function TankFrogsPage({ organization }) {
 
     useEffect(() => {
         if (tanks && tanks.length > 0) {
-            setSelectedNumber(tanks[0].id);
+            setSelectedNumber(selectedNumber || tanks[0].id);
         }
     }, [tanks]);
 

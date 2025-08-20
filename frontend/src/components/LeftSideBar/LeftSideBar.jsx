@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRef, useEffect, useState } from "react";
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
 import ConfirmationBox from "../miniComponents/ConfirmationBox";
+import SideBarItem from "./SideBarItem";
 import './LeftSideBar.css';
 
 export default function LeftSideBar({ organization, setOrganization }) {
@@ -49,8 +50,6 @@ export default function LeftSideBar({ organization, setOrganization }) {
         }
     }
 
-    const isActive = (path) => window.location.pathname === path;
-
     return (
         <div className="leftBar" ref={menuRef}>
             <div onClick={() => handleNavigation("/home")} className='organizationNameAndLogo'>
@@ -60,61 +59,19 @@ export default function LeftSideBar({ organization, setOrganization }) {
             <ul className='menuList'>
                 {organization ?
                     <>
-                        <li
-                            onClick={() => handleNavigation("/home/all-frogs")}
-                            className={`navLink${isActive("/home/all-frogs") ? "active" : ""}`}
-                        >
-                            <FontAwesomeIcon icon="frog" className='menuIcon' />
-                            <span>All Frogs</span>
-                        </li>
-                        <li
-                            onClick={() => handleNavigation("/home/tank-frogs")}
-                            className={`navLink${isActive("/home/tank-frogs") ? "active" : ""}`}
-                        >
-                            <FontAwesomeIcon icon="list" className='menuIcon' />
-                            <span>Tank Frogs</span>
-                        </li>
-                        <li
-                            onClick={() => handleNavigation("/home/upload-image")}
-                            className={`navLink${isActive("/home/upload-image") ? "active" : ""}`}
-                        >
-                            <FontAwesomeIcon icon="upload" className='menuIcon' />
-                            <span>Upload Image</span>
-                        </li>
-                        <li
-                            onClick={() => handleNavigation("/home/system-parameters")}
-                            className={`navLink${isActive("/home/system-parameters") ? "active" : ""}`}
-                        >
-                            <FontAwesomeIcon icon="fa-solid fa-screwdriver-wrench" className='menuIcon' />
-                            <span>System Parameters</span>
-                        </li>
+                        <SideBarItem icon="frog" label="All Frogs" path="/home/all-frogs" onClick={() => handleNavigation("/home/all-frogs")} />
+                        <SideBarItem icon="list" label="Tank Frogs" path="/home/tank-frogs" onClick={() => handleNavigation("/home/tank-frogs")} />
+                        <SideBarItem icon="upload" label="Upload Image" path="/home/upload-image" onClick={() => handleNavigation("/home/upload-image")} />
+                        <SideBarItem icon="screwdriver-wrench" label="System Parameters" path="/home/system-parameters" onClick={() => handleNavigation("/home/system-parameters")} />
                     </>
                     : null}
 
-                <li
-                    onClick={() => handleNavigation("/home/join-organization")}
-                    className={`navLink${isActive("/home/join-organization") ? "active" : ""}`}
-                >
-                    <FontAwesomeIcon icon="plus" className='menuIcon' />
-                    <span>Join Organization</span>
-                </li>
+                <SideBarItem icon="plus" label="Join Organization" path="/home/join-organization" onClick={() => handleNavigation("/home/join-organization")} />
                 {organization && Object.hasOwn(organization, "admins") && organization.admins.includes(Number(userId)) ?
-                    <li
-                        onClick={() => handleNavigation("/home/organization-settings")}
-                        className={`navLink${isActive("/home/organization-settings") ? "active" : ""}`}
-                    >
-                        <FontAwesomeIcon icon="gear" className='menuIcon' />
-                        <span>Organization Settings</span>
-                    </li>
+                    <SideBarItem icon="gear" label="Organization Settings" path="/home/organization-settings" onClick={() => handleNavigation("/home/organization-settings")} />
                     : null}
                 {isAdmin &&
-                    <li
-                        onClick={() => handleNavigation("/home/admin-settings")}
-                        className={`navLink${isActive("/home/admin-settings") ? "active" : ""}`}
-                    >
-                        {/* <FontAwesomeIcon icon="fa-solid fa-user-shield" className='menuIcon' /> */}
-                        <span>Admin Settings</span>
-                    </li>
+                    <SideBarItem icon="user-shield" label="Admin Settings" path="/home/admin-settings" onClick={() => handleNavigation("/home/admin-settings")} />
                 }
             </ul>
             <button className='logoutButton' onClick={() => logOut()}><FontAwesomeIcon icon="fa-solid fa-right-from-bracket" /><span>Log Out</span></button>

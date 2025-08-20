@@ -68,7 +68,7 @@
     color: var(--hover-color);
 }
 
-.navLinkactive {
+.navLink.active {
     color: var(--active-color);
 }
 
