@@ -10,6 +10,7 @@ export default function AllFrogsPage({ organization }) {
     const { addNotification } = useNotification();
 
     const handleDownload = () => {
+        if (organization === null) return;
         frogDownloadRequest(organization.id)
             .then((blob) => {
                 const url = window.URL.createObjectURL(new Blob([blob]));

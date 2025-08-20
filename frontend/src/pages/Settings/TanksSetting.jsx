@@ -15,7 +15,7 @@ export default function TanksSetting({ organization }) {
     const inputRef = useRef(null);
 
     function addTank() {
-        if (newTankName === "" || newTankName.trim() === "") return;
+        if (newTankName === "" || newTankName.trim() === "" || organization === null) return;
         const tank = {
             "tank_name": newTankName,
             "organization_id": organization.id,

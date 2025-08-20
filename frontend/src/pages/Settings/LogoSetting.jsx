@@ -19,6 +19,7 @@ export default function LogoSetting({ organization }) {
     };
 
     const handleChangeLogo = (event) => {
+        if (organization === null) return;
         const file = event.target.files[0];
         if (file) {
             organizationPutLogo(organization.id, file)

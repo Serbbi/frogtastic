@@ -12,6 +12,7 @@ export default function SystemParametersPage({ organization }) {
     const { modifyOrganization } = useOrganization();
 
     const handleDownload = () => {
+        if (organization === null) return;
         paramDownloadRequest(organization.id)
             .then((blob) => {
                 const url = window.URL.createObjectURL(new Blob([blob]));
@@ -32,6 +33,7 @@ export default function SystemParametersPage({ organization }) {
     };
 
     function handleAddRow() {
+        if (organization === null) return;
         const dates = Object.keys(organization.system_parameters);
         const lastDate = dates[dates.length - 1];
         const newRow = { ...organization.system_parameters[lastDate] };
@@ -46,6 +48,7 @@ export default function SystemParametersPage({ organization }) {
     }
 
     function handleSave() {
+        if (organization === null) return;
         organizationPutRequest(organization)
             .then(addNotification({ text: "Parameters saved successfully!", type: "success" }))
             .catch((error) => addNotification({ text: error, type: "error" }));

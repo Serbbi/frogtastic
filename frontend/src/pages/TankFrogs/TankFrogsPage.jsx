@@ -33,6 +33,7 @@ export default function TankFrogsPage({ organization }) {
     };
 
     const handleDownload = () => {
+        if (organization === null) return;
         frogDownloadRequest(organization.id, selectedNumber)
             .then((blob) => {
                 const url = window.URL.createObjectURL(new Blob([blob]));
@@ -46,8 +47,7 @@ export default function TankFrogsPage({ organization }) {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
             })
-            .catch((error) => {
-                console.error('Download error:', error);
+            .catch(() => {
                 addNotification({ text: "Error downloading file", type: "error" });
             });
     };

@@ -26,7 +26,12 @@ export default function AuthProvider({ children }) {
 			localStorage.setItem("token", res.access_token);
 		}
 
-		navigate("/home/upload-image");
+		if (res.organizations.length === 0) {
+			navigate("/home/join-organization");
+		} else {
+			navigate("/home/upload-image");
+		}
+
 		setErrorMessage("");
 	}, [navigate]);
 

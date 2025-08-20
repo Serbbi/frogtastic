@@ -102,6 +102,8 @@ export default function ProfileSettingsPage() {
         }
     }
 
+    console.log(sessionStorage.getItem("orgs").split(','))
+
     return (
         <div className="profileSettingsContainer">
             <h1 className="title profileSettingsTitle">Profile Settings</h1>
@@ -129,23 +131,26 @@ export default function ProfileSettingsPage() {
             <form className="userFields">
                 <h2>Joined organizations</h2>
                 <ul className="organzationsList">
-                    {sessionStorage.getItem("orgs").split(',').map((org, index) => (
-                        <li key={index} className="organizationItem">
-                            <span className="organizationName">{organizations?.find((organization) => organization.id.toString() === org)?.name || "Unknown Organization"}</span>
-                            <span className="org-item-options-outer" onClick={() => { setActiveDropdown(activeDropdown === org ? null : org); setActiveOrganization(org); }}>
-                                <FontAwesomeIcon icon="fa-solid fa-ellipsis" className="org-item-options" />
-                                {activeDropdown === org && (
-                                    <div className="dropdownMenu" ref={dropdownRef}>
-                                        <button className="dropdownItem" onClick={() => {
-                                            setConfirmationBoxText(`Are you sure you want to leave organization?`);
-                                        }}>
-                                            Leave Organization
-                                        </button>
-                                    </div>
-                                )}
-                            </span>
-                        </li>
-                    ))}
+                    {sessionStorage.getItem("orgs").length === 0 ?
+                        <p>You are part of no organization!</p> :
+                        sessionStorage.getItem("orgs").split(',').map((org, index) => (
+                            <li key={index} className="organizationItem">
+                                <span className="organizationName">{organizations?.find((organization) => organization.id.toString() === org)?.name || "Unknown Organization"}</span>
+                                <span className="org-item-options-outer" onClick={() => { setActiveDropdown(activeDropdown === org ? null : org); setActiveOrganization(org); }}>
+                                    <FontAwesomeIcon icon="fa-solid fa-ellipsis" className="org-item-options" />
+                                    {activeDropdown === org && (
+                                        <div className="dropdownMenu" ref={dropdownRef}>
+                                            <button className="dropdownItem" onClick={() => {
+                                                setConfirmationBoxText(`Are you sure you want to leave organization?`);
+                                            }}>
+                                                Leave Organization
+                                            </button>
+                                        </div>
+                                    )}
+                                </span>
+                            </li>
+                        ))
+                    }
                 </ul>
             </form>
             {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => handleQuitOrganization()} onCancel={() => setConfirmationBoxText("")} />}

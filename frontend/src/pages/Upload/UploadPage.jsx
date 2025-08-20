@@ -19,7 +19,7 @@ export default function UploadPage({ organization }) {
     function uploadImage() {
         const formData = new FormData();
         const file = document.querySelector('input[type="file"]').files[0];
-        if (!verifyFile(file)) return;
+        if (!verifyFile(file) || organization === null) return;
 
         formData.append('file', file);
         setIsLoading(true);

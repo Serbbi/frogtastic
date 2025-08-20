@@ -24,6 +24,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     }
 
     function handleSaveColumns() {
+        if (organization === null) return;
         organization.table_columns = [...organization.table_columns, ...listOfTableColumnsToAdd];
         organization.table_columns = organization.table_columns.filter(column => !listOfTableColumnsToRemove.includes(column));
 
