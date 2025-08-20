@@ -19,6 +19,8 @@ export default function FrogTable({ frogs, organization }) {
         return columnName.split('_').map(word => word.charAt(0).toUpperCase().concat(word.slice(1))).join(' ');
     }
 
+    console.log(sortedFrogs.slice(0, 11))
+
     const sortFrogs = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -30,19 +32,25 @@ export default function FrogTable({ frogs, organization }) {
             if (key === "current_tank") {
                 const tankA = tanks.find(tank => tank.id === a.current_tank_id)?.tank_name || '';
                 const tankB = tanks.find(tank => tank.id === b.current_tank_id)?.tank_name || '';
+
+                if (tankA === '' && tankB !== '') return 1;
+                if (tankB === '' && tankA !== '') return -1;
+
                 return direction === 'asc' ? tankA.localeCompare(tankB) : tankB.localeCompare(tankA);
             }
-            if (key === "is_sick") {
-                return direction === 'asc' ? a.attributes[key] - b.attributes[key] : b.attributes[key] - a.attributes[key];
-            }
+
             if (key === "id") {
                 const valueA = `F${a["frog_number"]}_T${a["tank_id"]}`;
                 const valueB = `F${b["frog_number"]}_T${b["tank_id"]}`;
                 return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
             }
 
-            const valueA = a.attributes[key] || a[key];
-            const valueB = b.attributes[key] || b[key];
+            const valueA = a.attributes[key] ?? a[key] ?? '';
+            const valueB = b.attributes[key] ?? b[key] ?? '';
+
+            // Handle empty strings explicitly
+            if (valueA === '' && valueB !== '') return 1;
+            if (valueB === '' && valueA !== '') return -1;
 
             // Check if values look like dates (e.g., 'YYYY-MM-DD')
             const isDate = (val) => typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val);
@@ -59,10 +67,12 @@ export default function FrogTable({ frogs, organization }) {
             if (typeof valueA === 'string' && typeof valueB === 'string') {
                 return direction === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
             }
+
             return direction === 'asc' ? valueA - valueB : valueB - valueA;
         });
 
         setSortedFrogs(sorted);
+
     };
 
     return (
