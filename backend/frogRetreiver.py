@@ -17,6 +17,8 @@ def retrieve_frog(image, model_id):
         "models_new/RGB_5.h5",
         "models_oneshot/RGB_4.h5",
     ]
+    if model_id < 0 or model_id > len(model_folders):
+        return None
     model = load_model(f"./CORF3D_ACF/output/{model_folders[model_id]}")
     img = cv2.resize(image, (224, 224))
     y_pred = model.predict(np.array([img]))

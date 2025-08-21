@@ -13,7 +13,12 @@ from models.frog import Frog
 from models.organization import Organization
 from models.tank import Tank
 from sqlalchemy.orm.attributes import flag_modified
-from util.exceptions import raise_403_exception, raise_404_exception
+from util.exceptions import (
+    raise_400_exception,
+    raise_403_exception,
+    raise_404_exception,
+    raise_422_exception,
+)
 
 from crud.controller import Controller
 
@@ -95,8 +100,14 @@ class FrogController(Controller):
         return {"message": "Frogs created successfully"}
 
     def get_frog_by_image(self, file, organization_id: int, model_id: int):
+        if (
+            not self.db.query(Organization)
+            .filter(Organization.id == organization_id)
+            .first()
+        ):
+            raise_404_exception("Organization does not exist")
         if not file.content_type.endswith(("jpg", "jpeg", "png")):
-            return {"error": "Only images are allowed"}
+            raise_400_exception("File is not an image")
 
         nparr = np.frombuffer(file.file.read(), np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -107,7 +118,7 @@ class FrogController(Controller):
         extraction_image = extract_image(img)
         result = retrieve_frog(extraction_image, model_id)
         if not result:
-            return {"error": "Error handling image"}
+            raise_422_exception("Could not extract frog from image")
         frog_number, tank_id = extract_frog_and_tank(result.split("\n")[0])
 
         _, buffer = cv2.imencode(".png", extraction_image)

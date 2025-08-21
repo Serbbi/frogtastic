@@ -15,3 +15,7 @@ def raise_404_exception(error_message: str = "Not Found"):
 
 def raise_409_exception(error_message: str = "Conflict"):
     raise HTTPException(status_code=409, detail=error_message)
+
+
+def raise_422_exception(error_message: str = "Unprocessable Entity"):
+    raise HTTPException(status_code=422, detail=error_message)
