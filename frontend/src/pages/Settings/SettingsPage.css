@@ -27,24 +27,24 @@
     border: none;
     border-radius: 0.5rem;
 
-    background-color: #377247;
+    background-color: var(--primary-color);
     color: white;
     cursor: pointer;
 }
 
 .settingsMenu button:disabled {
-    background-color: #cde2d3;
+    background-color: var(--disabled-color);
     color: #a0a0a0;
     cursor: default;
 }
 
 .settingsMenu button:disabled:hover {
-    background-color: #cde2d3;
+    background-color: var(--disabled-color);
     color: #a0a0a0;
 }
 
 .settingsMenu button:hover {
-    background-color: #3c9e56;
+    background-color: var(--hover-color);
 }
 
 .settingsMenu input {
@@ -113,8 +113,8 @@
     margin: 0 0.5rem 0.5rem 0;
     padding: 0.5rem;
     border-radius: 0.5rem;
-    border: 1px solid rgb(142, 0, 0);
-    color: rgb(142, 0, 0);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
 }
 
 .attributeItemSelected:hover {
@@ -125,23 +125,23 @@
 
 .attributeItem:hover,
 .attributeItemAdded:hover {
-    border: 1px solid rgb(142, 0, 0);
-    color: rgb(142, 0, 0);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
     cursor: pointer;
 }
 
 .attributeItemAdded {
     margin: 0 0.5rem 0.5rem 0;
     padding: 0.5rem;
-    border: 1px solid rgb(46, 185, 0);
+    border: 1px solid var(--success-color);
     border-radius: 0.5rem;
-    color: rgb(46, 185, 0);
+    color: var(--success-color);
 }
 
 .predefinedAttributesContainer {
     position: absolute;
     z-index: 1;
-    background-color: rgb(232, 232, 232);
+    background-color: var(--background-color);
     border: 1px solid #ccc;
     border-radius: 0.5rem;
     padding: 10px;
@@ -172,18 +172,14 @@
     padding: 0.75rem;
     border: 1px solid gray;
     border-radius: 0.5rem;
-
-    /* width: f; */
-    background-color: rgb(225, 225, 225);
+    background-color: var(--background-color);
     height: fit-content;
     flex: 1;
 }
 
 .editTankDiv {
     display: inline-flex;
-    /* justify-content: center; */
     align-items: center;
-    /* width: fit-content; */
 }
 
 .editTankDiv button {
@@ -230,7 +226,7 @@
     width: 100%;
     margin-right: 0.5rem;
     margin-top: 0.5rem;
-    background-color: #eeeeee;
+    background-color: var(--background-color);
     border-radius: 0.7rem;
     font-size: 0.9rem;
     box-shadow: 0 2px 6px rgba(136, 148, 171, 0.2), 0 24px 20px -24px rgba(71, 82, 107, 0.1);
@@ -269,13 +265,6 @@
     /* padding-left: 0.5rem; */
     padding: 0.3rem 0.5rem;
 }
-
-/* .settingButtons {
-    width: 100%;
-    button {
-        width: 95%;
-    }
-} */
 
 .loader {
     color: #fff;
