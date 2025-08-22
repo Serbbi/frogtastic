@@ -4,9 +4,11 @@ import { useRef, useEffect, useState } from "react";
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
 import ConfirmationBox from "../miniComponents/ConfirmationBox";
 import SideBarItem from "./SideBarItem";
+import { useOrganization } from "../../services/providers/OrganizationProvider";
 import './LeftSideBar.css';
 
-export default function LeftSideBar({ organization, setOrganization }) {
+export default function LeftSideBar() {
+    const { organization, modifyOrganization } = useOrganization();
     const userId = sessionStorage.getItem("userId");
     const isAdmin = JSON.parse(sessionStorage.getItem('privileges'))?.['general_privileges']?.['canGetUsers'];
     const navigate = useNavigate();
@@ -37,7 +39,7 @@ export default function LeftSideBar({ organization, setOrganization }) {
     function logOut() {
         localStorage.clear();
         sessionStorage.clear();
-        setOrganization(-1);
+        modifyOrganization(null);
         navigate("/");
     }
 

@@ -6,9 +6,11 @@ import useTanks from '../../hooks/useTanks';
 import FrogTableLoading from '../../components/miniComponents/FrogTableLoading';
 import { frogDownloadRequest } from '../../services/api/frogs/FrogDownload';
 import { useNotification } from '../../services/providers/NotificationProvider';
+import { useOrganization } from '../../services/providers/OrganizationProvider';
 import './TankFrogsPage.css';
 
-export default function TankFrogsPage({ organization }) {
+export default function TankFrogsPage() {
+    const { organization } = useOrganization();
     const { tanks } = useTanks(organization ? organization.id : -1);
     const [selectedNumber, setSelectedNumber] = useState(sessionStorage.getItem('selectedTankNumber') || null);
     const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, selectedNumber, null);

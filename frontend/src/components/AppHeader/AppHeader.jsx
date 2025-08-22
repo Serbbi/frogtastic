@@ -3,10 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useOrganizations from '../../hooks/useOrganizations';
 import { useNavigate } from "react-router-dom";
 import ExpiredTokenModal from '../miniComponents/ExpiredTokenModal';
-import './AppHeader.css';
 import NotificationDropdownAndButton from './NotificationDropdownAndButton';
+import { useOrganization } from '../../services/providers/OrganizationProvider';
+import './AppHeader.css';
 
-export default function AppHeader({ setOrganization }) {
+export default function AppHeader() {
+    const { setOrganization } = useOrganization();
     const userOrgs = sessionStorage.getItem('orgs').split(',');
     const username = sessionStorage.getItem('username');
     const userEmail = sessionStorage.getItem('email');
@@ -18,7 +20,12 @@ export default function AppHeader({ setOrganization }) {
     const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_USER_PROFILE_PICS_LOCATION}/${sessionStorage.getItem('userId')}.jpeg`);
 
     useEffect(() => {
-        setOrganization(userOrgs[0]);
+        const selectedOrg = sessionStorage.getItem("selectedOrg");
+        if (!selectedOrg) {
+            setOrganization(userOrgs[0]);
+        } else {
+            setOrganization(selectedOrg);
+        }
     }, []);
 
     useEffect(() => {

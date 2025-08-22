@@ -3,9 +3,11 @@ import useFrogs from "../../hooks/useFrogs";
 import FrogTableLoading from "../../components/miniComponents/FrogTableLoading";
 import { frogDownloadRequest } from "../../services/api/frogs/FrogDownload";
 import { useNotification } from "../../services/providers/NotificationProvider";
+import { useOrganization } from "../../services/providers/OrganizationProvider";
 import './AllFrogsPage.css';
 
-export default function AllFrogsPage({ organization }) {
+export default function AllFrogsPage() {
+    const { organization } = useOrganization();
     const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, null, null);
     const { addNotification } = useNotification();
 

@@ -6,10 +6,10 @@ import { useOrganization } from '../../services/providers/OrganizationProvider';
 import { useUnsavedChanges } from '../../services/providers/UnsavedChangesProvider';
 import './SystemParametersPage.css';
 
-export default function SystemParametersPage({ organization }) {
+export default function SystemParametersPage() {
     const { addNotification } = useNotification();
     const { setUnsavedChanges } = useUnsavedChanges();
-    const { modifyOrganization } = useOrganization();
+    const { organization, modifyOrganization } = useOrganization();
 
     const handleDownload = () => {
         if (organization === null) return;

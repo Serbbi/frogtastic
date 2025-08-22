@@ -4,9 +4,11 @@ import ErrorContent from "../../components/miniComponents/ErrorContent";
 import { useNavigate } from "react-router-dom";
 import { useImage } from "../../services/providers/ImageProvider";
 import { imagePostRequest } from "../../services/api/image/ImagePost";
+import { useOrganization } from "../../services/providers/OrganizationProvider";
 import './UploadPage.css';
 
-export default function UploadPage({ organization }) {
+export default function UploadPage() {
+    const { organization } = useOrganization();
     const [success, setSuccess] = useState("default");
     const [fileName, setFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);

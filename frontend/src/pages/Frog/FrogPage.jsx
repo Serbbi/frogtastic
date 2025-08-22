@@ -11,11 +11,13 @@ import ConfirmationBox from "../../components/miniComponents/ConfirmationBox";
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
 import { frogPutRequest } from "../../services/api/frogs/FrogPut";
 import { frogDeleteRequest } from "../../services/api/frogs/FrogDelete";
+import { useOrganization } from "../../services/providers/OrganizationProvider";
 import CompareModal from "./CompareModal";
 import HistoryImages from "./HistoryImages";
 import "./FrogPage.css";
 
-export default function FrogPage({ organization }) {
+export default function FrogPage() {
+    const { organization } = useOrganization();
     const { addNotification } = useNotification();
     const { tanks } = useTanks(organization ? organization.id : -1);
     const [showHistory, setShowHistory] = useState(false);
