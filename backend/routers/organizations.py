@@ -39,6 +39,7 @@ async def get_organizations(
 @router.get("/{organization_id}")
 async def get_organization(
     organization_id: int,
+    _: User = Depends(get_current_user),
     controller: OrganizationController = Depends(OrganizationController),
 ):
     return controller.get_organization(organization_id)
