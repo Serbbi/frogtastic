@@ -5,11 +5,17 @@ import numpy as np
 import pickle
 import sys
 import re
+import os
 
-
-def retrieve_frog(image, model_id):
-    if image is None:
+def retrieve_frog(image, model_id, organization_id):
+    if image is None or model_id is None or organization_id is None:
         return None
+    
+    # Check for directory matching organization_id
+    if not os.path.isdir(f"./CORF3D_ACF/output/org_{organization_id}"):
+        print(f"Organization ID {organization_id} not found.", file=sys.stderr)
+        return None
+    
     model_folders = [
         "models/RGB_5.h5",
         "models_clean/RGB_2.h5",
@@ -21,7 +27,7 @@ def retrieve_frog(image, model_id):
         "models_clean_half/clean_half.h5",
         "models_clean_half_short/clean_half_short.h5",
     ]
-    model = load_model(f"./CORF3D_ACF/output/{model_folders[model_id]}")
+    model = load_model(f"./CORF3D_ACF/output/org_{organization_id}/{model_folders[model_id]}")
     img = cv2.resize(image, (224, 224))
     y_pred = model.predict(np.array([img]))
 
@@ -35,7 +41,7 @@ def retrieve_frog(image, model_id):
     )
 
     with open(
-        f"./CORF3D_ACF/output/{model_folders[model_id].split('/')[0]}/labeler.pkl", "rb"
+        f"./CORF3D_ACF/output/org_{organization_id}/{model_folders[model_id].split('/')[0]}/labeler.pkl", "rb"
     ) as file:
         label_binarizer = pickle.load(file)
     for pred_y in pred_false:

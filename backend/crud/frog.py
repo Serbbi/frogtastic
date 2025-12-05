@@ -112,7 +112,7 @@ class FrogController(Controller):
             return {"error": "Image resolution must be at least 1500x1500"}
 
         extraction_image = extract_image(img)
-        result = retrieve_frog(extraction_image, model_id)
+        result = retrieve_frog(extraction_image, model_id, organization_id)
         if not result:
             return {"error": "Error handling image"}
         frog_number, tank_id = extract_frog_and_tank(result.split("\n")[0])
