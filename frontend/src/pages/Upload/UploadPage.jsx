@@ -125,6 +125,11 @@ export default function UploadPage() {
                         <option value={1}>Clean</option>
                         <option value={2}>New</option>
                         <option value={3}>OneShot</option>
+                        <option value={4}>No Tripod Oneshot</option>
+                        <option value={5}>NEW Tripod Oneshot</option>
+                        <option value={6}>Oneshot V2</option>
+                        <option value={7}>Clean Half</option>
+                        <option value={8}>Clean Half short</option>
                     </select>
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>

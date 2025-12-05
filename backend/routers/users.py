@@ -48,8 +48,8 @@ async def create_user(
     if user_db:
         raise_400_exception("Email already registered")
 
-    if controller.verify_email(user.email) is None:
-        raise_400_exception("Email must be a 'rug.nl' email")
+    # if controller.verify_email(user.email) is None:
+        # raise_400_exception("Email must be a 'rug.nl' email")
     
     user.hashed_password = util.get_password_hash(user.hashed_password)
     controller.create_user(user)
