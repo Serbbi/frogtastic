@@ -34,7 +34,7 @@ async def download_csv(org_q: Union[int, None],
     return controller.download_csv(org_q, tank_q)
 
 
-@router.get("/{frog_id}", response_model=FrogResponse)
+@router.get("/{frog_id}", response_model=Union[FrogResponse, None])
 async def get_frog(frog_id: int, 
                    controller: FrogController = Depends(FrogController),
                    _: str = Depends(util.verify_token)):
@@ -88,12 +88,3 @@ async def create_frogs(
     if util.get_organization_access_right(str(frogs[0].organization_id), "canCreateFrogs", current_user):
         return controller.create_frogs(frogs)
     raise_403_exception("You cannot create frogs")
-
-
-@router.post("/train")
-async def train_model(
-    file: UploadFile = File(...),
-    controller: FrogController = Depends(FrogController),
-    _: str = Depends(util.verify_token)
-):
-    return controller.train_model(file)

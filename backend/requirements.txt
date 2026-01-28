@@ -16,5 +16,5 @@ python-multipart
 scikit-image
 matplotlib
 pandas
-resend
 google-cloud-storage
+boto3

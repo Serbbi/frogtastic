@@ -1,8 +1,6 @@
 import base64
 import datetime
 import io
-import json
-import os
 import zipfile
 
 import cv2
@@ -10,12 +8,12 @@ import numpy as np
 import pandas as pd
 from fastapi.responses import StreamingResponse
 from frogRetreiver import extract_frog_and_tank, extract_image, retrieve_frog
-from google.cloud import storage
 from models.frog import Frog
 from models.organization import Organization
 from models.tank import Tank
 from schemas.frog import FrogResponse
 from sqlalchemy.orm.attributes import flag_modified
+from storage import s3, BUCKET_NAME
 
 from crud.controller import Controller
 
@@ -42,20 +40,37 @@ class FrogController(Controller):
         return frogs
 
     def get_frog(self, frog_id: int):
-        storage_client = storage.Client()
-        blobs = storage_client.list_blobs(
-            "cool_frog_bucket",
-            prefix=f"{os.getenv('GCS_FROG_IMAGES_LOCATION')}/{frog_id}",
-        )
-
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
-        if db_frog:
-            return FrogResponse.from_orm(db_frog).copy(
-                update={
-                    "image_history": ["cool_frog_bucket/" + blob.name for blob in blobs]
-                }
+
+        if not db_frog:
+            return None
+        
+        organization_id = db_frog.organization_id
+        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/uploads/{frog_id}/")
+        images = []
+
+        if 'Contents' not in response:
+            return FrogResponse.from_orm(db_frog)
+        
+        for obj in response["Contents"]:
+            key = obj["Key"]
+            
+            if key.endswith("/"):
+                continue  # Skip folders
+
+            url = s3.generate_presigned_url(
+                ClientMethod="get_object",
+                Params={"Bucket": BUCKET_NAME, "Key": key},
+                ExpiresIn=3600
             )
-        return None
+
+            images.append(url)
+
+        return FrogResponse.from_orm(db_frog).copy(
+            update={
+                "image_history": images
+            }
+        )
 
     def update_frogs(self, attributes: list, org_q: int):
         frogs = self.db.query(Frog).filter(Frog.organization_id == org_q).all()
@@ -129,6 +144,9 @@ class FrogController(Controller):
             )
             .first()
         )
+
+        # if not db_frog:
+            # return None
         if not db_frog:
             sample_frog = (
                 self.db.query(Frog).filter_by(organization_id=organization_id).first()
@@ -139,10 +157,21 @@ class FrogController(Controller):
                 sample_attributes = sample_frog.attributes.keys()
                 attributes = {key: "" for key in sample_attributes}
 
-            with open("image_paths.json") as f:
-                image_paths = json.load(f)
+            # with open("image_paths.json") as f:
+            #     image_paths = json.load(f)
 
-            image_path = image_paths.get(f"{tank_id}{frog_number}")
+            # response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/reference_images/{db_frog.id}.")
+
+            # if 'Contents' not in response:
+            #     url = None
+            # else:
+            #     url = s3.generate_presigned_url(
+            #         ClientMethod="get_object",
+            #         Params={"Bucket": BUCKET_NAME, "Key": response['Contents'][0]['Key']},
+            #         ExpiresIn=3600
+            #     )
+
+            # image_path = image_paths.get(f"{tank_id}{frog_number}")
             db_frog = self.create_frog(
                 Frog(
                     frog_number=frog_number,
@@ -151,7 +180,7 @@ class FrogController(Controller):
                     attributes=attributes,
                     organization_id=organization_id,
                     history={},
-                    image_path=image_path,
+                    image_path=""
                 )
             )
 
@@ -196,13 +225,6 @@ class FrogController(Controller):
         self.db.commit()
         return {"message": "Frogs deleted successfully"}
 
-    def train_model(self, file):
-        with zipfile.ZipFile(file.file, "r") as zip_ref:
-            file_names = zip_ref.namelist()
-        for name in file_names:
-            print(name)
-        return {"message": "Model trained successfully"}
-
     def download_csv(self, org_q: int, tank_q: int = None):
         query = self.db.query(Frog)
         tanks = self.db.query(Tank).all()
@@ -234,15 +256,6 @@ class FrogController(Controller):
             media_type="text/csv",
             headers={"Content-Disposition": "attachment; filename=frogs.csv"},
         )
-
-    def upload_to_gcs(self, file_path: str, destination_blob_name: str) -> str:
-        """Upload a file to GCS and return the public URL."""
-        client = storage.Client()
-        bucket = client.bucket(os.getenv("GCS_BUCKET_NAME"))
-        blob = bucket.blob(destination_blob_name)
-        blob.upload_from_filename(file_path)
-
-        return blob.public_url
 
 
 def update_history(db_frog, frog, username):
