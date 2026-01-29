@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from database import engine, Base
-from routers import frogs, image, login, users, organizations, tanks, notifications, email
+from routers import frogs, image, login, users, organizations, tanks, notifications, email, ml_models
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from database import SessionLocal
+from util.globals import init as init_globals
 from sqlalchemy.orm import Session
 from crud.user import UserController
 from models.user import User
@@ -50,6 +51,9 @@ async def lifespan(_: FastAPI):
     """Application lifespan management"""
     # Initialize database
     Base.metadata.create_all(bind=engine)
+
+    # Initialize global variables
+    init_globals()
     
     # Create initial admin
     db = SessionLocal()
@@ -79,6 +83,7 @@ app.include_router(organizations.router)
 app.include_router(tanks.router)
 app.include_router(notifications.router)
 # app.include_router(email.router)
+app.include_router(ml_models.router)
 
 app.add_middleware(RemoveApiPrefixMiddleware)
 
