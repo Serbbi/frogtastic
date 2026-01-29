@@ -46,7 +46,7 @@ def extract_image(image):
     needs_flipping = {}
 
     try:
-        extraction_image, flip = extract_square(image=image, progress_path="progress")
+        extraction_image, flip = extract_square(image=image) #, progress_path="progress")
         needs_flipping["image_name"] = (
             flip  # changed from image which was before the name of the image
         )

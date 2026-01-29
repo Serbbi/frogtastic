@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import pandas as pd
 from fastapi.responses import StreamingResponse
+from fastapi import HTTPException
 from frogRetreiver import extract_frog_and_tank, extract_image, retrieve_frog
 from models.frog import Frog
 from models.organization import Organization
@@ -14,7 +15,7 @@ from models.tank import Tank
 from schemas.frog import FrogResponse
 from sqlalchemy.orm.attributes import flag_modified
 from storage import s3, BUCKET_NAME
-
+from util.globals import get_model
 from crud.controller import Controller
 
 """
@@ -145,44 +146,8 @@ class FrogController(Controller):
             .first()
         )
 
-        # if not db_frog:
-            # return None
         if not db_frog:
-            sample_frog = (
-                self.db.query(Frog).filter_by(organization_id=organization_id).first()
-            )
-            if not sample_frog:
-                attributes = {}
-            else:
-                sample_attributes = sample_frog.attributes.keys()
-                attributes = {key: "" for key in sample_attributes}
-
-            # with open("image_paths.json") as f:
-            #     image_paths = json.load(f)
-
-            # response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/reference_images/{db_frog.id}.")
-
-            # if 'Contents' not in response:
-            #     url = None
-            # else:
-            #     url = s3.generate_presigned_url(
-            #         ClientMethod="get_object",
-            #         Params={"Bucket": BUCKET_NAME, "Key": response['Contents'][0]['Key']},
-            #         ExpiresIn=3600
-            #     )
-
-            # image_path = image_paths.get(f"{tank_id}{frog_number}")
-            db_frog = self.create_frog(
-                Frog(
-                    frog_number=frog_number,
-                    tank_id=tank_id,
-                    current_tank_id=None,
-                    attributes=attributes,
-                    organization_id=organization_id,
-                    history={},
-                    image_path=""
-                )
-            )
+            raise HTTPException(status_code=404, detail="Frog not found")
 
         # Leave it as base64 for now, we can change it to something different later
         return {
@@ -256,6 +221,41 @@ class FrogController(Controller):
             media_type="text/csv",
             headers={"Content-Disposition": "attachment; filename=frogs.csv"},
         )
+    
+    def instantiate_frogs(self, organization_id: int):
+        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/models/")
+
+        if 'Contents' not in response:
+            return {"error": "No models found"}
+        
+        model_name = response['Contents'][0]['Key'].split("/")[-1].split(".")[0]
+        sample_cache = get_model(model_name, organization_id)
+
+        if not sample_cache:
+            return {"error": "Model not found"}
+        
+        labeler_classes = sample_cache.labeler.classes_
+        if self.db.query(Frog).filter(Frog.organization_id == organization_id).first():
+            return {"error": "Frogs already exist for this organization"}
+        
+        frogs_created = 0
+        for class_name in labeler_classes:
+            frog_number, tank_id = extract_frog_and_tank(class_name)
+
+            db_frog = Frog(
+                frog_number=frog_number,
+                tank_id=tank_id,
+                current_tank_id=None,
+                attributes={},
+                organization_id=organization_id,
+                history={},
+                image_path="",
+            )
+            self.db.add(db_frog)
+            frogs_created += 1
+        
+        self.db.commit()
+        return {"message": f"{frogs_created} frogs instantiated successfully"}
 
 
 def update_history(db_frog, frog, username):
