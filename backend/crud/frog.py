@@ -1,6 +1,7 @@
 import base64
 import datetime
 import io
+import re
 import zipfile
 
 import cv2
@@ -15,7 +16,6 @@ from models.tank import Tank
 from schemas.frog import FrogResponse
 from sqlalchemy.orm.attributes import flag_modified
 from storage import s3, BUCKET_NAME
-from util.globals import get_model
 from crud.controller import Controller
 
 """
@@ -47,29 +47,38 @@ class FrogController(Controller):
             return None
         
         organization_id = db_frog.organization_id
+
+        reference_img_url = s3.generate_presigned_url(
+            ClientMethod="get_object",
+            Params={
+                "Bucket": BUCKET_NAME,
+                "Key": f"dev/{db_frog.key_path}",
+            },
+            ExpiresIn=3600,
+        )      
+
         response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/uploads/{frog_id}/")
         images = []
 
-        if 'Contents' not in response:
-            return FrogResponse.from_orm(db_frog)
-        
-        for obj in response["Contents"]:
-            key = obj["Key"]
-            
-            if key.endswith("/"):
-                continue  # Skip folders
+        if 'Contents' in response:    
+            for obj in response["Contents"]:
+                key = obj["Key"]
+                
+                if key.endswith("/"):
+                    continue  # Skip folders
 
-            url = s3.generate_presigned_url(
-                ClientMethod="get_object",
-                Params={"Bucket": BUCKET_NAME, "Key": key},
-                ExpiresIn=3600
-            )
+                url = s3.generate_presigned_url(
+                    ClientMethod="get_object",
+                    Params={"Bucket": BUCKET_NAME, "Key": key},
+                    ExpiresIn=3600
+                )
 
-            images.append(url)
+                images.append(url)
 
         return FrogResponse.from_orm(db_frog).copy(
             update={
-                "image_history": images
+                "image_history": images,
+                "reference_image_url": reference_img_url,
             }
         )
 
@@ -105,7 +114,7 @@ class FrogController(Controller):
             attributes=frog.attributes,
             organization_id=frog.organization_id,
             history=frog.history,
-            image_path=frog.image_path,
+            key_path=""
         )
         self.db.add(db_frog)
         self.db.commit()
@@ -213,7 +222,7 @@ class FrogController(Controller):
         df["organization_id"] = organization.name
         df = df.rename(columns={"organization_id": "organization_name"})
         df = df.drop(columns=["id"])
-        df = df.drop(columns=["image_path"])
+        df = df.drop(columns=["key_path"])
 
         csv = df.to_csv(index=False)
         return StreamingResponse(
@@ -223,24 +232,24 @@ class FrogController(Controller):
         )
     
     def instantiate_frogs(self, organization_id: int):
-        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/models/")
+        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/reference_images/")
 
         if 'Contents' not in response:
-            return {"error": "No models found"}
-        
-        model_name = response['Contents'][0]['Key'].split("/")[-1].split(".")[0]
-        sample_cache = get_model(model_name, organization_id)
-
-        if not sample_cache:
-            return {"error": "Model not found"}
-        
-        labeler_classes = sample_cache.labeler.classes_
-        if self.db.query(Frog).filter(Frog.organization_id == organization_id).first():
-            return {"error": "Frogs already exist for this organization"}
+            return {"error": "No reference images found"}
         
         frogs_created = 0
-        for class_name in labeler_classes:
-            frog_number, tank_id = extract_frog_and_tank(class_name)
+        for obj in response["Contents"]:
+            key = obj["Key"]
+            if key.endswith("/"):
+                continue  # Skip folders
+
+            # Extract frog_number and tank_id from the filename
+            match = re.search(r'frog(\d+)_tank(\d+)', key)
+            if not match:
+                continue  # Skip files that don't match the pattern
+
+            frog_number = int(match.group(1))
+            tank_id = int(match.group(2))
 
             db_frog = Frog(
                 frog_number=frog_number,
@@ -249,11 +258,11 @@ class FrogController(Controller):
                 attributes={},
                 organization_id=organization_id,
                 history={},
-                image_path="",
+                key_path=f"{organization_id}/reference_images/frog{frog_number}_tank{tank_id}.{key.split('.')[-1]}"
             )
             self.db.add(db_frog)
             frogs_created += 1
-        
+
         self.db.commit()
         return {"message": f"{frogs_created} frogs instantiated successfully"}
 

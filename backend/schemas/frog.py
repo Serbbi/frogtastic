@@ -8,7 +8,7 @@ class FrogBase(BaseModel):
     attributes: dict
     organization_id: int
     history: dict
-    image_path: str
+    key_path: str
 
 
 class FrogResponse(FrogBase):
@@ -19,7 +19,7 @@ class FrogResponse(FrogBase):
     attributes: dict
     organization_id: int
     history: dict
-    image_path: str
+    reference_image_url: str = ""
     image_history: Optional[list] = None #Temporary to work or maybe definitive will see
 
     class Config:
