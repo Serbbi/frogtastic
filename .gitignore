@@ -53,5 +53,6 @@ Preprocessing
 uploaded images
 /backend/progress
 /backend/venv
+/backend/CORF3D_ACF/output
 
 .ruff_cache

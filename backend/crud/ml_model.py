@@ -18,6 +18,18 @@ class MLModelController(Controller):
         
     
     def upload_ml_model(self, model_file, labeler_file, organization_id: int):
+        # Check if files have same base name
+        model_base = model_file.filename.rsplit('.', 1)[0]
+        labeler_base = labeler_file.filename.rsplit('.', 1)[0]
+        if model_base != labeler_base:
+            return {"error": "Model file and labeler file must have the same base name."}
+        
+        if model_file.filename.rsplit('.', 1)[1] != "h5":
+            return {"error": "Model file must have .h5 extension."}
+        
+        if labeler_file.filename.rsplit('.', 1)[1] != "pkl":
+            return {"error": "Labeler file must have .pkl extension."}
+
         s3.put_object(Bucket=BUCKET_NAME, Key=f"dev/{organization_id}/models/{model_file.filename}", Body=model_file.file)
         s3.put_object(Bucket=BUCKET_NAME, Key=f"dev/{organization_id}/models/{labeler_file.filename}", Body=labeler_file.file)
         

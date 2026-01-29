@@ -39,10 +39,10 @@ def bulk_upload_reference_images(organization_id: int,
 
 @router.post("/{organization_id}")
 async def upload_image(organization_id: int, 
-                       model_id: Union[int, None] = 1, 
+                       model_name: str, 
                        file: UploadFile = File(..., size=10_000_000),
                        controller: FrogController = Depends(FrogController)):
-    frog_composition = controller.get_frog_by_image(file, organization_id, model_id)
+    frog_composition = controller.get_frog_by_image(file, organization_id, model_name)
     if not frog_composition or 'frog' not in frog_composition:
         raise_422_exception("Could not extract frog from image")
     if frog_composition['frog']:

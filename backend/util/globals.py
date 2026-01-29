@@ -1,12 +1,19 @@
 from cachetools import LRUCache
 from crud.ml_model import MLModelController
-# import threading
+import threading
 from dataclasses import dataclass
+import tensorflow as tf
+from typing import Any
+import tempfile
+import pickle
 
 @dataclass
 class CachedMLModel:
-    model_bytes: bytes
-    labeler_bytes: bytes
+    model: tf.keras.Model
+    labeler: Any
+
+
+cache_lock = threading.Lock()
 
 def init():
     global model_cache
@@ -22,20 +29,31 @@ def get_model(model_name: str, organization_id: int) -> CachedMLModel:
 
     if key in model_cache:
         return model_cache[key]
+    
+    with cache_lock:
+        if key in model_cache:
+            return model_cache[key]
 
-    controller = MLModelController()
-    data = controller.get_ml_model(model_name, organization_id)
+        controller = MLModelController()
+        data = controller.get_ml_model(model_name, organization_id)
 
-    if not data:
-        return None
+        if not data:
+            return None
+        
+        with tempfile.NamedTemporaryFile(suffix=".h5") as tmp:
+            tmp.write(data["model"])
+            tmp.flush()
+            model = tf.keras.models.load_model(tmp.name)
 
-    cached = CachedMLModel(
-        model_bytes=data["model"],
-        labeler_bytes=data["labeler"],
-    )
+        labeler = pickle.loads(data["labeler"])
 
-    model_cache[key] = cached
-    return cached
+        cached = CachedMLModel(
+            model=model,
+            labeler=labeler,
+        )
+
+        model_cache[key] = cached
+        return cached
 
 
 def get_all_cached_models() -> dict:
