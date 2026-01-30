@@ -16,5 +16,5 @@ python-multipart
 scikit-image
 matplotlib
 pandas
-google-cloud-storage
 boto3
+cachetools

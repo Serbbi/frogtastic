@@ -1,9 +1,8 @@
-import os
 import re
 from crud.controller import Controller
 from models.user import User
-from google.cloud import storage
 from PIL import Image
+from storage import s3, BUCKET_NAME
 import io
 
 """
@@ -96,12 +95,18 @@ class UserController(Controller):
         image.save(output_buffer, format="JPEG", quality=90)
         output_buffer.seek(0)
         
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(os.getenv("GCS_BUCKET_NAME"))
-        blob = bucket.blob(f"{os.getenv('GCS_USER_PROFILE_PICS_FOLDER')}/{user_id}.jpeg")
+        s3_key = f"dev/user_profile_pics/{user_id}.jpeg"
+        s3.put_object(
+            Bucket=BUCKET_NAME,
+            Key=s3_key,
+            Body=output_buffer,
+            ContentType="image/jpeg",
+        )
 
-        blob.cache_control = "no-cache, max-age=0"
-        blob.upload_from_file(output_buffer, content_type="image/jpeg")
-        blob.patch()
-        return blob.public_url
+        url = s3.generate_presigned_url(
+            ClientMethod="get_object",
+            Params={"Bucket": BUCKET_NAME, "Key": s3_key},
+            ExpiresIn=3600,
+        )
+        return {"url": url}
         

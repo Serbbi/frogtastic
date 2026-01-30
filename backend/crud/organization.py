@@ -1,15 +1,13 @@
 import io
-import os
 
 import pandas as pd
 from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
-from google.cloud import storage
 from models.organization import Organization
 from models.user import User
 from PIL import Image
 from sqlalchemy.orm.attributes import flag_modified
-
+from storage import s3, BUCKET_NAME
 from crud.controller import Controller
 from crud.frog import FrogController
 from crud.tank import TankController
@@ -202,14 +200,20 @@ class OrganizationController(Controller):
         image.save(output_buffer, format="JPEG", quality=90)
         output_buffer.seek(0)
 
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(os.getenv("GCS_BUCKET_NAME"))
-        blob = bucket.blob(f"{os.getenv('GCS_ORG_LOGO_FOLDER')}/{organization_id}.jpeg")
+        key = f"dev/organization_pics/{organization_id}.jpeg"
+        s3.put_object(
+            Bucket=BUCKET_NAME,
+            Key=key,
+            Body=output_buffer,
+            ContentType="image/jpeg",
+        )
 
-        blob.cache_control = "no-cache, max-age=0"
-        blob.upload_from_file(output_buffer, content_type="image/jpeg")
-        blob.patch()
-        return blob.public_url
+        url = s3.generate_presigned_url(
+            ClientMethod="get_object",
+            Params={"Bucket": BUCKET_NAME, "Key": key},
+            ExpiresIn=3600,
+        )
+        return {"url": url}
 
 
 def privileges_config(is_admin: bool = False):
