@@ -34,13 +34,13 @@ export default function LogoSetting({ organization }) {
     }
 
     return (
-        <div className='settingContainer'>
-            <h3>Logo</h3>
-            <div className={"logoPhotoContainer"}>
-                <img src={orgLogoSrc} alt="Organization Logo" onError={() => setOrgLogoSrc("/org_default_logo.png")} className={"logoInput"} />
-                <span className={"logoHover"} onClick={handleClickEdit}><FontAwesomeIcon icon="fa-solid fa-screwdriver-wrench" className='profileEditIcon' /></span>
-                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleChangeLogo} className={"logoInput"} style={{ display: "none" }} />
+        <>
+            <p className='info-message'>Click on the logo to edit it</p>
+            <div className="logo-photo-container">
+                <img src={orgLogoSrc} alt="Organization Logo" onError={() => setOrgLogoSrc("/org_default_logo.png")} className="logo-input" />
+                <span className={"logo-hover"} onClick={handleClickEdit}><FontAwesomeIcon icon="fa-solid fa-screwdriver-wrench" className='profileEditIcon' /></span>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleChangeLogo} className={"logo-input"} style={{ display: "none" }} />
             </div>
-        </div>
+        </>
     );
 }

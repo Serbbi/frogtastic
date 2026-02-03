@@ -46,14 +46,18 @@ export default function UserPrivilegesSetting({ organizationId }) {
             setSelectedUser(null);
         } else {
             setSelectedUser(user);
+            const settingContent = document.querySelector('.users-and-privileges').closest('.setting-section-content');
+            if (settingContent) {
+                settingContent.style.height = 'auto';
+            }
         }
     }
 
     return (
-        <div className='settingContainer'>
-            <h3>User Access Rights</h3>
-            <div className="usersAndPrivileges">
-                <ul className="userList">
+        <>
+            <div className="users-and-privileges">
+                {users && users.length === 1 && <p>No other users found.</p>}
+                <ul className="user-list">
                     {users && users.map(user => {
                         if (user.id.toString() === userId) return null;
                         return (
@@ -67,9 +71,9 @@ export default function UserPrivilegesSetting({ organizationId }) {
                     })}
                 </ul>
                 {selectedUser && (
-                    <div className="userPrivilegesList">
-                        {Object.keys(selectedUser.attributes[organizationId]).map(attribute => (
-                            <div key={attribute} className="privilegeItem">
+                    <div className="use-privileges-list">
+                        {Object.keys(selectedUser.attributes[organizationId]).filter(attribute => !["canGetUsers", "canEditUsers", "canDeleteUsers"].includes(attribute)).map(attribute => (
+                            <div key={attribute} className="privilege-item">
                                 <span>{attribute}</span>
                                 <input
                                     type="checkbox"
@@ -81,9 +85,10 @@ export default function UserPrivilegesSetting({ organizationId }) {
                     </div>
                 )}
             </div>
-            {/* <div className="settingButtons"> */}
-            <button onClick={handleSave}>Save</button>
-            {/* </div> */}
-        </div>
+            <div className="setting-buttons">
+                <p></p>
+                <button className="setting-button save" onClick={handleSave}>Save</button>
+            </div>
+        </>
     );
 }
