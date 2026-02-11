@@ -19,7 +19,7 @@ export default function JoinOrganizationPage() {
 
     useEffect(() => {
         if (organizations) {
-            const pics = organizations.map(org => `https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${org.id}.jpeg`);
+            const pics = organizations.map(org => org.logo_url);
             setOrgPics(pics);
         }
     }, [organizations]);

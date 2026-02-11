@@ -4,6 +4,7 @@ import pandas as pd
 from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 from models.organization import Organization
+from schemas.organization import OrganizationResponse
 from models.user import User
 from PIL import Image
 from sqlalchemy.orm.attributes import flag_modified
@@ -39,14 +40,47 @@ class OrganizationController(Controller):
         return db_organization
 
     def get_organizations(self):
-        return self.db.query(Organization).all()
+        db_organizations = self.db.query(Organization).all()
+
+        organizations_with_logos = []
+        for org in db_organizations:
+            logo_url = ""
+            key = f"dev/organization_pics/{org.id}.jpeg"
+            try:
+                s3.head_object(Bucket=BUCKET_NAME, Key=key)
+                logo_url = s3.generate_presigned_url(
+                    ClientMethod="get_object",
+                    Params={"Bucket": BUCKET_NAME, "Key": key},
+                    ExpiresIn=3600,
+                )
+            except s3.exceptions.ClientError:
+                logo_url = ""
+
+            org_response = OrganizationResponse.from_orm(org).copy(update={"logo_url": logo_url})
+            organizations_with_logos.append(org_response)
+        return organizations_with_logos
 
     def get_organization(self, organization_id: int):
-        return (
+        db_organization = (
             self.db.query(Organization)
             .filter(Organization.id == organization_id)
             .first()
         )
+
+        logo_url = ""
+        if db_organization:
+            key = f"dev/organization_pics/{db_organization.id}.jpeg"
+            try:
+                s3.head_object(Bucket=BUCKET_NAME, Key=key)
+                logo_url = s3.generate_presigned_url(
+                    ClientMethod="get_object",
+                    Params={"Bucket": BUCKET_NAME, "Key": key},
+                    ExpiresIn=3600,
+                )
+            except s3.exceptions.ClientError:
+                logo_url = ""
+
+        return OrganizationResponse.from_orm(db_organization).copy(update={"logo_url": logo_url})
 
     def update_organization(self, organization_id: int, organization: Organization):
         db_organization = (

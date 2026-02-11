@@ -14,13 +14,13 @@ export default function LeftSideBar() {
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
-    const [OrgPic, setOrgPic] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${organization?.id}.jpeg`);
+    const [OrgPic, setOrgPic] = useState("");
     const [confirmationBoxText, setConfirmationBoxText] = useState("");
     const [pendingPath, setPendingPath] = useState(null);
 
     useEffect(() => {
         if (organization) {
-            setOrgPic(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_ORG_LOGOS_LOCATION}/${organization.id}.jpeg`);
+            setOrgPic(organization.logo_url);
         }
     }, [organization]);
 

@@ -228,6 +228,7 @@
     transition: background-color 0.3s ease;
     border-radius: 0.5rem;
     padding: 0.5rem 0.7rem;
+    cursor: pointer;
 }
 
 .user-item.selected {
