@@ -17,7 +17,7 @@ export default function AppHeader() {
     const { organizations, error } = useOrganizations();
     const navigate = useNavigate();
     const profileBoxRef = useRef(null);
-    const [profilePicSrc, setProfilePicSrc] = useState(`https://storage.googleapis.com/${process.env.REACT_APP_GCS_USER_PROFILE_PICS_LOCATION}/${sessionStorage.getItem('userId')}.jpeg`);
+    const [profilePicSrc, setProfilePicSrc] = useState(`${sessionStorage.getItem('userProfilePic')}`);
 
     useEffect(() => {
         const selectedOrg = sessionStorage.getItem("selectedOrg");

@@ -33,11 +33,11 @@ def authenticate_user(
 ):
     user = controller.get_user_by_username(username)
     if not user:
-        return False
+        return None
     if not user.hashed_password:
-        return False
+        return None
     if not verify_password(password, user.hashed_password):
-        return False
+        return None
     return user
 
 

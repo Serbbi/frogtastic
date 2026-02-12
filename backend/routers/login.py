@@ -64,12 +64,7 @@ async def login(
     )
     return {
         "access_token": access_token,
-        "token_type": "bearer",
-        "dict": user_db.attributes,
-        "organizations": user_db.organizations,
-        "id": user_db.id,
-        "username": user_db.username,
-        "email": user_db.email,
+        "token_type": "bearer"
     }
 
 
@@ -129,12 +124,7 @@ async def google_login(
 
         return {
             "access_token": access_token,
-            "token_type": "bearer",
-            "dict": user.attributes,
-            "organizations": user.organizations,
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
+            "token_type": "bearer"
         }
 
     except Exception:

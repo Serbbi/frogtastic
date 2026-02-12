@@ -19,6 +19,7 @@ export default function AuthProvider({ children }) {
 		sessionStorage.setItem("privileges", JSON.stringify(res.dict || {}));
 		sessionStorage.setItem("orgs", res.organizations || []);
 		sessionStorage.setItem("userId", res.id);
+		sessionStorage.setItem("userProfilePic", res.profile_picture_url || "");
 		sessionStorage.setItem("username", res.username);
 		sessionStorage.setItem("email", res.email);
 
@@ -37,8 +38,10 @@ export default function AuthProvider({ children }) {
 
 	const loginAction = useCallback(async (data, rememberMe = false) => {
 		try {
-			const res = await AuthService.login(data);
-			handleLoginSuccess(res, rememberMe);
+			const tokenRes = await AuthService.login(data);
+			const profile = await AuthService.getMe(tokenRes.access_token);
+
+			handleLoginSuccess({...tokenRes, ...profile}, rememberMe);
 		} catch (err) {
 			setErrorMessage(err.message);
 		}
@@ -46,12 +49,11 @@ export default function AuthProvider({ children }) {
 
 	const signUpAction = useCallback(async (data) => {
 		try {
-			const res = await AuthService.signUp(data);
-			if (res.username) {
-				await loginAction(data);
-			} else {
-				setErrorMessage("Sign up failed");
-			}
+			await AuthService.signUp(data);
+			const tokenRes = await AuthService.login({ username: data.username, password: data.password });
+			const profile = await AuthService.getMe(tokenRes.access_token);
+
+			handleLoginSuccess({...tokenRes, ...profile});
 		} catch (err) {
 			setErrorMessage(err.message);
 		}
@@ -70,8 +72,10 @@ export default function AuthProvider({ children }) {
 
 	const googleLoginAction = useCallback(async (google_token) => {
 		try {
-			const res = await AuthService.googleLogin(google_token);
-			handleLoginSuccess(res, true); // always remember for Google
+			const tokenRes = await AuthService.googleLogin(google_token);
+			const profile = await AuthService.getMe(tokenRes.access_token);
+			
+			handleLoginSuccess({...tokenRes, ...profile}, true); // always remember for Google
 		} catch (err) {
 			setErrorMessage(err.message);
 		}

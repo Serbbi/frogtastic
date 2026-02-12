@@ -1,9 +1,9 @@
 # The router that is used from all "/users/*" endpoints.
-from typing import Union
 from fastapi import APIRouter, Depends, File, UploadFile
 from crud.user import UserController
+from typing import Union
 from util import util
-from schemas.user import UserBase
+from schemas.user import UserBase, UserResponse
 from models.user import User
 from util.exceptions import raise_400_exception, raise_403_exception
 
@@ -24,7 +24,15 @@ async def get_users(
     raise_403_exception(ACCESS_RIGHT_MESSAGE)
 
 
-@router.get("/{user_id}")
+@router.get("/me", response_model=UserResponse)
+async def get_current_user(
+    current_user: User = Depends(util.get_current_user),
+    controller: UserController = Depends(UserController)
+):
+    return controller.build_user_response(current_user)
+
+
+@router.get("/{user_id}", response_model=Union[UserResponse, None])
 async def get_user(
     user_id: int, 
     org_q: Union[int, None] = None,
@@ -34,6 +42,7 @@ async def get_user(
     if util.get_general_access_right("canGetUsers", current_user) or util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
         return controller.get_user_by_id(user_id)
     raise_403_exception(ACCESS_RIGHT_MESSAGE)
+
 
 @router.post("")
 async def create_user(

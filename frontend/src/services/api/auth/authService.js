@@ -75,3 +75,17 @@ export async function googleLogin(token) {
     }
     return await response.json();
 }
+
+export async function getMe(token) {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/me`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch user profile");
+    }
+
+    return await response.json();
+}
