@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from crud.user import UserController
 from typing import List
 from util import util
-from schemas.user import UserBase, UserResponse
+from schemas.user import UserBase, UserResponse, UserCreate
 from models.user import User
 from util.exceptions import raise_400_exception, raise_403_exception
 
@@ -38,9 +38,9 @@ async def get_user(
     return controller.build_user_response(user_checked)
 
 
-@router.post("")
+@router.post("", response_model=UserResponse)
 async def create_user(
-    user: UserBase,
+    user: UserCreate,
     controller: UserController = Depends(UserController)
 ):
     user_db = controller.get_user_by_username(user.username)
@@ -54,9 +54,7 @@ async def create_user(
     # if controller.verify_email(user.email) is None:
         # raise_400_exception("Email must be a 'rug.nl' email")
     
-    user.hashed_password = util.get_password_hash(user.hashed_password)
-    controller.create_user(user)
-    return user
+    return controller.create_user(user, util.get_password_hash(user.password))
 
 
 @router.put("/{user_id}", response_model=UserResponse)

@@ -121,12 +121,19 @@ class OrganizationController(Controller):
         self.db.refresh(db_user)
         return db_organization
 
-    def delete_organization(self, organization_id: int):
+    def delete_organization(self, organization_id: int, user: User):
         db_organization = (
             self.db.query(Organization)
             .filter(Organization.id == organization_id)
             .first()
         )
+
+        if not db_organization:
+            raise HTTPException(status_code=404, detail="Organization not found")
+        
+        if user.id not in db_organization.admins:
+            raise HTTPException(status_code=403, detail="Only admins can delete the organization")
+        
         self.db.delete(db_organization)
         self.db.commit()
         return db_organization
@@ -217,9 +224,16 @@ class OrganizationController(Controller):
 
         return db_organization
 
-    async def update_profile_pic(self, organization_id, file):
+    async def update_profile_pic(self, organization_id, file, user: User):
         if not file.content_type.startswith("image/"):
             return {"error": "File must be an image"}
+        
+        db_organization = self.db.query(Organization).filter(Organization.id == organization_id).first()
+        if not db_organization:
+            raise HTTPException(status_code=404, detail="Organization not found")
+        
+        if user.id not in db_organization.admins:
+            raise HTTPException(status_code=403, detail="Only admins can update the organization logo")
 
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))

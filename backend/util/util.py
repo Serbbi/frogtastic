@@ -131,6 +131,21 @@ def require_simple_permission(permission: Permission):
     return dependency
 
 
+def require_general_permission(permission: Permission):
+    def dependency(
+           current_user: User = Depends(get_current_user) 
+    ):
+        if not get_general_access_right(permission.value, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to access this resource",
+            )
+        
+        return current_user
+        
+    return dependency
+
+
 def require_resource_permission(resource_dep, permission: Permission):
     """
     resource_dep: a dependency function that returns ONE resource (e.g., load_user)

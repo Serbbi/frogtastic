@@ -2,10 +2,9 @@ from fastapi import APIRouter, Depends, UploadFile, File
 from crud.organization import OrganizationController
 from schemas.organization import OrganizationBase, OrganizationResponse
 from typing import Union, List
-from util.organizationsUtil import get_create_organization_access_right
-from util.exceptions import raise_403_exception
 from models.user import User
-from util.util import get_current_user, verify_token
+from util.util import get_current_user, verify_token, require_general_permission
+from util.permissions import Permission
 
 router = APIRouter(
     prefix="/organizations",
@@ -16,14 +15,11 @@ router = APIRouter(
     },
 )
 
-@router.post("")
+@router.post("", response_model=OrganizationResponse)
 async def create_organization(organization: OrganizationBase, 
-                              access_right: bool = Depends(get_create_organization_access_right),
-                              current_user: User = Depends(get_current_user),
+                              current_user: User = Depends(require_general_permission(Permission.CREATE_ORGANIZATION)),
                               controller: OrganizationController = Depends(OrganizationController)):
-    if access_right:
-        return controller.create_organization(organization, current_user)
-    raise_403_exception("You do not have the right to create an organization")
+    return controller.create_organization(organization, current_user)
 
 @router.get("", response_model=List[OrganizationResponse])
 async def get_organizations(controller: OrganizationController = Depends(OrganizationController),
@@ -51,10 +47,13 @@ async def quit_organization(organization_id: int, current_user: User = Depends(g
 async def update_profile_pic(
     organization_id: int, 
     file: UploadFile = File(..., size=10_000_000),
+    current_user: User = Depends(get_current_user), 
     controller: OrganizationController = Depends(OrganizationController)
 ):
-    return await controller.update_profile_pic(organization_id, file)
+    return await controller.update_profile_pic(organization_id, file, current_user)
 
 @router.delete("/{organization_id}")
-async def delete_organization(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
-    return controller.delete_organization(organization_id)
+async def delete_organization(organization_id: int, 
+                              current_user: User = Depends(get_current_user),
+                              controller: OrganizationController = Depends(OrganizationController)):
+    return controller.delete_organization(organization_id, current_user)

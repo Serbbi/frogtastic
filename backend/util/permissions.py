@@ -7,3 +7,4 @@ class Permission(str, Enum):
     GET_USERS = "canGetUsers"
     EDIT_USERS = "canEditUsers"
     DELETE_USERS = "canDeleteUsers"
+    CREATE_ORGANIZATION = "canCreateOrganization"

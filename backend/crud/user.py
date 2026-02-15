@@ -38,12 +38,12 @@ class UserController(Controller):
         return db_user
 
     
-    def create_user(self, user: User):
-        db_user = User(username=user.username, hashed_password=user.hashed_password, attributes=beginning_attributes, organizations=user.organizations, email=user.email)
+    def create_user(self, user: User, hashed_password: str):
+        db_user = User(username=user.username, hashed_password=hashed_password, attributes=beginning_attributes, organizations=[], email=user.email)
         self.db.add(db_user)
         self.db.commit()
         self.db.refresh(db_user)
-        return db_user
+        return UserResponse.from_orm(db_user)
     
 
     def get_users(self, org_q: int = None):
