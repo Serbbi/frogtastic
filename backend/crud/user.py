@@ -53,22 +53,7 @@ class UserController(Controller):
     
 
     def get_user_by_id(self, user_id: int):
-        db_user = self.db.query(User).filter(User.id == user_id).first()
-
-        profile_pic_url = ""
-        if db_user:
-            key = f"dev/user_profile_pics/{db_user.id}.jpeg"
-            try:
-                s3.head_object(Bucket=BUCKET_NAME, Key=key)
-                profile_pic_url = s3.generate_presigned_url(
-                    ClientMethod="get_object",
-                    Params={"Bucket": BUCKET_NAME, "Key": key},
-                    ExpiresIn=3600,
-                )
-            except s3.exceptions.ClientError:
-                profile_pic_url = ""
-        
-        return UserResponse.from_orm(db_user).copy(update={"profile_picture_url": profile_pic_url})
+        return self.db.query(User).filter(User.id == user_id).first()
     
 
     def build_user_response(self, user: User):
@@ -85,6 +70,7 @@ class UserController(Controller):
             except s3.exceptions.ClientError:
                 profile_pic_url = ""
         return UserResponse.from_orm(user).copy(update={"profile_picture_url": profile_pic_url})
+
 
     def update_user(self, user_id: int, user: User):
         db_user = self.get_user_by_id(user_id)

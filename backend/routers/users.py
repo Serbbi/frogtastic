@@ -1,13 +1,14 @@
 # The router that is used from all "/users/*" endpoints.
+from util.permissions import Permission
+from util.loaders import load_user, load_users
 from fastapi import APIRouter, Depends, File, UploadFile
 from crud.user import UserController
-from typing import Union
+from typing import List
 from util import util
 from schemas.user import UserBase, UserResponse
 from models.user import User
 from util.exceptions import raise_400_exception, raise_403_exception
 
-ACCESS_RIGHT_MESSAGE = "User does not have access right"
 router = APIRouter(
     prefix="/users",
     tags=["users"]
@@ -15,13 +16,10 @@ router = APIRouter(
 
 @router.get("")
 async def get_users(
-    org_q: Union[int, None] = None,
-    current_user: User = Depends(util.get_current_user),
-    controller: UserController = Depends(UserController)
+    users: List[User] = Depends(util.require_list_resource_permission(load_users, Permission.GET_USERS)),
+    controller: UserController = Depends(UserController),
 ):
-    if util.get_general_access_right("canGetUsers", current_user) or util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
-        return controller.get_users(org_q)
-    raise_403_exception(ACCESS_RIGHT_MESSAGE)
+    return [controller.build_user_response(user) for user in users]
 
 
 @router.get("/me", response_model=UserResponse)
@@ -32,16 +30,12 @@ async def get_current_user(
     return controller.build_user_response(current_user)
 
 
-@router.get("/{user_id}", response_model=Union[UserResponse, None])
+@router.get("/{user_id}", response_model=UserResponse)
 async def get_user(
-    user_id: int, 
-    org_q: Union[int, None] = None,
-    current_user: User = Depends(util.get_current_user),
+    user_checked: User = Depends(util.require_resource_permission(load_user, Permission.GET_USERS)),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_general_access_right("canGetUsers", current_user) or util.get_organization_access_right(str(org_q), "canGetUsers", current_user):
-        return controller.get_user_by_id(user_id)
-    raise_403_exception(ACCESS_RIGHT_MESSAGE)
+    return controller.build_user_response(user_checked)
 
 
 @router.post("")
@@ -65,17 +59,14 @@ async def create_user(
     return user
 
 
-@router.put("/{user_id}")
+@router.put("/{user_id}", response_model=UserResponse)
 async def update_user(
-    user_id: int, 
-    user: UserBase, 
-    org_q: Union[int, None] = None,
-    current_user: User = Depends(util.get_current_user),
+    user_base: UserBase, 
+    user_checked: User = Depends(util.require_resource_permission(load_user, Permission.EDIT_USERS)),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_general_access_right("canEditUsers", current_user) or util.get_organization_access_right(str(org_q), "canEditUsers", current_user):
-        return controller.update_user(user_id, user)
-    raise_403_exception(ACCESS_RIGHT_MESSAGE)
+    updated_user = controller.update_user(user_checked.id, user_base)
+    return controller.build_user_response(updated_user)
 
 
 @router.put("/{user_id}/profile-pic")
@@ -98,17 +89,14 @@ async def update_user(
     controller: UserController = Depends(UserController)
 ):
     if current_user.id == user_id:
-        return controller.update_user(user_id, user)
+        updated_user = controller.update_user(user_id, user)
+        return controller.build_user_response(updated_user)
     raise_403_exception("User can only update themselves")
 
 
 @router.delete("/{user_id}")
 async def delete_user(
-    user_id: int, 
-    org_q: Union[int, None] = None,
-    current_user: User = Depends(util.get_current_user),
+    user_checked: User = Depends(util.require_resource_permission(load_user, Permission.DELETE_USERS)),
     controller: UserController = Depends(UserController)
 ):
-    if util.get_general_access_right("canDeleteUsers", current_user) or util.get_organization_access_right(str(org_q), "canDeleteUsers", current_user):
-        return controller.delete_user(user_id)
-    raise_403_exception(ACCESS_RIGHT_MESSAGE)
+    return controller.delete_user(user_checked.id)
