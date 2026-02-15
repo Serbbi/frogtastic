@@ -2,7 +2,10 @@
 from fastapi import APIRouter, Depends, File, UploadFile
 from crud.frog import FrogController
 from crud.image import ImageController
+from models.user import User
 from util.exceptions import raise_404_exception, raise_409_exception, raise_422_exception
+from util.permissions import Permission
+from util import util
 from typing import Union
 import os
 import shutil
@@ -22,19 +25,21 @@ images = {}
 
 
 @router.post("/upload-reference")
-async def upload_reference_image(organization_id: int,
+async def upload_reference_image(org_q: int,
                                  frog_number: Union[int, None] = None,
                                  tank_number: Union[int, None] = None,
                                  file: UploadFile = File(...),
+                                 user_checked: User = Depends(util.require_simple_permission(Permission.EDIT_FROGS)),
                                  controller: ImageController = Depends(ImageController)):
-    return await controller.upload_reference_image(organization_id, frog_number, tank_number, file)
+    return await controller.upload_reference_image(org_q, frog_number, tank_number, file)
 
 
 @router.post("/bulk-upload-reference")
-def bulk_upload_reference_images(organization_id: int, 
-                                 file: UploadFile = File(...), 
+def bulk_upload_reference_images(org_q: int, 
+                                 file: UploadFile = File(...),
+                                 user_checked: User = Depends(util.require_simple_permission(Permission.EDIT_FROGS)),
                                  controller: ImageController = Depends(ImageController)):
-    return controller.bulk_upload_reference_images(organization_id, file)
+    return controller.bulk_upload_reference_images(org_q, file)
 
 
 @router.post("/{organization_id}")
@@ -94,45 +99,3 @@ async def save_image(decision: str,
     elif decision == "no":
         images.pop(frog_id, None)
         return {"message": "Image discarded"}
-    
-
-@router.delete("/empty-bucket")
-async def empty_bucket():
-    bucket = BUCKET_NAME
-    print(f"Emptying bucket: {bucket}")
-
-    # List objects in batches of 1000
-    while True:
-        response = s3.list_objects_v2(Bucket=bucket)
-
-        # If bucket is already empty
-        if "Contents" not in response:
-            print("Bucket already empty.")
-            break
-
-        # Build delete request
-        to_delete = [{"Key": obj["Key"]} for obj in response["Contents"]]
-
-        print(f"Deleting {len(to_delete)} objects…")
-
-        s3.delete_objects(
-            Bucket=bucket,
-            Delete={"Objects": to_delete}
-        )
-
-        # Continue if there are more objects
-        if not response.get("IsTruncated"):
-            break
-
-    print("Bucket successfully emptied!")
-
-@router.get("/list-objects")
-async def list_objects():
-    bucket = BUCKET_NAME
-    response = s3.list_objects_v2(Bucket=bucket)
-
-    if 'Contents' not in response:
-        return {"objects": []}
-
-    objects = [obj['Key'] for obj in response['Contents']]
-    return {"objects": objects}

@@ -24,14 +24,18 @@ These methods will be used by the endpoints in the `routers` folder.
 
 
 class FrogController(Controller):
-    def get_frogs(self, org_q: int = None, tank_q: int = None, no_frogs_q: int = None):
+    def get_frogs(self, org_q: int = None, tank_q: int = None, no_frogs_q: int = None, frog_number_q: int = None, tank_number_q: int = None):
         query = self.db.query(Frog)
 
         if tank_q:
             query = query.filter(Frog.current_tank_id == tank_q)
         if org_q:
             query = query.filter(Frog.organization_id == org_q)
-
+        if frog_number_q:
+            query = query.filter(Frog.frog_number == frog_number_q)
+        if tank_number_q:
+            query = query.filter(Frog.tank_id == tank_number_q)
+        
         frogs = query.all()
 
         if no_frogs_q:
