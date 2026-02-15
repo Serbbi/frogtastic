@@ -2,7 +2,6 @@ import base64
 import datetime
 import io
 import re
-import zipfile
 
 import cv2
 import numpy as np
@@ -44,7 +43,7 @@ class FrogController(Controller):
         db_frog = self.db.query(Frog).filter(Frog.id == frog_id).first()
 
         if not db_frog:
-            return None
+            raise HTTPException(status_code=404, detail="Frog not found")
         
         organization_id = db_frog.organization_id
 
@@ -250,6 +249,13 @@ class FrogController(Controller):
 
             frog_number = int(match.group(1))
             tank_id = int(match.group(2))
+
+            if self.db.query(Frog).filter_by(
+                frog_number=frog_number,
+                tank_id=tank_id,
+                organization_id=organization_id,
+            ).first():
+                continue  # Skip if the frog already exists
 
             db_frog = Frog(
                 frog_number=frog_number,

@@ -115,6 +115,21 @@ def verify_token(token: str = Depends(oauth2_scheme)):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+def require_simple_permission(permission: Permission):
+    def dependency(
+           org_q: int,
+           current_user: User = Depends(get_current_user) 
+    ):
+        if not get_organization_access_right(str(org_q), permission, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to access this resource",
+            )
+        
+        return current_user
+        
+    return dependency
+
 
 def require_resource_permission(resource_dep, permission: Permission):
     """
@@ -154,7 +169,6 @@ def require_list_resource_permission(list_loader, permission: Permission):
         return allowed
 
     return dependency
-
 
 
 def user_has_permission_on_resource(user: User, resource, permission: Permission) -> bool:
