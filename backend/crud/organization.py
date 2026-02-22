@@ -269,7 +269,6 @@ def privileges_config(is_admin: bool = False):
         "canCreateFrogs": is_admin,
         "canEditFrogs": is_admin,
         "canDeleteFrogs": is_admin,
-        "canRetrainModel": is_admin,
         "canGetUsers": is_admin,
         "canEditUsers": is_admin,
         "canDeleteUsers": is_admin,

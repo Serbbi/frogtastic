@@ -56,20 +56,20 @@ export default function ProfileSettingsPage() {
         const newUserData = {
             email: email,
             username: username,
-            id: sessionStorage.getItem("userId"),
             organizations: sessionStorage.getItem("orgs").split(','),
             attributes: {},
-            hashed_password: "" // this is here just to make the object complete
         };
-        usersPatchRequest(newUserData)
-            .then(() => {
-                sessionStorage.setItem("email", email);
-                sessionStorage.setItem("username", username);
-                window.location.reload();
-            })
-            .catch(() => {
-                addNotification({ text: "Failed to update profile. Please try again.", type: "error" });
-            });
+
+        addNotification({ text: "This feature was disabled for security reasons.", type: "warning" });
+        // usersPatchRequest(newUserData)
+        //     .then(() => {
+        //         sessionStorage.setItem("email", email);
+        //         sessionStorage.setItem("username", username);
+        //         window.location.reload();
+        //     })
+        //     .catch(() => {
+        //         addNotification({ text: "Failed to update profile. Please try again.", type: "error" });
+        //     });
     }
 
     function handleQuitOrganization() {
@@ -92,9 +92,11 @@ export default function ProfileSettingsPage() {
         const file = event.target.files[0];
         if (file) {
             usersPutProfilePicRequest(file, sessionStorage.getItem('userId'))
-                .then(() => {
-                    window.location.reload();
+                .then((response) => {
                     addNotification({ text: "Profile picture updated successfully.", type: "success" });
+                    sessionStorage.setItem('userProfilePic', response.url);
+                    setProfilePicSrc(response.url);
+                    window.location.reload();
                 })
                 .catch(() => {
                     addNotification({ text: "Failed to update profile picture. Please try again.", type: "error" });
