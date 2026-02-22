@@ -41,17 +41,3 @@ async def delete_tank(tank_id: int,
                       user_checked: User = Depends(util.require_simple_permission(Permission.DELETE_FROGS)), 
                       controller: TankController = Depends(TankController)):
     return controller.delete_tank(tank_id)
-
-@router.post("/{organization_id}/attributes")
-async def create_tank_attributes(org_q: int, 
-                                 attributes: List[str], 
-                                 user_checked: User = Depends(util.require_simple_permission(Permission.EDIT_FROGS)),
-                                 controller: TankController = Depends(TankController)):
-    return controller.create_tank_attributes(org_q, attributes)
-
-@router.delete("/{organization_id}/attributes")
-async def delete_tank_attributes(org_q: int, 
-                                 attributes: List[str], 
-                                 user_checked: User = Depends(util.require_simple_permission(Permission.EDIT_FROGS)),
-                                 controller: TankController = Depends(TankController)):
-    return controller.delete_tank_attributes(org_q, attributes)

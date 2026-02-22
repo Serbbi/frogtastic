@@ -26,12 +26,16 @@ export default function TanksSetting({ organization }) {
             "frog_ids": [],
             "attributes": {}
         };
-        tanksPostRequest(tank)
-            .then(() => addNotification({ text: 'Tank added', type: 'success' }))
-            .catch(() => addNotification({ text: 'Failed to add tank', type: 'error' }));
-
-        tanks.push(tank);
-        mutate(tanks, false);
+        tanksPostRequest(tank, organization.id)
+            .then(() => {
+                addNotification({ text: 'Tank added', type: 'success' });
+                tanks.push(tank);
+                mutate(tanks, false);
+            })
+            .catch(() => {
+                addNotification({ text: 'Failed to add tank', type: 'error' });
+            });
+            
         setShowInputNewTank(!showInputNewTank);
         setNewTankName("");
     }
@@ -44,8 +48,11 @@ export default function TanksSetting({ organization }) {
     function handleSaveClick(tank) {
         if (newTankName === "") return;
         tank.tank_name = newTankName;
-        tanksPutRequest(tank)
-            .then(() => addNotification({ text: 'Tank updated', type: 'success' }))
+        tanksPutRequest(tank, organization.id)
+            .then(() => {
+                addNotification({ text: 'Tank updated', type: 'success' });
+                mutate(tanks.map(t => t.id === tank.id ? tank : t), false);
+            })
             .catch(() => addNotification({ text: 'Failed to update tank', type: 'error' }));
 
         setEditingItemId(null);
@@ -53,13 +60,14 @@ export default function TanksSetting({ organization }) {
     }
 
     function handleDeleteClick(tankId) {
-        tanksDeleteRequest(tankId)
-            .then(() => addNotification({ text: 'Tank deleted', type: 'success' }))
+        tanksDeleteRequest(tankId, organization.id)
+            .then(() => {
+                addNotification({ text: 'Tank deleted', type: 'success' });
+                mutate(tanks.filter(tank => tank.id !== tankId), false);
+                setEditingItemId(null);
+                setNewTankName("");
+            })
             .catch(() => addNotification({ text: 'Failed to delete tank', type: 'error' }));
-
-        setEditingItemId(null);
-        setNewTankName("");
-        mutate(tanks.filter(tank => tank.id !== tankId), false);
     }
 
     useClickOutside(inputRef, closeInput);
