@@ -40,7 +40,7 @@ export async function signUp({ username, password, email }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 username,
-                hashed_password: password,
+                password,
                 email,
                 attributes: {},
                 organizations: [],

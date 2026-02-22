@@ -14,7 +14,7 @@ from fastapi.security import (
 )
 from jose import JWTError, jwt
 from pydantic import BaseModel
-from schemas.user import UserBase
+from schemas.user import UserCreate
 from typing_extensions import Annotated
 from util.util import authenticate_user, verify_token
 
@@ -106,13 +106,14 @@ async def google_login(
 
         if not user:
             user = controller.create_user(
-                UserBase(
+                UserCreate(
                     username=name,
-                    hashed_password="",
                     email=email,
+                    password="",  # Password is not used for Google login
                     attributes={},
                     organizations=[],
-                )
+                ),
+                hashed_password="",  # No password for Google login
             )
 
         access_token_expires = timedelta(
