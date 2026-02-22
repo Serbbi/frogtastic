@@ -16,7 +16,7 @@ export default function AuthProvider({ children }) {
 		setToken(res.access_token);
 
 		sessionStorage.setItem("token", res.access_token);
-		sessionStorage.setItem("privileges", JSON.stringify(res.dict || {}));
+		sessionStorage.setItem("privileges", JSON.stringify(res.attributes || {}));
 		sessionStorage.setItem("orgs", res.organizations || []);
 		sessionStorage.setItem("userId", res.id);
 		sessionStorage.setItem("userProfilePic", res.profile_picture_url || "");

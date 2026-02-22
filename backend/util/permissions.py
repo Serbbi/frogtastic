@@ -8,5 +8,6 @@ class Permission(str, Enum):
     EDIT_USERS = "canEditUsers"
     DELETE_USERS = "canDeleteUsers"
     CREATE_ORGANIZATION = "canCreateOrganization"
+    DELETE_ORGANIZATION = "canDeleteOrganization"
     ADD_ML_MODELS = "canAddMLModels"
     REMOVE_ML_MODELS = "canRemoveMLModels"

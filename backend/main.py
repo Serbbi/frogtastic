@@ -34,6 +34,7 @@ async def create_initial_admin(db: Session) -> None:
             attributes={
                 "general_privileges": {
                     "canCreateOrganization": True,
+                    "canDeleteOrganization": True,
                     "canAddMLModels": True,
                     "canRemoveMLModels": True,
                     "canGetUsers": True,

@@ -20,7 +20,7 @@ export default function CreateOrganizationModal({ show, onClose }) {
         organizationsPostRequest(organization)
             .then(data => {
                 if (data.error) throw new Error(data.error);
-                addNotification({ text: "Organization created", type: "success" });
+                addNotification({ text: "Organization created! Please log in again to see the changes.", type: "success" });
             })
             .catch(error => {
                 addNotification({ text: error.message, type: "error" });

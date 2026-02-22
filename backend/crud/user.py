@@ -18,6 +18,7 @@ email_patterns = {
 beginning_attributes = {
     "general_privileges": {
         "canCreateOrganization": False,
+        "canDeleteOrganization": False,
         "canAddMLModels": False,
         "canRemoveMLModels": False,
     }

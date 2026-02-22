@@ -15,6 +15,21 @@ from crud.tank import TankController
 
 
 class OrganizationController(Controller):
+    def build_organization_response(self, organization: Organization):
+        logo_url = ""
+        key = f"dev/organization_pics/{organization.id}.jpeg"
+        try:
+            s3.head_object(Bucket=BUCKET_NAME, Key=key)
+            logo_url = s3.generate_presigned_url(
+                ClientMethod="get_object",
+                Params={"Bucket": BUCKET_NAME, "Key": key},
+                ExpiresIn=3600,
+            )
+        except s3.exceptions.ClientError:
+            logo_url = ""
+
+        return OrganizationResponse.from_orm(organization).copy(update={"logo_url": logo_url})
+
     def create_organization(self, organization: Organization, user):
         db_organization = Organization(
             name=organization.name,
@@ -61,26 +76,7 @@ class OrganizationController(Controller):
         return organizations_with_logos
 
     def get_organization(self, organization_id: int):
-        db_organization = (
-            self.db.query(Organization)
-            .filter(Organization.id == organization_id)
-            .first()
-        )
-
-        logo_url = ""
-        if db_organization:
-            key = f"dev/organization_pics/{db_organization.id}.jpeg"
-            try:
-                s3.head_object(Bucket=BUCKET_NAME, Key=key)
-                logo_url = s3.generate_presigned_url(
-                    ClientMethod="get_object",
-                    Params={"Bucket": BUCKET_NAME, "Key": key},
-                    ExpiresIn=3600,
-                )
-            except s3.exceptions.ClientError:
-                logo_url = ""
-
-        return OrganizationResponse.from_orm(db_organization).copy(update={"logo_url": logo_url})
+        return self.db.query(Organization).filter(Organization.id == organization_id).first()
 
     def update_organization(self, organization_id: int, organization: Organization):
         db_organization = (
