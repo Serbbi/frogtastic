@@ -6,14 +6,16 @@ import { useImage } from "../../services/providers/ImageProvider";
 import { imagePostRequest } from "../../services/api/image/ImagePost";
 import { useOrganization } from "../../services/providers/OrganizationProvider";
 import './UploadPage.css';
+import useMLModels from "../../hooks/useMLModels";
 
 export default function UploadPage() {
     const { organization } = useOrganization();
+    const { mlModels } = useMLModels(organization ? organization.id : null);
     const [success, setSuccess] = useState("default");
     const [fileName, setFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
-    const [modelUsed, setModelUsed] = useState(sessionStorage.getItem("lastSelectedModel") ? parseInt(sessionStorage.getItem("lastSelectedModel")) : 1);
+    const [modelUsed, setModelUsed] = useState(sessionStorage.getItem("lastSelectedModel") ? sessionStorage.getItem("lastSelectedModel") : "");
     const dropContainer = useRef(null);
     const navigate = useNavigate();
     const { setExtractionImageURL } = useImage();
@@ -121,15 +123,9 @@ export default function UploadPage() {
             {success === "default" ?
                 <div className="uploadDefaultElements">
                     <select onChange={updateModelUsed} value={modelUsed}>
-                        <option value={0}>Old</option>
-                        <option value={1}>Clean</option>
-                        <option value={2}>New</option>
-                        <option value={3}>OneShot</option>
-                        <option value={4}>No Tripod Oneshot</option>
-                        <option value={5}>NEW Tripod Oneshot</option>
-                        <option value={6}>Oneshot V2</option>
-                        <option value={7}>Clean Half</option>
-                        <option value={8}>Clean Half short</option>
+                        {mlModels && mlModels.map(model => (
+                            <option key={model} value={model}>{model}</option>
+                        ))}
                     </select>
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
@@ -138,7 +134,7 @@ export default function UploadPage() {
                         <span className="browseFilesButton">Browse files</span>
                         <span className="file-name">{fileName}</span>
                     </label>
-                    <button onClick={uploadImage} className="primary-button upload-button">Upload</button>
+                    <button onClick={uploadImage} className="primary-button upload-button" disabled={mlModels?.length == 0}>Upload</button>
                 </div>
                 : null}
         </div>

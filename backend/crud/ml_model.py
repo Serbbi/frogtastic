@@ -41,3 +41,14 @@ class MLModelController(Controller):
         s3.delete_object(Bucket=BUCKET_NAME, Key=f"dev/{organization_id}/models/{model_name}.pkl")
         
         return {"message": "Files deleted successfully"}
+    
+
+    def get_organization_model_names(self, organization_id: int):
+        try:
+            response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/models/")
+            if 'Contents' not in response:
+                return []
+            return [obj['Key'].split('/')[-1].rsplit('.', 1)[0] for obj in response['Contents'] if obj['Key'].endswith('.h5')]
+        except Exception as e:
+            print(f"Error fetching model names: {e}")
+            return []

@@ -1,5 +1,5 @@
-export async function imagePostRequest(formData, organizationId, modelId) {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/image/${organizationId}?model_id=${modelId}`, {
+export async function imagePostRequest(formData, organizationId, modelName) {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/image/${organizationId}?model_name=${modelName}`, {
         method: 'POST',
         body: formData,
     });

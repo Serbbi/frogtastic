@@ -21,6 +21,13 @@ async def get_ml_models():
     return {"cached_models": list(get_all_cached_models().keys())}
 
 
+@router.get("/names")
+async def get_organization_model_names(org_q: int,
+                                       controller: MLModelController = Depends(MLModelController),
+                                       _: str = Depends(util.verify_token)):
+    return controller.get_organization_model_names(org_q)
+
+
 @router.post("/upload")
 async def upload_ml_model(org_q: int, 
                           model_file: UploadFile = File(...),

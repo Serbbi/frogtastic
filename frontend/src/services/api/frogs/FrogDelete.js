@@ -1,5 +1,5 @@
-export async function frogDeleteRequest(frogId, organizationId) {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frogId}?org_q=${organizationId}`, {
+export async function frogDeleteRequest(frogId) {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frogId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
