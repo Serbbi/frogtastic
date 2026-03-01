@@ -257,7 +257,7 @@ label {
     }
 
     .frogDetailsContainer h1 {
-        margin: 2rem auto;
+        margin: 0 auto;
     }
 
     .modalCompareImagesContent {
@@ -274,5 +274,14 @@ label {
 
     .primary-button.compare-modal {
         height: auto;
+    }
+
+    .frogField label {
+        padding: 0.4rem;
+        font-size: small;
+    }
+
+    .frogField input {
+        font-size: small;
     }
 }

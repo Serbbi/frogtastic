@@ -7,7 +7,7 @@ export default function HistoryImages({ imageLocations }) {
     const [showCompareModal, setShowCompareModal] = useState(false);
 
     function formatCaption(imagePath) {
-        const fileName = imagePath.split("/")[3];
+        const fileName = imagePath.split("/")[8]?.split("?")[0];
         const dateTime = fileName.split(".")[0].split("_").slice(1).join(" ");
         const rearrangedDate = dateTime.split(" ")[0].split("-").reverse().join("/");
         const rearrangedTime = dateTime.split(" ")[1].replace(/-/g, ":");
@@ -31,7 +31,7 @@ export default function HistoryImages({ imageLocations }) {
                 {imageLocations.map((image, index) => (
                     <div className="imageContainer" key={index}>
                         <input type="checkbox" className="imageCheckbox" onChange={() => handleSelectImage(image)} />
-                        <img src={`https://storage.googleapis.com/${image}`} className="histFrogImg" alt={`Frog pattern ${index + 1}`} />
+                        <img src={image} className="histFrogImg" alt={`Frog pattern ${index + 1}`} />
                         <p className="imageContainerText">{formatCaption(image)}</p>
                     </div>
                 ))}
@@ -40,8 +40,8 @@ export default function HistoryImages({ imageLocations }) {
             {showCompareModal &&
                 <SimpleCompareModal
                     setShowCompareModal={setShowCompareModal}
-                    image1={`https://storage.googleapis.com/${selectedImages[0]}`}
-                    image2={`https://storage.googleapis.com/${selectedImages[1]}`}
+                    image1={selectedImages[0]}
+                    image2={selectedImages[1]}
                     text1={formatCaption(selectedImages[0])}
                     text2={formatCaption(selectedImages[1])}
                 />

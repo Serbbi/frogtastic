@@ -9,7 +9,7 @@ export default function CompareModal({ frog, setShowCompareModal, extractionImag
     async function handleSaveImage(decision) {
         setShowCompareModal(false);
         setShowModalButtonsOnce(false);
-        imagePutRequest(decision, frog.id)
+        imagePutRequest(decision, frog.id, frog.organization_id)
             .then(() => {
                 if (decision === "yes") {
                     addNotification({ text: "Image saved successfully", type: "success" });
@@ -32,7 +32,7 @@ export default function CompareModal({ frog, setShowCompareModal, extractionImag
                 </div>
                 <div>
                     <h2>Reference Image</h2>
-                    <img src={frog.image_path} alt="Reference" />
+                    <img src={frog.reference_image_url} alt="Reference" />
                 </div>
                 {showButtons &&
                     <div className="compare-modal-buttons">

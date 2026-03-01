@@ -211,4 +211,8 @@
     .profilePicAndInputFields {
         flex-direction: column;
     }
+
+    .userFields { 
+        width: 100%;
+    }
 }

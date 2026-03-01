@@ -26,7 +26,6 @@
 .logo {
     border-radius: 50%;
     height: 30px;
-    /* margin-left: 10px; */
 }
 
 .organizationNameAndLogo p {
@@ -107,8 +106,6 @@
     .navLink,
     .logoutButton {
         font-size: large;
-        display: flex;
-        flex-direction: column;
     }
 
     .navLink span,
@@ -123,5 +120,11 @@
 
     .menuList li {
         margin: 15px 0;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    .leftBar {
+        overflow: scroll;
     }
 }

@@ -105,3 +105,11 @@ video {
     color: #e0e0e0;
   }
 }
+
+@media screen and (max-height: 500px) {
+    .drop-container {
+      height: fit-content;
+      padding: 10px;
+      gap: 5px;
+    }
+}

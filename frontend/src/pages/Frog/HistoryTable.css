@@ -42,6 +42,8 @@
 
 @media screen and (max-width: 768px) {
     .historyTable {
-        margin: 20px auto;
+        margin: 0;
+        font-size: x-small;
+        width: 100%;
     }
 }
