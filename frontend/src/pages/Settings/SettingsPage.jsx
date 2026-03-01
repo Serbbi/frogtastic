@@ -8,6 +8,7 @@ import './SettingsPage.css';
 import SystemParametersSetting from './SystemParametersSetting';
 import LogoSetting from './LogoSetting';
 import SettingSection from './SettingSection';
+import FrogReferencesSetting from './FrogReferencesSetting';
 
 export default function SettingsPage() {
     const { organization } = useOrganization();
@@ -33,6 +34,9 @@ export default function SettingsPage() {
             </SettingSection>
             <SettingSection title="Logo">
                 <LogoSetting organization={organization} />
+            </SettingSection>
+            <SettingSection title="Reference Images">
+                <FrogReferencesSetting />
             </SettingSection>
         </div>
     );

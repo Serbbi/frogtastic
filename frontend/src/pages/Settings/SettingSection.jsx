@@ -5,10 +5,33 @@ export default function SettingSection({ title, children }) {
     const [isOpen, setIsOpen] = useState(false);
     const [height, setHeight] = useState(0);
     const contentRef = useRef(null);
+    const mutationConfig = { attributes: false, childList: true };
 
     useEffect(() => {
         setIsOpen(false);
     }, [title]);
+
+   useEffect(() => {
+        if (!contentRef.current) return;
+
+        const element = contentRef.current;
+
+        const mutationObserver = new MutationObserver((mutationConfigList) => {
+              for(const mutationConfig of mutationConfigList) {
+                if(mutationConfig.type === 'attributes') {
+                    console.log('ATTRIBUTES CHANGED');
+                } else if(mutationConfig.type === 'childList') {
+                    setHeight(element.fitContent);
+                }
+            }
+        });
+
+        mutationObserver.observe(element, mutationConfig);
+
+        return () => {
+            mutationObserver.disconnect();
+        };
+    }, [isOpen]);
 
     useEffect(() => {
         if (isOpen && contentRef.current) {

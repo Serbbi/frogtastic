@@ -284,6 +284,14 @@
     cursor: pointer;
 }
 
+.zip-input::file-selector-button {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    margin-right: 1rem;
+    cursor: pointer;
+}
+
 .settingsMenu {
     display: flex;
     flex-direction: column;

@@ -48,10 +48,6 @@ class ImageController(Controller):
                     file_extension = match.group(3)
                     key = f"dev/{organization_id}/reference_images/frog{frog_number}_tank{tank_number}.{file_extension}"
 
-                    frog = get_frogs(organization_id, frog_number, tank_number, FrogController(self.db))
-                    if not frog:
-                        raise_400_exception(f"No frog found for frog number {frog_number} and tank number {tank_number} in organization {organization_id}.")
-                    
                     file_content = z.read(filename)
 
                     s3.put_object(
