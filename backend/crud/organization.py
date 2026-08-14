@@ -1,8 +1,6 @@
 import io
 
-import pandas as pd
 from fastapi import HTTPException
-from fastapi.responses import StreamingResponse
 from models.organization import Organization
 from schemas.organization import OrganizationResponse
 from models.user import User
@@ -36,8 +34,7 @@ class OrganizationController(Controller):
             participants=[user.id],
             admins=[user.id],
             table_columns=organization.table_columns,
-            system_parameters={},
-            system_parameter_names=organization.system_parameter_names,
+            system_parameter_names=[],
         )
         self.db.add(db_organization)
         self.db.commit()
@@ -88,7 +85,6 @@ class OrganizationController(Controller):
         db_organization.participants = organization.participants
         db_organization.table_columns = organization.table_columns
         db_organization.admins = organization.admins
-        db_organization.system_parameters = organization.system_parameters
         db_organization.system_parameter_names = organization.system_parameter_names
         self.db.commit()
         self.db.refresh(db_organization)
@@ -133,29 +129,6 @@ class OrganizationController(Controller):
         self.db.delete(db_organization)
         self.db.commit()
         return db_organization
-
-    def download_parameters(self, organization_id: int):
-        db_organization = (
-            self.db.query(Organization)
-            .filter(Organization.id == organization_id)
-            .first()
-        )
-
-        if db_organization.system_parameters:
-            df = pd.DataFrame(db_organization.system_parameters)
-            df.reset_index(inplace=True)
-            df.rename(columns={"index": "Parameter"}, inplace=True)
-        else:
-            return {"error": "No System parameters found"}
-
-        csv = df.to_csv(index=False)
-        return StreamingResponse(
-            io.BytesIO(csv.encode()),
-            media_type="text/csv",
-            headers={
-                "Content-Disposition": "attachment; filename=system_parameters.csv"
-            },
-        )
 
     def quit_organization(self, organization_id: int, user: User):
         db_organization = (

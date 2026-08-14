@@ -1,19 +1,26 @@
 import SystemParametersTable from './SystemParametersTable';
-import { paramDownloadRequest } from '../../services/api/organizations/OrganizationParamsDownload';
 import { useNotification } from "../../services/providers/NotificationProvider";
-import { organizationPutRequest } from '../../services/api/organizations/OrganizationPut';
 import { useOrganization } from '../../services/providers/OrganizationProvider';
 import { useUnsavedChanges } from '../../services/providers/UnsavedChangesProvider';
 import './SystemParametersPage.css';
+import { useState } from 'react';
+import { systemParametersPutRequest } from '../../services/api/system_parameters/SystemParametersPut';
+import useSystemParameters from '../../hooks/useSystemParameters';
+import { systemParametersPostRequest } from '../../services/api/system_parameters/SystemParametersPost';
+import { systemParametersDeleteRequest } from '../../services/api/system_parameters/SystemParametersDelete';
+import { systemParametersDownloadRequest } from '../../services/api/system_parameters/SystemParametersDownload';
 
 export default function SystemParametersPage() {
     const { addNotification } = useNotification();
     const { setUnsavedChanges } = useUnsavedChanges();
-    const { organization, modifyOrganization } = useOrganization();
+    const { organization } = useOrganization();
+    const { systemParameters, setSystemParameters } = useSystemParameters(organization?.id);
+    const [dirtyRows, setDirtyRows] = useState({});
+    const [selectedRows, setSelectedRows] = useState(new Set());
 
     const handleDownload = () => {
         if (organization === null) return;
-        paramDownloadRequest(organization.id)
+        systemParametersDownloadRequest(organization.id)
             .then((blob) => {
                 const url = window.URL.createObjectURL(new Blob([blob]));
                 const link = document.createElement("a");
@@ -31,26 +38,57 @@ export default function SystemParametersPage() {
 
     function handleAddRow() {
         if (organization === null) return;
-        const dates = Object.keys(organization.system_parameters);
-        const lastDate = dates[dates.length - 1];
-        const newRow = { ...organization.system_parameters[lastDate] };
-        const today = new Date();
-        const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-        if (dates.includes(formattedDate)) {
-            addNotification({ text: "A row for today already exists!", type: "error" });
-            return;
-        }
-        modifyOrganization({ ...organization, system_parameters: { ...organization.system_parameters, [formattedDate]: newRow } });
-        setUnsavedChanges(true);
+
+        let newRow = {};
+        organization.system_parameter_names.forEach(element => {
+            newRow[element] = ""
+        });
+
+        systemParametersPostRequest(organization.id, newRow)
+            .then((createdRow) => {
+                addNotification({ text: "Row added!", type: "success" });
+                setSystemParameters(prev => [...prev, createdRow]);
+            })
+            .catch((error) => addNotification({ text: error.message, type: "error" }));
     }
 
     function handleSave() {
-        if (organization === null) return;
-        organizationPutRequest(organization)
-            .then(addNotification({ text: "Parameters saved successfully!", type: "success" }))
-            .catch((error) => addNotification({ text: error, type: "error" }));
+        if (Object.values(dirtyRows).length === 0) {
+            addNotification({ text: "No parameters were changed!", type: "warning" });
+            return;
+        }
 
+        systemParametersPutRequest(Object.values(dirtyRows), organization.id)
+            .then(() => {
+                addNotification({ text: "Parameters saved successfully!", type: "success" });
+                setDirtyRows({});
+            })
+            .catch((error) => addNotification({ text: error.message, type: "error" }));
+        
         setUnsavedChanges(false);
+    }
+
+    async function handleDelete() {
+        if (selectedRows.size === 0) {
+            addNotification({ text: "No rows selected!", type: "warning" });
+            return;
+        }
+
+        const idsToDelete = Array.from(selectedRows);
+
+        setDirtyRows(prev => {
+            const copy = { ...prev };
+            idsToDelete.forEach(id => delete copy[id]);
+            return copy;
+        });
+
+        systemParametersDeleteRequest(idsToDelete, organization.id)
+            .then(() => {
+                addNotification({ text: "Rows deleted successfully!", type: "success" });
+                setSelectedRows(new Set());
+                setSystemParameters(prev => prev.filter(row => !idsToDelete.includes(row.id)));
+            })
+            .catch((error) => addNotification({ text: error.message, type: "error" }));
     }
 
     return (
@@ -64,9 +102,19 @@ export default function SystemParametersPage() {
                     <button onClick={handleDownload} className="primary-button all-frogs-button">Download</button>
                     <button onClick={handleAddRow} className="primary-button all-frogs-button">Add Row</button>
                     <button onClick={handleSave} className="primary-button all-frogs-button">Save</button>
+                    <button onClick={handleDelete} className="primary-button all-frogs-button" disabled={Array.from(selectedRows).length === 0}>Delete</button>
                 </div>
             </div>
-            <SystemParametersTable />
+            {organization && 
+            <SystemParametersTable 
+                systemParameters={systemParameters} 
+                setSystemParameters={setSystemParameters} 
+                setDirtyRows={setDirtyRows} 
+                systemParameterNames={organization?.system_parameter_names ?? []}
+                selectedRows={selectedRows}
+                setSelectedRows={setSelectedRows}    
+            />
+            }
         </div>
     );
 }

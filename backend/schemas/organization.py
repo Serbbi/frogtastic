@@ -6,7 +6,6 @@ class OrganizationBase(BaseModel):
     admins: list
     table_columns: list
     system_parameter_names: list
-    system_parameters: dict
 
 
 class OrganizationResponse(OrganizationBase):
@@ -16,7 +15,6 @@ class OrganizationResponse(OrganizationBase):
     admins: list
     table_columns: list
     system_parameter_names: list
-    system_parameters: dict
     logo_url: str = ""
 
     class Config:

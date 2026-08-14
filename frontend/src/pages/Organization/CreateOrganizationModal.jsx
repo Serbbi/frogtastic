@@ -14,7 +14,6 @@ export default function CreateOrganizationModal({ show, onClose }) {
             participants: [],
             admins: [],
             table_columns: [],
-            system_parameters: {},
             system_parameter_names: []
         };
         organizationsPostRequest(organization)

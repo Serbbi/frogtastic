@@ -1,7 +1,7 @@
 # The router that is used from all "/frogs/*" endpoints.
 from util.permissions import Permission
 from util.loaders import load_frog, load_frogs
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends
 from models.user import User
 from crud.frog import FrogController
 from schemas.frog import FrogBase, FrogResponse

@@ -5,6 +5,7 @@ import { useNotification } from '../../services/providers/NotificationProvider';
 import { useCallback, useState, useRef } from 'react';
 import useClickOutside from '../../hooks/useClickOutside';
 import './SettingsPage.css';
+import { systemParametersUpdateListValuesRequest } from '../../services/api/system_parameters/SystemParametersPut';
 
 export default function SystemParametersSetting() {
     const { organization } = useOrganization();
@@ -36,15 +37,15 @@ export default function SystemParametersSetting() {
 
     function handleSave() {
         organization.system_parameter_names = organization.system_parameter_names.filter((parameter) => !selectedParameters.includes(parameter));
-        Object.keys(organization.system_parameters).forEach((date) => {
-            organization.system_parameters[date] = Object.fromEntries(Object.entries(organization.system_parameters[date]).filter(([key, value]) => !selectedParameters.includes(key)));
-        });
-        listOfParametersToAdd.forEach((parameter) => {
-            organization.system_parameter_names.push(parameter);
-            Object.keys(organization.system_parameters).forEach((date) => {
-                organization.system_parameters[date][parameter] = '';
-            });
-        });
+ 
+        listOfParametersToAdd.forEach((parameter) => 
+            organization.system_parameter_names.push(parameter)
+        );
+
+        console.log("Updated system parameters:", organization.system_parameter_names);
+        systemParametersUpdateListValuesRequest(organization.system_parameter_names, organization.id)
+            .catch((error) => addNotification({ text: error.message, type: "error" }));
+
         organizationPutRequest(organization)
             .then(() => {
                 setSelectedParameters([]);

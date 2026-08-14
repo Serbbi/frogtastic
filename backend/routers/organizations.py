@@ -34,10 +34,6 @@ async def get_organization(organization_checked: Organization = Depends(load_org
                            controller: OrganizationController = Depends(OrganizationController)):
     return controller.build_organization_response(organization_checked)
 
-@router.get("/{organization_id}/download-csv")
-async def download_parameters(organization_id: int, controller: OrganizationController = Depends(OrganizationController)):
-    return controller.download_parameters(organization_id)
-
 @router.put("/{organization_id}")
 async def update_organization(organization_id: int, 
                               organization: OrganizationBase, 
