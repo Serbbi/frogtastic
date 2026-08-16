@@ -3,7 +3,7 @@ from crud.controller import Controller
 from models.user import User
 from schemas.user import UserResponse
 from PIL import Image
-from storage import s3, BUCKET_NAME
+from storage import s3, BUCKET_NAME, S3_ENVIRONMENT
 import io
 
 """
@@ -62,7 +62,7 @@ class UserController(Controller):
     def build_user_response(self, user: User):
         profile_pic_url = ""
         if user:
-            key = f"dev/user_profile_pics/{user.id}.jpeg"
+            key = f"{S3_ENVIRONMENT}/user_profile_pics/{user.id}.jpeg"
             try:
                 s3.head_object(Bucket=BUCKET_NAME, Key=key)
                 profile_pic_url = s3.generate_presigned_url(
@@ -115,7 +115,7 @@ class UserController(Controller):
         image.save(output_buffer, format="JPEG", quality=90)
         output_buffer.seek(0)
         
-        s3_key = f"dev/user_profile_pics/{user_id}.jpeg"
+        s3_key = f"{S3_ENVIRONMENT}/user_profile_pics/{user_id}.jpeg"
         s3.put_object(
             Bucket=BUCKET_NAME,
             Key=s3_key,

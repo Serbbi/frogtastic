@@ -14,7 +14,7 @@ from models.organization import Organization
 from models.tank import Tank
 from schemas.frog import FrogResponse
 from sqlalchemy.orm.attributes import flag_modified
-from storage import s3, BUCKET_NAME
+from storage import s3, BUCKET_NAME, S3_ENVIRONMENT
 from crud.controller import Controller
 
 """
@@ -55,12 +55,12 @@ class FrogController(Controller):
             ClientMethod="get_object",
             Params={
                 "Bucket": BUCKET_NAME,
-                "Key": f"dev/{db_frog.key_path}",
+                "Key": f"{S3_ENVIRONMENT}/{db_frog.key_path}",
             },
             ExpiresIn=3600,
         )      
 
-        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/uploads/{frog_id}/")
+        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"{S3_ENVIRONMENT}/{organization_id}/uploads/{frog_id}/")
         images = []
 
         if 'Contents' in response:    
@@ -235,7 +235,7 @@ class FrogController(Controller):
         )
     
     def instantiate_frogs(self, organization_id: int):
-        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"dev/{organization_id}/reference_images/")
+        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"{S3_ENVIRONMENT}/{organization_id}/reference_images/")
 
         if 'Contents' not in response:
             return {"error": "No reference images found"}
@@ -275,6 +275,27 @@ class FrogController(Controller):
 
         self.db.commit()
         return {"message": f"{frogs_created} frogs instantiated successfully"}
+    
+    def list_prod_objects(self):
+        response = s3.list_objects_v2(
+            Bucket=BUCKET_NAME,
+            Prefix=f"prod/"
+        )
+
+        if "Contents" not in response:
+            return {"error": "No objects found"}
+
+        object_paths = []
+
+        for obj in response["Contents"]:
+            key = obj["Key"]
+
+            # if key.endswith("/"):
+            #     continue  # Skip folders
+
+            object_paths.append(key)
+
+        return object_paths
 
 
 def update_history(db_frog, frog, username):

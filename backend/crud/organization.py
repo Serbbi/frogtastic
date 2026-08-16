@@ -6,7 +6,7 @@ from schemas.organization import OrganizationResponse
 from models.user import User
 from PIL import Image
 from sqlalchemy.orm.attributes import flag_modified
-from storage import s3, BUCKET_NAME
+from storage import s3, BUCKET_NAME, S3_ENVIRONMENT
 from crud.controller import Controller
 from crud.frog import FrogController
 from crud.tank import TankController
@@ -15,7 +15,7 @@ from crud.tank import TankController
 class OrganizationController(Controller):
     def build_organization_response(self, organization: Organization):
         logo_url = ""
-        key = f"dev/organization_pics/{organization.id}.jpeg"
+        key = f"{S3_ENVIRONMENT}/organization_pics/{organization.id}.jpeg"
         try:
             s3.head_object(Bucket=BUCKET_NAME, Key=key)
             logo_url = s3.generate_presigned_url(
@@ -57,7 +57,7 @@ class OrganizationController(Controller):
         organizations_with_logos = []
         for org in db_organizations:
             logo_url = ""
-            key = f"dev/organization_pics/{org.id}.jpeg"
+            key = f"{S3_ENVIRONMENT}/organization_pics/{org.id}.jpeg"
             try:
                 s3.head_object(Bucket=BUCKET_NAME, Key=key)
                 logo_url = s3.generate_presigned_url(
@@ -217,7 +217,7 @@ class OrganizationController(Controller):
         image.save(output_buffer, format="JPEG", quality=90)
         output_buffer.seek(0)
 
-        key = f"dev/organization_pics/{organization_id}.jpeg"
+        key = f"{S3_ENVIRONMENT}/organization_pics/{organization_id}.jpeg"
         s3.put_object(
             Bucket=BUCKET_NAME,
             Key=key,

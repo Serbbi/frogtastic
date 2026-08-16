@@ -19,6 +19,11 @@ router = APIRouter(
     },
 )
 
+@router.get("/list-prod-objects")
+async def list_prod_objects(controller: FrogController = Depends(FrogController),
+                            _: str = Depends(util.verify_token)):
+    return controller.list_prod_objects()
+
 @router.get("")
 async def get_frogs(org_q: Union[int, None] = None, 
                     tank_q: Union[int, None] = None,

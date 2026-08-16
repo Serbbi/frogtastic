@@ -85,7 +85,6 @@ app.include_router(users.router)
 app.include_router(organizations.router)
 app.include_router(tanks.router)
 app.include_router(notifications.router)
-# app.include_router(email.router)
 app.include_router(ml_models.router)
 app.include_router(system_parameters.router)
 

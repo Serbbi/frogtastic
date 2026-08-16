@@ -3,6 +3,7 @@ from botocore.config import Config
 import os
 
 BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
+S3_ENVIRONMENT = os.getenv("S3_ENVIRONMENT", "dev")
 s3 = boto3.client(
     "s3",
     endpoint_url=os.getenv("S3_ENDPOINT_URL"),
