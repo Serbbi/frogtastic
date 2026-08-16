@@ -11,6 +11,11 @@
 
 .paramsTable th {
     background-color: var(--accent-color);
+    cursor: pointer;
+}
+
+.paramsTable th:hover {
+    background-color: var(--accent-color-hover);
 }
 
 .paramsTable th,

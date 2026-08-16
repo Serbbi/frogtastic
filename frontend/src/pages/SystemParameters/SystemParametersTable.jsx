@@ -1,8 +1,22 @@
+import { useState, useMemo } from 'react';
 import { useUnsavedChanges } from '../../services/providers/UnsavedChangesProvider';
 import './SystemParametersTable.css';
 
 export default function SystemParametersTable({ systemParameters, setSystemParameters, setDirtyRows, systemParameterNames, selectedRows, setSelectedRows }) {
     const { setUnsavedChanges } = useUnsavedChanges();
+    const [sortDirection, setSortDirection] = useState('asc');
+    const sortedParameters = useMemo(() => {
+        if (!systemParameters) return [];
+
+        return [...systemParameters].sort((a, b) => {
+            const dateA = new Date(a.recorded_at || 0);
+            const dateB = new Date(b.recorded_at || 0);
+
+            return sortDirection === 'asc'
+                ? dateA - dateB
+                : dateB - dateA;
+        });
+    }, [systemParameters, sortDirection]);
 
     function handleValueChange(event, row) {
         const { name, value } = event.target;
@@ -74,17 +88,21 @@ export default function SystemParametersTable({ systemParameters, setSystemParam
         });
     }
 
+    function sortByDate() {
+        setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    }
+
     return (
         <table className='paramsTable'>
             <thead className='tableHead'>
                 <tr>
                     <th></th>
-                    <th>Date</th>
+                    <th onClick={sortByDate}>Date &#8597;</th>
                     {systemParameterNames.map(param => <th key={param}>{param}</th>)}
                 </tr>
             </thead>
             <tbody>
-                {systemParameters && systemParameters.map(param => (
+                {systemParameters && sortedParameters.map(param => (
                     <tr key={param.id}>
                         <td>
                             <input 
