@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useImage } from "../../services/providers/ImageProvider";
 import { imagePostRequest } from "../../services/api/image/ImagePost";
 import { useOrganization } from "../../services/providers/OrganizationProvider";
-import './UploadPage.css';
 import useMLModels from "../../hooks/useMLModels";
+import './UploadPage.css';
 
 export default function UploadPage() {
     const { organization } = useOrganization();
@@ -19,6 +19,13 @@ export default function UploadPage() {
     const dropContainer = useRef(null);
     const navigate = useNavigate();
     const { setExtractionImageURL } = useImage();
+
+    useEffect(() => {
+        if (mlModels && mlModels.length > 0 && !modelUsed) {
+            setModelUsed(mlModels[0]);
+        }
+        console.log("mlModels:", mlModels);
+    }, [mlModels, modelUsed]);
 
     function uploadImage() {
         const formData = new FormData();
