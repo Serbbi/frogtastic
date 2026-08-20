@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { imagePutRequest } from "../../services/api/image/ImagePut";
 import { useNotification } from "../../services/providers/NotificationProvider";
 
-export default function CompareModal({ frog, setShowCompareModal, extractionImageURL, showButtons, setShowModalButtonsOnce }) {
+export default function CompareModal({ frog, setShowCompareModal, extractionImageURL, showButtons, setShowModalButtonsOnce, access }) {
     const navigate = useNavigate();
     const { addNotification } = useNotification();
 
@@ -36,7 +36,7 @@ export default function CompareModal({ frog, setShowCompareModal, extractionImag
                 </div>
                 {showButtons &&
                     <div className="compare-modal-buttons">
-                        <button onClick={() => handleSaveImage("yes")} className="primary-button compare-modal">Accept and save</button>
+                        <button onClick={() => handleSaveImage("yes")} className="primary-button compare-modal" disabled={!access}>Accept and save</button>
                         <button onClick={() => handleSaveImage("no")} className="secondary-button compare-modal">Accept without saving</button>
                         <button onClick={() => navigate(-1)} className="secondary-button compare-modal">Reject</button>
                     </div>

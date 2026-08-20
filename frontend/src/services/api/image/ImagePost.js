@@ -5,8 +5,15 @@ export async function imagePostRequest(formData, organizationId, modelName) {
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to upload image");
+        if (response.status === 413) {
+            throw new Error("File size exceeds the limit. Please upload a smaller image.");
+        } else if (response.status === 404) {
+            throw new Error("Frog not found. Please ensure the frog exists before uploading an image.");
+        } else if (response.status === 400) {
+            throw new Error("Invalid request. Please check the image format and try again.");
+        } else {
+            throw new Error("Failed to upload image.");
+        }
     }
     return await response.json();
 }

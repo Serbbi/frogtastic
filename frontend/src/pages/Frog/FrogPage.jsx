@@ -165,7 +165,7 @@ export default function FrogPage() {
                     <button className="primary-button frog-page-button" onClick={() => setShowHistory(!showHistory)}>History</button>
                 </div>
             </div>
-            {showCompareModal && <CompareModal frog={frog} setShowCompareModal={setShowCompareModal} extractionImageURL={extractionImageURL} showButtons={window.history.state.usr === "from upload" && showModalButtonsOnce} setShowModalButtonsOnce={setShowModalButtonsOnce} />}
+            {showCompareModal && <CompareModal frog={frog} setShowCompareModal={setShowCompareModal} extractionImageURL={extractionImageURL} showButtons={window.history.state.usr === "from upload" && showModalButtonsOnce} setShowModalButtonsOnce={setShowModalButtonsOnce} access={canEditFrogs} />}
             {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => {
                 if (onConfirmAction) {
                     onConfirmAction();

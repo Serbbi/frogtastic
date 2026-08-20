@@ -24,7 +24,6 @@ export default function UploadPage() {
         if (mlModels && mlModels.length > 0 && !modelUsed) {
             setModelUsed(mlModels[0]);
         }
-        console.log("mlModels:", mlModels);
     }, [mlModels, modelUsed]);
 
     function uploadImage() {
