@@ -53,14 +53,28 @@ export default function FrogPage() {
     }
 
     function saveFrog() {
-        frogPutRequest(frog, organization.id)
-            .then(_ => {
-                addNotification({ text: "Frog saved", type: "success" });
-                setUnsavedChanges(false);
-            })
-            .catch((error) => {
-                addNotification({ text: error.message, type: "error" });
+        if (!unsavedChanges) {
+            setConfirmationBoxText("Are you sure you want to save? There are no new changes.");
+            setOnConfirmAction(() => () => {
+                frogPutRequest(frog, organization.id)
+                    .then(_ => {
+                        addNotification({ text: "Frog saved with no new changes", type: "success" });
+                        setUnsavedChanges(false);
+                    })
+                    .catch((error) => {
+                        addNotification({ text: error.message, type: "error" });
+                    });
             });
+        } else {
+            frogPutRequest(frog, organization.id)
+                .then(_ => {
+                    addNotification({ text: "Frog saved", type: "success" });
+                    setUnsavedChanges(false);
+                })
+                .catch((error) => {
+                    addNotification({ text: error.message, type: "error" });
+                });
+        }
     }
 
     function deleteFrog() {
@@ -160,7 +174,7 @@ export default function FrogPage() {
                 </div>
                 <div className="rightDetailsContainer">
                     <button className="primary-button frog-page-button" onClick={() => setShowCompareModal(true)}>Compare</button>
-                    <button className="primary-button frog-page-button" onClick={saveFrog} disabled={!unsavedChanges}>Save</button>
+                    <button className="primary-button frog-page-button" onClick={saveFrog}>Save</button>
                     <button className="primary-button frog-page-button" onClick={deleteFrog}>Delete</button>
                     <button className="primary-button frog-page-button" onClick={() => setShowHistory(!showHistory)}>History</button>
                 </div>

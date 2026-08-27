@@ -175,7 +175,12 @@ class FrogController(Controller):
             return None
 
         if not are_changes(db_frog, frog):
-            return None
+            # Save to history the fields as they are
+            db_frog.history = duplicate_history(db_frog, username)
+            flag_modified(db_frog, "history")
+            self.db.commit()
+            self.db.refresh(db_frog)
+            return db_frog
 
         db_frog.history = dict(update_history(db_frog, frog, username))
         db_frog.current_tank_id = frog.current_tank_id
@@ -297,6 +302,20 @@ class FrogController(Controller):
 
         return object_paths
 
+def duplicate_history(frog, username):
+    history = frog.history
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    if now not in frog.history:
+        history[now] = {}
+
+    history[now]["current_tank_id"] = frog.current_tank_id
+    for key, value in frog.attributes.items():
+        history[now][key] = value
+
+    history[now]["author"] = username
+    return history
+
 
 def update_history(db_frog, frog, username):
     history = db_frog.history
@@ -309,6 +328,8 @@ def update_history(db_frog, frog, username):
         history[now]["current_tank_id"] = frog.current_tank_id
     for key, value in frog.attributes.items():
         if value != db_frog.attributes.get(key):
+            if key == "egg_quality":
+                history[now]['last_injection'] = db_frog.attributes.get('last_injection', '')
             history[now][key] = value
 
     history[now]["author"] = username
