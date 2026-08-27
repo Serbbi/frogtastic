@@ -53,6 +53,12 @@ docker push registry.webhosting.rug.nl/kamenzlab/frogrepo-backend:latest
 ### **Modifying the database**
 You can access the database itself and change stuff directly there through PgAdmin. You can find the connection details in the [Rancher dashboard](https://prod.k8s.rug.nl/dashboard/), in the Secrets menu. NOT RECOMMENDED THO... With a lot of power comes a lot of responsibility.
 
+### **Adding new ML Models**
+Currently the system admin (probably you who are reading this) can upload or delete ML models. You can do this either by calling the API on the respective endpoints, or by running the project locally, checking wheter you are changing dev or prod environment, and then calling the API from the specification or other means.
+
+### **Admin business**
+You can access the admin dashboard and changes stuff about the users/organizations. Contact me for the credentials.
+
 ## Can be improved/added
 
 ### **Testing** 
