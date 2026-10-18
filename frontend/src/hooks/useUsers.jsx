@@ -13,9 +13,9 @@ const fetchWithToken = async (url, token) => {
 };
 
 export default function useUsers(organizationId) {
-    const token = localStorage.getItem('site');
+    const token = sessionStorage.getItem('token');
     let url = `${process.env.REACT_APP_BACKEND_URL}/users`;
-    
+
     if (organizationId) {
         url += `?org_q=${organizationId}`;
     }

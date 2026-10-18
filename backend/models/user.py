@@ -5,7 +5,6 @@ privileges_config = {
     "canCreateFrogs": True,
     "canEditFrogs": True,
     "canDeleteFrogs": True,
-    "canRetrainModel": True,
     "canGetUsers": True,
     "canEditUsers": True,
     "canDeleteUsers": True,

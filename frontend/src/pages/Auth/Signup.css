@@ -1,106 +1,23 @@
-.mainContainerSignup{
-    display: flex;
-    height: 100vh;
-    box-sizing: border-box;
-}
-
-.leftSignUp {
-    width: 55%;
-    height: 100%;
-    background-color: rgb(183, 209, 185);
-    /* background-color: #99BC85; */
+.input-group {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
+    width: 60%;
 }
 
-.rightSignUp {
-    width: 45%;
-}
-
-
-.formContainerSignup a {
-        color: #99BC85;
-        font-size: 0.85rem;
-        margin-left: 5px;
-}
-
-.inputContainer {
+.input-container {
     position: relative;
-    width: 85%;
+    width: 100%;
 }
 
-.inputContainer input {
+.input-container input {
     width: 100%;
     box-sizing: border-box;
     height: 2.5rem;
 }
 
-.inputField {
-    width: 60%;
-    height: 30px;
-    padding: 10px;
-    margin-top: 15px;
-    margin-right: 10px;
-
-    background-color: #ffffff;
-    border: none;
-    border-radius: 20px;
-    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
-    /* cursor: text; */
-}
-
-.inputField:focus {
-    outline: none;
-    border: 1px solid #377247;
-}
-
-.inputField:hover {
-    /* background-color: #e4e8e2; */
-    background-color: #f2f2f2;
-}
-
-.submitButton {
-    width: 40%;
-    height: 40px;
-    margin: 15px auto;
-
-    /* background-color: #99BC85; */
-    background-color: #377247;
-    border: none;
-    border-radius: 15px;
-    color: white;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-}
-
-.submitButton:hover {
-    /* background-color: #b2d1a1; */
-    background-color: #5ca56e;
-}
-
-.submitButton:disabled {
-    background-color: #cde2d3;
-    color: #a0a0a0;
-    cursor: default;
-}
-
-.formAndTitle {
-    width: 70%;
-    height: fit-content;
-    background-color: whitesmoke;
-    padding: 10px 30px;
-    border-radius: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-.eyeButton {
+.eye-button {
     position: absolute;
     top: 50%;
     right: 5px;
@@ -113,44 +30,18 @@
     cursor: pointer;
 }
 
-.errorInput {
-    border: 1px solid salmon;
+.error-input {
+    border-bottom: 3px solid salmon;
 }
 
-.errorText {
+.error-text {
     color: salmon;
     font-size: 0.8rem;
     margin: 0.2rem 0 0 0;
 }
 
-.inputGroup {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-}
-
-.formContainerSignup {
-    display: flex;
-    flex-direction: column;
-}
-
-.formContainerSignup p{
-    margin: 5px;
-    font-size: 0.75rem;
-}
-
-
 @media screen and (max-width: 768px) {
-    .formContainerSignup {
-        /* width: 80%; */
-    }
-
     .inputField {
         width: 80%;
-    }
-
-    .submitButton {
-        width: 60%;
     }
 }

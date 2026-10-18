@@ -6,11 +6,13 @@ import useTanks from '../../hooks/useTanks';
 import FrogTableLoading from '../../components/miniComponents/FrogTableLoading';
 import { frogDownloadRequest } from '../../services/api/frogs/FrogDownload';
 import { useNotification } from '../../services/providers/NotificationProvider';
+import { useOrganization } from '../../services/providers/OrganizationProvider';
 import './TankFrogsPage.css';
 
-export default function TankFrogsPage({ organization }) {
+export default function TankFrogsPage() {
+    const { organization } = useOrganization();
     const { tanks } = useTanks(organization ? organization.id : -1);
-    const [selectedNumber, setSelectedNumber] = useState(null);
+    const [selectedNumber, setSelectedNumber] = useState(sessionStorage.getItem('selectedTankNumber') || null);
     const { frogs, isLoading } = useFrogs(null, organization ? organization.id : -1, selectedNumber, null);
     const { addNotification } = useNotification();
     const [tankStatus, setTankStatus] = useState(false);
@@ -23,18 +25,17 @@ export default function TankFrogsPage({ organization }) {
 
     useEffect(() => {
         if (tanks && tanks.length > 0) {
-            const storedNumber = localStorage.getItem('selectedTankNumber');
-            setSelectedNumber(storedNumber ? parseInt(storedNumber) : tanks[0].id);
+            setSelectedNumber(selectedNumber || tanks[0].id);
         }
     }, [tanks]);
 
-
     function handleNumberChange(event) {
         setSelectedNumber(parseInt(event.target.value));
-        localStorage.setItem('selectedTankNumber', event.target.value);
+        sessionStorage.setItem('selectedTankNumber', event.target.value);
     };
 
     const handleDownload = () => {
+        if (organization === null) return;
         frogDownloadRequest(organization.id, selectedNumber)
             .then((blob) => {
                 const url = window.URL.createObjectURL(new Blob([blob]));
@@ -48,28 +49,29 @@ export default function TankFrogsPage({ organization }) {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
             })
-            .catch((error) => {
-                console.error('Download error:', error);
+            .catch(() => {
                 addNotification({ text: "Error downloading file", type: "error" });
             });
     };
 
     return (
         <div className="tankFrogsContent">
-            <div className="titleAndSelect">
+            <div className="title-and-buttons">
                 <h1 className='title'>Tank Frogs
                     {!tankStatus ? <FontAwesomeIcon icon="fa-solid fa-circle-check" className="okStatus" />
                         : <FontAwesomeIcon icon="fa-solid fa-triangle-exclamation" className="sickStatus" />}
                 </h1>
-                <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
-                    {tanks && tanks.map(tank => {
-                        return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
-                    })}
-                </select>
+                <div className="right-side-buttons">
+                    <button onClick={handleDownload} className="primary-button all-frogs-button">Download</button>
+                    <select id="numberSelect" value={selectedNumber} onChange={handleNumberChange} className='selectButton'>
+                        {tanks && tanks.map(tank => {
+                            return <option key={tank.tank_name} value={tank.id}>{tank.tank_name}</option>
+                        })}
+                    </select>
+                </div>
             </div>
             {isLoading || frogs === undefined ? <FrogTableLoading organization={organization} /> : null}
             {frogs && frogs.length !== 0 && <FrogTable frogs={frogs} organization={organization} />}
-            <button onClick={handleDownload}>Download</button>
         </div>
     );
 }

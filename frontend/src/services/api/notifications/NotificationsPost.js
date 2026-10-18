@@ -15,7 +15,7 @@ export async function notificationHandleRequest(notificationId, action) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('site')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify({ action: action })
     });

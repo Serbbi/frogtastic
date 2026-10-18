@@ -1,87 +1,169 @@
-.mainContainerLogin {
+.main-container-auth {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     height: 100vh;
+    position: relative;
+    overflow: hidden;
 }
 
-.leftContainer {
+.left-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 60%;
+    width: 45%;
     height: 100%;
-    background-image: url('../../../public/swamp.png');
+    background-image: url('../../../public/new_swamp.jpg');
     background-size: cover;
+    filter: brightness(0.4) grayscale(100%);
 }
 
-.rightContainer {
+.right-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 40%;
+    width: 55%;
     height: 100%;
-    background-color: #ebebeb;
-    color: black;
+    background-image: url('../../../public/abstract_2.jpg');
+    background-size: cover;
+    filter: grayscale(100%);
 }
 
-.rightContainer a {
-    color: #99BC85;
-    font-size: 0.85rem;
-    margin-left: 5px;
+.center-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--background-color);
+    width: 80%;
+    height: 90%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    display: flex;
 }
 
-.rightContainer p {
-    margin: 5px;
-    font-size: 0.75rem;
+.center-left-container {
+    width: 50%;
+    height: 100%;
+    background-image: url('../../../public/new_swamp.jpg');
+    background-size: cover;
+    filter: brightness(0.55);
 }
 
-.formContainer {
+.center-right-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-title {
+    font-size: 32px;
+    /* color:  */
+}
+
+.form-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 100px;
+    margin-bottom: 20px;
+    gap: 0.5rem;
 }
 
-.inputField {
+.auth-input {
+    border: none;
+    border-bottom: 3px solid black;
     width: 60%;
-    height: 30px;
-    padding: 10px;
-    margin-top: 15px;
-
-    background-color: rgba(0, 0, 0, 0.1);
-    border: none;
-    border-radius: 10px;
+    padding: 1rem 1rem 0.7rem 0.7rem;
 }
 
-.inputField:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+.auth-input:focus {
+    outline: none;
+    border-bottom: 3px solid var(--active-color);
 }
 
-.submitButton {
-    width: 40%;
-    height: 40px;
-    margin-top: 15px;
-
-    background-color: #3d9349;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-}
-
-.submitButton:hover {
-    background-color: #4eb75c;
+.remember-me-checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-right: 0.5rem;
     cursor: pointer;
+}
+
+.remember-me-checkbox:checked {
+    accent-color: green;
+}
+
+.log-in-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70%;
+    /* padding: 1rem 0 0 0; */
+}
+
+.remember-me-container {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.remember-me-label {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.forgot-password-link,
+.signup-link {
+    font-size: 0.9rem;
+    color: var(--title-color);
+}
+
+.signup-prompt {
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    color: rgb(91, 91, 91);
+}
+
+.primary-button.auth-button {
+    margin: 0 auto;
 }
 
 .rotate {
     animation: rotation 8s infinite linear;
+}
+
+.google-separator {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    font-size: 0.9rem;
+}
+
+.line-separator {
+    border: none;
+    background-color: rgb(153, 153, 153);
+    width: 60px;
+    height: 2px;
+}
+
+.google-login-btn {
+    background-color: #232323;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 7px;
+    border: none;
+    margin-top: 20px;
+    width: 200px;
+}
+
+.google-login-btn:hover {
+    background-color: #474747;
 }
 
 @keyframes rotation {
@@ -94,56 +176,40 @@
     }
 }
 
-.errorLabel {
+.error-label {
     font-size: small;
     margin: 1rem auto 0 auto;
+    padding-bottom: 0;
     width: 80%;
 }
 
-.changeLogButton {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #f36f11;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    padding: 5px 10px;
-    text-decoration: none;
-    animation: glow 2s infinite;
-}
-
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 10px #f36f11;
-    }
-
-    50% {
-        box-shadow: 0 0 20px #f36f11;
-    }
-
-    100% {
-        box-shadow: 0 0 10px #f36f11;
-    }
-}
-
-/* animate the above button to change colors in a transition */
-.changeLogButton:hover {
-    background-color: #e9853e;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-
 @media screen and (max-width: 768px) {
-    /* hide leftContainer */
-    .leftContainer {
+    .left-container {
+        width: 100%;
+        height: 100vh;
+    }
+
+    .right-container {
         display: none;
     }
 
-    .rightContainer {
+    .center-container {
+        width: 95%;
+        height: 80%;
+        bottom: 0px;
+        top: auto;
+        transform: translate(-50%, 0);
+    }
+
+    .center-left-container {
+        display: none;
+    }
+
+    .center-right-container {
         width: 100%;
     }
-    
+
+    .log-in-options {
+        width: 80%;
+    }
 }

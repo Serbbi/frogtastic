@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { organizationPutRequest } from '../../services/api/organizations/OrganizationPut';
 import { useNotification } from '../../services/providers/NotificationProvider';
+import useClickOutside from '../../hooks/useClickOutside';
 import './SettingsPage.css';
 
 export default function TableColumnsSetting({ frog, organization }) {
@@ -10,6 +11,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     const [isLoading, setIsLoading] = useState(false);
     const { addNotification } = useNotification();
     const inputRef = useRef();
+    const closeInput = useCallback(() => setShowTableColumnOptions(false), []);
 
     function selectColumn(column) {
         if (listOfTableColumnsToAdd.includes(column)) {
@@ -24,6 +26,7 @@ export default function TableColumnsSetting({ frog, organization }) {
     }
 
     function handleSaveColumns() {
+        if (organization === null) return;
         organization.table_columns = [...organization.table_columns, ...listOfTableColumnsToAdd];
         organization.table_columns = organization.table_columns.filter(column => !listOfTableColumnsToRemove.includes(column));
 
@@ -39,51 +42,41 @@ export default function TableColumnsSetting({ frog, organization }) {
         setListOfTableColumnsToRemove([]);
     }
 
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (inputRef.current && !inputRef.current.contains(event.target)) {
-                setShowTableColumnOptions(false);
-            }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [inputRef]);
+    useClickOutside(inputRef, closeInput);
 
     return (
-        <div className='settingContainer'>
-            <h3>Frog table columns</h3>
-            <p>Click to select columns to remove</p>
-            <ul className='attributeList'>
+        <>
+            <p className='info-message'>Click to select columns to remove</p>
+            {organization && organization.table_columns.length === 0 && listOfTableColumnsToAdd.length === 0 && <p className='warning-message'>No table columns set!</p>}
+            <ul className='attribute-list'>
                 {organization && organization.table_columns.map((column) => {
-                    return <li className={`attributeItem${listOfTableColumnsToRemove.includes(column) ? 'Selected' : ''}`} key={column} onClick={() => selectColumn(column)}>{column}</li>
+                    return <li className={`attribute-item${listOfTableColumnsToRemove.includes(column) ? ' selected' : ''}`} key={column} onClick={() => selectColumn(column)}>{column}</li>
                 })}
                 {listOfTableColumnsToAdd.map((column) => {
-                    return <li className='attributeItemAdded' key={column} onClick={() => selectColumn(column)}>{column}</li>
+                    return <li className='attribute-item added' key={column} onClick={() => selectColumn(column)}>{column}</li>
                 })}
             </ul>
-            <button onClick={() => setShowTableColumnOptions(!showTableColumnOptions)}>Add Table Column</button>
-            {showTableColumnOptions &&
-                <div className='predefinedAttributesContainer' ref={inputRef}>
-                    <ul className='predefinedAttributes'>
-                        {frog && ['id', 'frog_number', 'current_tank', ...Object.keys(frog.attributes)].map((option) => {
-                            if (!organization.table_columns.includes(option) && !listOfTableColumnsToAdd.includes(option))
-                                return <li key={option} onClick={() => setListOfTableColumnsToAdd([...listOfTableColumnsToAdd, option])}>{option}</li>;
-                            return null;
-                        })}
-                        {!frog && <li>Please add a frog to the database first!</li>}
-                        {/* {frog && [...Object.keys(frog.attributes)].length === 0 && <li>Frog has no attributes</li>} */}
-                        {/* {frog && ['frog_number', 'current_tank_id', ...Object.keys(frog.attributes)].length === organization.table_columns.length && <li>No more columns to add</li>} */}
-                    </ul>
-                </div>
-            }
-            <button className='saveButtonSetting' onClick={handleSaveColumns} disabled={isLoading}>
-                {isLoading &&
-                    <span className='loader'></span>}
-                <span className={isLoading ? 'invisible' : ''}>Save</span>
-            </button>
-        </div>
+            <div className='setting-buttons'>
+                <button className='setting-button' onClick={() => setShowTableColumnOptions(!showTableColumnOptions)}>Add Table Column</button>
+                {showTableColumnOptions &&
+                    <div className='predefined-attributes-container' ref={inputRef}>
+                        <ul className='predefined-attributes-list'>
+                            {frog && ['id', 'frog_number', 'current_tank', ...Object.keys(frog.attributes)].map((option) => {
+                                if (!organization.table_columns.includes(option) && !listOfTableColumnsToAdd.includes(option))
+                                    return <li key={option} onClick={() => setListOfTableColumnsToAdd([...listOfTableColumnsToAdd, option])}>{option}</li>;
+                                return null;
+                            })}
+                            {!frog && <li>Please add a frog to the database first!</li>}
+                            {frog && ['frog_number', 'current_tank_id', ...Object.keys(frog.attributes)].length === organization.table_columns.length + listOfTableColumnsToAdd.length - 1 && <li>No more columns to add</li>}
+                        </ul>
+                    </div>
+                }
+                <button className='setting-button save' onClick={handleSaveColumns} disabled={isLoading}>
+                    {isLoading &&
+                        <span className='loader'></span>}
+                    <span className={isLoading ? 'invisible' : ''}>Save</span>
+                </button>
+            </div>
+        </>
     );
 }

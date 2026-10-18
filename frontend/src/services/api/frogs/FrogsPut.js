@@ -3,7 +3,7 @@ export async function frogsPutRequest(attributes, organizationId) {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('site')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(attributes)
     });

@@ -1,9 +1,9 @@
-export async function frogPutRequest(frog, organizationId) {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}?org_q=${organizationId}`, {
+export async function frogPutRequest(frog) {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/frogs/${frog.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('site')}`
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
         body: JSON.stringify(frog)
     });

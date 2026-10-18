@@ -1,10 +1,12 @@
 # The router that is used from all "/frogs/*" endpoints.
-from fastapi import APIRouter, Depends, UploadFile, File
+from util.permissions import Permission
+from util.loaders import load_frog, load_frogs
+from fastapi import APIRouter, Depends
 from models.user import User
 from crud.frog import FrogController
-from schemas.frog import FrogBase
+from schemas.frog import FrogBase, FrogResponse
+from models.frog import Frog
 from util import util
-from util.exceptions import raise_403_exception
 from typing import List, Union
 
 router = APIRouter(
@@ -16,6 +18,11 @@ router = APIRouter(
         400: {"description": "Request was not well-formed, see error details"},
     },
 )
+
+@router.get("/list-prod-objects")
+async def list_prod_objects(controller: FrogController = Depends(FrogController),
+                            _: str = Depends(util.verify_token)):
+    return controller.list_prod_objects()
 
 @router.get("")
 async def get_frogs(org_q: Union[int, None] = None, 
@@ -34,7 +41,7 @@ async def download_csv(org_q: Union[int, None],
     return controller.download_csv(org_q, tank_q)
 
 
-@router.get("/{frog_id}")
+@router.get("/{frog_id}", response_model=FrogResponse)
 async def get_frog(frog_id: int, 
                    controller: FrogController = Depends(FrogController),
                    _: str = Depends(util.verify_token)):
@@ -44,56 +51,36 @@ async def get_frog(frog_id: int,
 @router.put("")
 async def update_frogs(org_q: int, 
                        attributes: List[str],
-                       current_user: User = Depends(util.get_current_user),
+                       frogs: List[Frog] = Depends(util.require_list_resource_permission(load_frogs, Permission.EDIT_FROGS)),
                        controller: FrogController = Depends(FrogController),
                        _: str = Depends(util.verify_token)):
-    if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
-        return controller.update_frogs(attributes, org_q)
-    raise_403_exception("You cannot edit these frogs")
+    return controller.update_frogs(attributes, org_q)
 
 
-@router.put("/{frog_id}")
+@router.put("/{frog_id}", response_model=FrogResponse)
 async def update_frog(
-    frog_id: int, 
     frog: FrogBase,
-    org_q: Union[int, None] = None, 
+    frog_checked: Frog = Depends(util.require_resource_permission(load_frog, Permission.EDIT_FROGS)),
     current_user: User = Depends(util.get_current_user),
     controller: FrogController = Depends(FrogController),
     _: str = Depends(util.verify_token)
 ):
-    if util.get_organization_access_right(str(org_q), "canEditFrogs", current_user):
-        return controller.update_frog(frog_id, frog, current_user.username)
+    return controller.update_frog(frog_checked.id, frog, current_user.username)
     
-    raise_403_exception("You cannot edit this frog")
 
 @router.delete("/{frog_id}")
 async def delete_frog(
-    frog_id: int, 
-    org_q: Union[int, None] = None,
-    current_user: User = Depends(util.get_current_user),
+    frog_checked: Frog = Depends(util.require_resource_permission(load_frog, Permission.DELETE_FROGS)),
     controller: FrogController = Depends(FrogController),
     _: str = Depends(util.verify_token)
 ):
-    if util.get_organization_access_right(str(org_q), "canDeleteFrogs", current_user):
-        return controller.delete_frog(frog_id)
-    raise_403_exception("You cannot delete this frog")
+    return controller.delete_frog(frog_checked.id)
 
 
-@router.post("")
-async def create_frogs(
-    frogs: List[FrogBase],
-    current_user: User = Depends(util.get_current_user),
+@router.post("/instantiate-frogs")
+async def instantiate_frogs(
+    org_q: int,
+    current_user: User = Depends(util.require_simple_permission(Permission.CREATE_FROGS)),
     controller: FrogController = Depends(FrogController),
 ):
-    if util.get_organization_access_right(str(frogs[0].organization_id), "canCreateFrogs", current_user):
-        return controller.create_frogs(frogs)
-    raise_403_exception("You cannot create frogs")
-
-
-@router.post("/train")
-async def train_model(
-    file: UploadFile = File(...),
-    controller: FrogController = Depends(FrogController),
-    _: str = Depends(util.verify_token)
-):
-    return controller.train_model(file)
+    return controller.instantiate_frogs(org_q)

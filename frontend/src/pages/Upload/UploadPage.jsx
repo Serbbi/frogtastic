@@ -3,23 +3,33 @@ import Loading from "../../components/miniComponents/loading";
 import ErrorContent from "../../components/miniComponents/ErrorContent";
 import { useNavigate } from "react-router-dom";
 import { useImage } from "../../services/providers/ImageProvider";
-import { imagePostRequest } from "../../services/api/frogs/ImagePost";
+import { imagePostRequest } from "../../services/api/image/ImagePost";
+import { useOrganization } from "../../services/providers/OrganizationProvider";
+import useMLModels from "../../hooks/useMLModels";
 import './UploadPage.css';
 
-export default function UploadPage({ organization }) {
+export default function UploadPage() {
+    const { organization } = useOrganization();
+    const { mlModels } = useMLModels(organization ? organization.id : null);
     const [success, setSuccess] = useState("default");
     const [fileName, setFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("There was an error uploading the image.");
-    const [modelUsed, setModelUsed] = useState(localStorage.getItem("lastSelectedModel") ? parseInt(localStorage.getItem("lastSelectedModel")) : 1);
+    const [modelUsed, setModelUsed] = useState(sessionStorage.getItem("lastSelectedModel") ? sessionStorage.getItem("lastSelectedModel") : "");
     const dropContainer = useRef(null);
     const navigate = useNavigate();
     const { setExtractionImageURL } = useImage();
 
+    useEffect(() => {
+        if (mlModels && mlModels.length > 0 && !modelUsed) {
+            setModelUsed(mlModels[0]);
+        }
+    }, [mlModels, modelUsed]);
+
     function uploadImage() {
         const formData = new FormData();
         const file = document.querySelector('input[type="file"]').files[0];
-        if (!verifyFile(file)) return;
+        if (!verifyFile(file) || organization === null) return;
 
         formData.append('file', file);
         setIsLoading(true);
@@ -107,7 +117,7 @@ export default function UploadPage({ organization }) {
     }
 
     function updateModelUsed(event) {
-        localStorage.setItem("lastSelectedModel", event.target.value);
+        sessionStorage.setItem("lastSelectedModel", event.target.value);
         setModelUsed(event.target.value);
     }
 
@@ -119,19 +129,18 @@ export default function UploadPage({ organization }) {
             {success === "default" ?
                 <div className="uploadDefaultElements">
                     <select onChange={updateModelUsed} value={modelUsed}>
-                        <option value={0}>Old</option>
-                        <option value={1}>Clean</option>
-                        <option value={2}>New</option>
-                        <option value={3}>OneShot</option>
+                        {mlModels && mlModels.map(model => (
+                            <option key={model} value={model}>{model}</option>
+                        ))}
                     </select>
                     <label ref={dropContainer} className="drop-container" id="dropcontainer">
                         <span className="drop-title">Drop files here</span>
                         <p className="orWord">or</p>
-                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName} />
+                        <input type="file" name="image" id="image" required className="inputField" onChange={saveImageName} accept=".jpeg, .jpg, .png" />
                         <span className="browseFilesButton">Browse files</span>
                         <span className="file-name">{fileName}</span>
                     </label>
-                    <button onClick={uploadImage} className="uploadButton">Upload</button>
+                    <button onClick={uploadImage} className="primary-button upload-button" disabled={mlModels?.length == 0}>Upload</button>
                 </div>
                 : null}
         </div>

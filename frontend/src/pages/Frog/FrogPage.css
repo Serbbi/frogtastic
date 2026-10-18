@@ -2,32 +2,35 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* this i changed from center for overflow to work */
+    justify-content: flex-start;
     width: 90%;
     max-height: 100%;
     overflow-y: scroll;
     box-sizing: border-box;
     margin: 0 auto;
     position: relative;
+    padding: 1rem;
 }
 
 
 .frogField {
     display: flex;
     flex-direction: row;
-    align-items: stretch; /* Make sure all child elements have the same height */
+    align-items: stretch;
+    /* Make sure all child elements have the same height */
     justify-content: center;
     width: 100%;
     margin: 0.5rem 0;
 }
 
 .frogField label {
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
     font-weight: bold;
     border-radius: 1rem 0 0 1rem;
     font-size: 1.1rem;
     padding: 0.8rem;
-    height: auto; /* Auto height to match the tallest element */
+    height: auto;
+    /* Auto height to match the tallest element */
     display: flex;
     align-items: center;
 }
@@ -39,18 +42,24 @@
     border: 1px solid #ccc;
 }
 
-.frogField input, textarea, select {
+.frogField input,
+textarea,
+select {
     border-left: none;
     border-radius: 0 1rem 1rem 0;
-    height: 100%; /* Match the label's height */
+    height: 100%;
+    /* Match the label's height */
 }
 
-.frogField input, select {
-    height: auto; /* Explicitly set height for input */
+.frogField input,
+select {
+    height: auto;
+    /* Explicitly set height for input */
 }
 
 .frogField textarea {
-    resize: vertical; /* Allow textarea to resize vertically */
+    resize: vertical;
+    /* Allow textarea to resize vertically */
     min-height: 3rem;
 }
 
@@ -78,11 +87,11 @@
 
 .frogField select {
     font-size: 1rem;
+    background-color: var(--background-color);
 }
 
 .frogField select:hover {
     cursor: pointer;
-    background-color: #b4c0b5;
 }
 
 textarea {
@@ -110,22 +119,14 @@ label {
     font-size: 1.2rem;
 }
 
-.saveButton {
+.primary-button.frog-page-button {
     width: 70%;
     height: 3rem;
     margin: 0.5rem 0;
     padding: 0.5rem;
     border: none;
     border-radius: 10px;
-    background-color: #377247;
-    color: white;
     font-size: 1.2rem;
-    font-weight: bolder;
-}
-
-.saveButton:hover {
-    background-color: #45a049;
-    cursor: pointer;
 }
 
 .goBackButton {
@@ -189,15 +190,15 @@ label {
 
 .modalCompareImagesContent {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns for larger screens */
+    grid-template-columns: repeat(2, 1fr);
     justify-content: center;
-    background-color: white;
+    background-color: var(--background-color);
     border-radius: 10px;
     padding: 20px;
     width: 70%;
     height: auto;
     position: relative;
-    gap: 20px; /* Space between columns */
+    gap: 20px;
 }
 
 .modalCompareImagesContent div {
@@ -210,8 +211,31 @@ label {
     object-fit: contain;
 }
 
-.modalCompareImagesContent h2 { 
+.modalCompareImagesContent h2 {
     margin-top: 0;
+}
+
+.compare-modal-buttons {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .modalCompareImages {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -228,21 +252,36 @@ label {
     }
 
     .frogDetailsContainer {
-        /* overflow-x: hidden; */
         align-items: start;
+        width: inherit;
     }
 
     .frogDetailsContainer h1 {
-        margin: 2rem auto;
+        margin: 0 auto;
     }
 
     .modalCompareImagesContent {
-        grid-template-columns: 1fr; /* Single column on mobile */
-        width: 90%;
+        grid-template-columns: 1fr;
     }
 
-    .modalCompareImagesContent > div {
-        margin-bottom: 20px; /* Add space between the stacked elements */
+    .compare-modal-buttons {
+        grid-column: span 1;
     }
-    
+
+    .secondary-button.compare-modal {
+        height: auto;
+    }
+
+    .primary-button.compare-modal {
+        height: auto;
+    }
+
+    .frogField label {
+        padding: 0.4rem;
+        font-size: small;
+    }
+
+    .frogField input {
+        font-size: small;
+    }
 }

@@ -1,8 +1,8 @@
 .frogTable {
     border-collapse: separate;
     border-spacing: 0;
-    width: 100%;
-    /* margin: auto; */
+    width: 70%;
+    max-width: 1500px;
     background-color: var(--background-color);
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -10,13 +10,14 @@
 }
 
 .frogTable th {
-    background-color: rgb(183, 209, 185);
+    background-color: var(--accent-color);
     cursor: pointer;
 }
 
 .frogTable th:hover {
-    background-color: rgb(160, 188, 163);
+    background-color: var(--accent-color-hover);
 }
+
 .frogTable th::after {
     content: " ⇅";
     font-size: 0.9rem;
@@ -28,7 +29,8 @@
     visibility: visible;
 }
 
-.frogTable th, .frogTable td {
+.frogTable th,
+.frogTable td {
     text-align: left;
     padding: 0.6rem;
 }
@@ -39,6 +41,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100px;
+}
+
+.tableRow.odd {
+    background-color: #f9f9f9;
 }
 
 .tableRow:last-child td {
@@ -84,10 +90,25 @@
     }
 }
 
+@media (prefers-color-scheme: dark) {
+    .tableRow.odd {
+        background-color: #191a19;
+    }
+
+    .frogTable td {
+        border-bottom: 1px solid #464646;
+    }
+}
+
 
 @media screen and (max-width: 768px) {
+
     .frogTable th:nth-child(n+3):not(:last-child),
     .frogTable td:nth-child(n+3):not(:last-child) {
         display: none;
+    }
+
+    .frogTable {
+        width: 100%;
     }
 }

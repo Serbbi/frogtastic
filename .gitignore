@@ -33,12 +33,16 @@ yarn.lock
 
 # Ignore pycache
 __pycache__/
+.pytest_cache
 
 # Ignore image dataset
 /backend/CORF3D_ACF/data
 
 # Ignore model output
 /backend/CORF3D_ACF/output/plots
+
+# Ignore service account file
+service-account.json
 
 # Ignore sonarqube file
 /.scannerwork/
@@ -48,3 +52,7 @@ CORFpushpull
 Preprocessing
 uploaded images
 /backend/progress
+/backend/venv
+/backend/CORF3D_ACF/output
+
+.ruff_cache

@@ -1,42 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import NotificationItems from './NotificationItems';
 import useOrganizations from '../../hooks/useOrganizations';
 import { useNavigate } from "react-router-dom";
 import ExpiredTokenModal from '../miniComponents/ExpiredTokenModal';
+import NotificationDropdownAndButton from './NotificationDropdownAndButton';
+import { useOrganization } from '../../services/providers/OrganizationProvider';
 import './AppHeader.css';
 
-export default function AppHeader({ setOrganization }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [shownNotifications, setShownNotifications] = useState(0);
-    const userOrgs = localStorage.getItem('orgs').split(',');
-    const username = localStorage.getItem('username');
-    const userEmail = localStorage.getItem('email');
+export default function AppHeader() {
+    const { setOrganization } = useOrganization();
+    const userOrgs = sessionStorage.getItem('orgs').split(',');
+    const username = sessionStorage.getItem('username');
+    const userEmail = sessionStorage.getItem('email');
     const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
-    const userContainer = document.querySelector('.userContainerAndProfileSettings');
     const [showOrganizations, setShowOrganizations] = useState(false);
     const { organizations, error } = useOrganizations();
-    const [firstTime, setFirstTime] = useState(true);
     const navigate = useNavigate();
+    const profileBoxRef = useRef(null);
+    const [profilePicSrc, setProfilePicSrc] = useState(`${sessionStorage.getItem('userProfilePic')}`);
 
     useEffect(() => {
-        setOrganization(userOrgs[0]);
+        const selectedOrg = sessionStorage.getItem("selectedOrg");
+        if (!selectedOrg) {
+            setOrganization(userOrgs[0]);
+        } else {
+            setOrganization(selectedOrg);
+        }
     }, []);
 
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
-        if (!isOpen) {
-            setShownNotifications(0);
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (profileBoxRef.current && !profileBoxRef.current.contains(event.target)) {
+                setIsProfileSettingsOpen(false);
+                profileBoxRef.current.style.maxHeight = '45px';
+            }
         }
-        setFirstTime(false);
-    };
-
-    function addShownNotifications(toAdd) {
-        setShownNotifications(prev => {
-            const updatedCount = prev + toAdd;
-            return updatedCount >= 0 ? updatedCount : 0; // Ensure it never goes negative
-        });
-    }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [profileBoxRef]);
 
     function handleMenuOpen() {
         const position = document.querySelector('.leftBar').style.left;
@@ -50,9 +53,9 @@ export default function AppHeader({ setOrganization }) {
 
     function handleProfileSettingsOpen() {
         if (!isProfileSettingsOpen) {
-            userContainer.style.maxHeight = '300px';
+            profileBoxRef.current.style.maxHeight = '300px';
         } else {
-            userContainer.style.maxHeight = '45px';  // Collapsed height
+            profileBoxRef.current.style.maxHeight = '45px';  // Collapsed height
             setShowOrganizations(false);
         }
         setIsProfileSettingsOpen(!isProfileSettingsOpen);
@@ -70,26 +73,12 @@ export default function AppHeader({ setOrganization }) {
         <nav className="appHeader">
             <div className="buttons">
                 <button className='headerButton' onClick={() => navigate('/home/help')}>?</button>
-                <div className='newDropdown'>
-                    <button className='headerButton' onClick={toggleMenu}>
-                        <FontAwesomeIcon icon="fa-solid fa-bell" />
-                        {firstTime && <span className='notificationBadge'></span>}
-                    </button>
-
-                    {isOpen && (
-                        <ul className='notificationList'>
-                            {userOrgs[0] !== "" && userOrgs.map((org) => (
-                                <NotificationItems key={org} organizationId={org} addShownNotifications={addShownNotifications} />
-                            ))}
-                            {shownNotifications === 0 && <li key={0}>No notifications</li>}
-                        </ul>
-                    )}
-                </div>
+                <NotificationDropdownAndButton organizationId={sessionStorage.getItem("selectedOrg")} />
                 <button id="menuButton" className='headerButton' onClick={handleMenuOpen}><FontAwesomeIcon icon="fa-solid fa-bars" /></button>
             </div>
-            <div className="userContainerAndProfileSettings">
+            <div className="userContainerAndProfileSettings" ref={profileBoxRef}>
                 <div className="userContainer">
-                    <img src="/user_icon.png" alt="user-icon" className='userIcon' />
+                    <img src={profilePicSrc} alt="user-icon" onError={() => setProfilePicSrc("/user_icon.jpg")} className='userIcon' />
                     <div className="userContainerCenter">
                         <p className='userContainerUsername'>{username ? username : 'Username'}</p>
                         <p className='userContainerEmail'>{userEmail}</p>
@@ -102,7 +91,6 @@ export default function AppHeader({ setOrganization }) {
                         <>
                             <button className='profileSettingsButton' onClick={() => navigate(`/home/profile-settings/${username}`)}>Profile Settings</button>
                             <button className='profileSettingsButton' onClick={() => setShowOrganizations(true)}>Organizations</button>
-                            {/* <button className='profileSettingsButton'>Logout</button> */}
                         </>
                     }
                     {showOrganizations &&

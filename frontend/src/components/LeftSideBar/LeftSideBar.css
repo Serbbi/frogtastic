@@ -20,12 +20,12 @@
     justify-content: space-between;
     gap: 15px;
     color: var(--title-color);
+    cursor: pointer;
 }
 
 .logo {
     border-radius: 50%;
     height: 30px;
-    /* margin-left: 10px; */
 }
 
 .organizationNameAndLogo p {
@@ -44,15 +44,12 @@
     padding: 12px;
     font-size: smaller;
     transition: all 0.3s ease;
-    /* color: var(--primary-color); */
 }
 
 .navLink {
     text-align: left;
     text-decoration: none;
-    /* color: var(--primary-color); */
     width: 100%;
-    /* height: 100%; */
     display: flex;
     gap: 15px;
     align-items: center;
@@ -70,7 +67,7 @@
     color: var(--hover-color);
 }
 
-.navLinkactive {
+.navLink.active {
     color: var(--active-color);
 }
 
@@ -106,22 +103,28 @@
         display: none;
     }
 
-    .navLink, .logoutButton {
+    .navLink,
+    .logoutButton {
         font-size: large;
-        display: flex;
-        flex-direction: column;
     }
 
-    .navLink span, .logoutButton span {
+    .navLink span,
+    .logoutButton span {
         /* display: none; */
         font-size: small;
     }
 
-    .navLink { 
+    .navLink {
         flex-direction: row;
     }
 
-    .menuList li{
+    .menuList li {
         margin: 15px 0;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    .leftBar {
+        overflow: scroll;
     }
 }

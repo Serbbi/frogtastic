@@ -3,11 +3,9 @@ import AllFrogsPage from "../AllFrogs/AllFrogsPage";
 import TankFrogsPage from "../TankFrogs/TankFrogsPage";
 import AppHeader from "../../components/AppHeader/AppHeader";
 import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
-import CreateOrganizationPage from "../Organization/CreateOrganizationPage";
 import JoinOrganizationPage from "../Organization/JoinOrganizationPage";
 import SettingsPage from "../Settings/SettingsPage";
 import { Route, Routes } from "react-router-dom";
-import { useOrganization } from "../../services/providers/OrganizationProvider";
 import ImageProvider from "../../services/providers/ImageProvider";
 import SystemParametersPage from "../SystemParameters/SystemParametersPage";
 import HelpPage from "../Help/HelpPage";
@@ -18,26 +16,24 @@ import AdminSettingsPage from "../AdminSettings/AdminSettingsPage";
 import './HomePage.css';
 
 export default function HomePage() {
-    const { organization, setOrganization } = useOrganization();
-
     return (
         <div className="homeContainer">
             <div className="sidebarAndRightSide">
                 <UnsavedChangesProvider>
-                    <LeftSideBar organization={organization} setOrganization={setOrganization} />
+                    <LeftSideBar />
                     <div className="headerAndMainContent">
                         <ImageProvider>
-                            <AppHeader setOrganization={setOrganization} />
+                            <AppHeader />
                             <Routes>
-                                <Route path="/all-frogs" element={<AllFrogsPage organization={organization} />} />
-                                <Route path="/tank-frogs" element={<TankFrogsPage organization={organization} />} />
-                                <Route path="/upload-image" element={<UploadPage organization={organization} />} />
-                                <Route path="/system-parameters" element={<SystemParametersPage organization={organization} />} />
+                                <Route path="/all-frogs" element={<AllFrogsPage />} />
+                                <Route path="/tank-frogs" element={<TankFrogsPage />} />
+                                <Route path="/upload-image" element={<UploadPage />} />
+                                <Route path="/system-parameters" element={<SystemParametersPage />} />
                                 <Route path="/join-organization" element={<JoinOrganizationPage />} />
-                                <Route path="/create-organization" element={<CreateOrganizationPage />} />
                                 <Route path="/organization-settings" element={<SettingsPage />} />
-                                <Route path="/frog/:frogId" element={<FrogPage organization={organization} />} />
+                                <Route path="/frog/:frogId" element={<FrogPage />} />
                                 <Route path="/help" element={<HelpPage />} />
+                                <Route path="/help/:category" element={<HelpPage />} />
                                 <Route path="/profile-settings/:userName" element={<ProfileSettingsPage />} />
                                 <Route path="/admin-settings" element={<AdminSettingsPage />} />
                             </Routes>

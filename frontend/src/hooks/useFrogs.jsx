@@ -19,7 +19,7 @@ const fetchWithToken = async (url, token) => {
 };
 
 export default function useFrogs(id = null, organizationId = null, currentTankId = null, nOfFrogs = null) {
-    const token = localStorage.getItem('site');
+    const token = sessionStorage.getItem('token');
     let url = `${process.env.REACT_APP_BACKEND_URL}/frogs`;
     if (id) {
         url += `/${id}`;

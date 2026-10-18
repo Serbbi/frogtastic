@@ -16,7 +16,7 @@ const fetchWithToken = async (url, token) => {
 };
 
 export default function useOrganizations() {
-    const token = localStorage.getItem('site');
+    const token = sessionStorage.getItem('token');
     const { data, error, isLoading, mutate } = useSWR([`${process.env.REACT_APP_BACKEND_URL}/organizations`, token], ([url, token]) => fetchWithToken(url, token));
 
     return {

@@ -1,13 +1,113 @@
 :root {
     --primary-color: #3c734b;
-    --hover-color: #33ba45;
+    --secondary-color: #e5eae7;
+    --hover-color: #60976f;
+    --secondary-hover-color: #d0d8d4;
+    --clicked-color: #2c5b39;
+    --secondary-clicked-color: #b0b8b4;
+    --disabled-color: #c3d5c8;
     --background-color: #fff;
+    --background-color-content: #ecf8ee;
     --active-color: #55d15d;
     --title-color: #21512e;
+    --text-color: #373737;
+    --accent-color: #b7d1b9;
+    --accent-color-hover: #a0bca3;
+    --success-color: #299d48;
+    --error-color: #d3302f;
+    --warning-color: #ff9800;
+    --information-color: #2196f3;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #497556;
+        --clicked-color: #2c5b39;
+        --hover-color: #33503b;
+        --secondary-color: #8f8f8f;
+        --secondary-hover-color: #bfc9c4;
+        --secondary-clicked-color: #7b817e;
+        --disabled-color: #97a89c;
+        --background-color: #151615;
+        --background-color-content: #242724;
+        --active-color: #55d15d;
+        --title-color: #a8ceb3;
+        --text-color: #dadada;
+        --accent-color: #3e493f;
+        --accent-color-hover: #2d352e;
+        --success-color: #27753c;
+        --error-color: #aa3333;
+        --warning-color: #c27c12;
+        --information-color: #2971ac;
+    }
+
+    html {
+        color-scheme: dark;
+    }
 }
 
 .App {
     text-align: center;
     width: 100%;
     height: 100%;
+}
+
+.primary-button {
+    width: 40%;
+    height: 40px;
+    margin: 15px auto;
+
+    font-weight: bold;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.primary-button:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+.primary-button:disabled:hover {
+    background-color: var(--disabled-color);
+}
+
+.primary-button:hover {
+    background-color: var(--hover-color);
+}
+
+.primary-button:active {
+    background-color: var(--clicked-color);
+}
+
+.secondary-button {
+    width: 40%;
+    height: 40px;
+    margin: 15px auto;
+
+    font-weight: bold;
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 12px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.secondary-button:hover {
+    background-color: var(--secondary-hover-color);
+}
+
+.secondary-button:active {
+    background-color: var(--secondary-clicked-color);
 }

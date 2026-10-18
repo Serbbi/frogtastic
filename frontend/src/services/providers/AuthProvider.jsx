@@ -1,160 +1,102 @@
 import { useContext, createContext, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import * as AuthService from '../api/auth/authService';
 
 const AuthContext = createContext();
-const MAX_RETRIES = 10;
 
 export default function AuthProvider({ children }) {
 	const [user, setUser] = useState(null);
-	const [token, setToken] = useState(localStorage.getItem("site") || "");
+	const [token, setToken] = useState(sessionStorage.getItem("token") || "");
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
-	let attempt = 1;
 
-	const loginAction = useCallback(async (data) => {
-		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/token`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-				body: `username=${data.username}&password=${data.password}`,
-			});
+	const handleLoginSuccess = useCallback((res, rememberMe = false) => {
+		setUser(res.username);
+		setToken(res.access_token);
 
-			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
-				throw new Error(errorData.detail || "Login failed");
-			}
-			const res = await response.json();
+		sessionStorage.setItem("token", res.access_token);
+		sessionStorage.setItem("privileges", JSON.stringify(res.attributes || {}));
+		sessionStorage.setItem("orgs", res.organizations || []);
+		sessionStorage.setItem("userId", res.id);
+		sessionStorage.setItem("userProfilePic", res.profile_picture_url || "");
+		sessionStorage.setItem("username", res.username);
+		sessionStorage.setItem("email", res.email);
 
-			if (res.access_token) {
-				setUser(data.username);
-				setToken(res.access_token);
-				localStorage.setItem("site", res.access_token);
-				localStorage.setItem("privileges", JSON.stringify(res.dict));
-				if (res.organizations === null) { //just for the demo on railway
-					res.organizations = [];
-				}
-				localStorage.setItem("orgs", res.organizations);
-				localStorage.setItem("userId", res.id);
-				localStorage.setItem("username", res.username);
-				localStorage.setItem("email", res.email);
-				navigate("/home");
-				setErrorMessage("");
-			} else {
-				setErrorMessage(res.detail || "Login failed");
-			}
-		} catch (err) {
-			if (attempt < MAX_RETRIES) {
-				let errorMessage = "";
-
-				if (err instanceof TypeError) {
-					errorMessage = "Network issue";
-				} else if (err instanceof SyntaxError) {
-					errorMessage = "Invalid server response";
-				} else if (err.message) {
-					if (err.message.includes("Incorrect")) {
-						setErrorMessage("Incorrect username or password");
-						return;
-					}
-					errorMessage = err.message;
-				} else {
-					errorMessage = "Temporary issue";
-				}
-
-				setErrorMessage(`${errorMessage} (attempt ${attempt}/${MAX_RETRIES})...`);
-				const delay = Math.min(1000 * Math.pow(2, attempt++), 30000);
-				await new Promise(resolve => setTimeout(resolve, delay));
-				return loginAction(data);
-			} else {
-				if (err.message) {
-					setErrorMessage(err.message);
-				} else if (err instanceof TypeError) {
-					setErrorMessage("Could not connect to server");
-				} else {
-					setErrorMessage("Login failed");
-				}
-			}
+		if (rememberMe) {
+			localStorage.setItem("token", res.access_token);
 		}
+
+		if (res.organizations.length === 0) {
+			navigate("/home/join-organization");
+		} else {
+			navigate("/home/upload-image");
+		}
+
+		setErrorMessage("");
 	}, [navigate]);
+
+	const loginAction = useCallback(async (data, rememberMe = false) => {
+		try {
+			const tokenRes = await AuthService.login(data);
+			const profile = await AuthService.getMe(tokenRes.access_token);
+
+			handleLoginSuccess({...tokenRes, ...profile}, rememberMe);
+		} catch (err) {
+			setErrorMessage(err.message);
+		}
+	}, [handleLoginSuccess]);
 
 	const signUpAction = useCallback(async (data) => {
 		try {
-			const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					username: data.username,
-					hashed_password: data.password,
-					email: data.email,
-					attributes: {},
-					organizations: []
-				}),
-			});
-			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
-				throw new Error(errorData.detail || "Sign up failed");
-			}
-			const res = await response.json();
+			await AuthService.signUp(data);
+			const tokenRes = await AuthService.login({ username: data.username, password: data.password });
+			const profile = await AuthService.getMe(tokenRes.access_token);
 
-			if (res.username) {
-				loginAction(data);
-			} else {
-				setErrorMessage(res.detail || "Sign up failed");
-			}
+			handleLoginSuccess({...tokenRes, ...profile});
 		} catch (err) {
-			if (attempt < MAX_RETRIES) {
-				let errorMessage = "";
-
-				if (err instanceof TypeError) {
-					errorMessage = "Network issue";
-				} else if (err instanceof SyntaxError) {
-					errorMessage = "Invalid server response";
-				} else if (err.message) {
-					errorMessage = err.message;
-				} else {
-					errorMessage = "Temporary issue";
-				}
-
-				setErrorMessage(`${errorMessage} (attempt ${attempt}/${MAX_RETRIES})...`);
-				const delay = Math.min(1000 * Math.pow(2, attempt++), 30000);
-				await new Promise(resolve => setTimeout(resolve, delay));
-				return signUpAction(data);
-			} else {
-				if (err.message) {
-					setErrorMessage(err.message);
-				} else if (err instanceof TypeError) {
-					setErrorMessage("Could not connect to server");
-				} else {
-					setErrorMessage("Login failed");
-				}
-			}
+			setErrorMessage(err.message);
 		}
 	}, [loginAction]);
 
-	const logOut = useCallback(() => {
-		setUser(null);
-		setToken("");
-		localStorage.removeItem("site");
-		navigate("/login");
-	}, [navigate]);
+	const restoreSession = useCallback(async (storedToken) => {
+		try {
+			const res = await AuthService.validateToken(storedToken);
+			handleLoginSuccess({ ...res, access_token: storedToken, dict: res.attributes });
+		} catch (err) {
+			console.warn("Session restoration failed:", err.message);
+			localStorage.clear();
+			sessionStorage.clear();
+		}
+	}, [handleLoginSuccess]);
 
-	const getErrorMessage = useCallback(() => {
-		return errorMessage;
-	}, [errorMessage]);
+	const googleLoginAction = useCallback(async (google_token) => {
+		try {
+			const tokenRes = await AuthService.googleLogin(google_token);
+			const profile = await AuthService.getMe(tokenRes.access_token);
+			
+			handleLoginSuccess({...tokenRes, ...profile}, true); // always remember for Google
+		} catch (err) {
+			setErrorMessage(err.message);
+		}
+	}, [handleLoginSuccess]);
+
+	const getErrorMessage = useCallback(() => errorMessage, [errorMessage]);
+
+	const functions = useMemo(() => ({
+		loginAction,
+		signUpAction,
+		restoreSession,
+		googleLoginAction,
+		getErrorMessage,
+		setErrorMessage,
+	}), [loginAction, signUpAction, restoreSession, googleLoginAction, getErrorMessage, setErrorMessage]);
 
 	const value = useMemo(() => ({
 		token,
 		user,
-		loginAction,
-		logOut,
-		signUpAction,
-		getErrorMessage,
-		setErrorMessage,
-	}), [token, user, loginAction, logOut, signUpAction, getErrorMessage, setErrorMessage]);
+		...functions
+	}), [token, user, functions]);
 
 	return (
 		<AuthContext.Provider value={value}>

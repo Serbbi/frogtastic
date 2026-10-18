@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNotification } from "../../services/providers/NotificationProvider";
 import useTanks from "../../hooks/useTanks";
-import HistoryTable from "../../components/miniComponents/HistoryTable";
+import HistoryTable from "./HistoryTable";
 import useFrogs from "../../hooks/useFrogs";
 import Loading from "../../components/miniComponents/loading";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,27 +11,33 @@ import ConfirmationBox from "../../components/miniComponents/ConfirmationBox";
 import { useUnsavedChanges } from "../../services/providers/UnsavedChangesProvider";
 import { frogPutRequest } from "../../services/api/frogs/FrogPut";
 import { frogDeleteRequest } from "../../services/api/frogs/FrogDelete";
+import { useOrganization } from "../../services/providers/OrganizationProvider";
+import CompareModal from "./CompareModal";
+import HistoryImages from "./HistoryImages";
 import "./FrogPage.css";
 
-export default function FrogPage({ organization }) {
+export default function FrogPage() {
+    const { organization } = useOrganization();
     const { addNotification } = useNotification();
     const { tanks } = useTanks(organization ? organization.id : -1);
     const [showHistory, setShowHistory] = useState(false);
-    const privileges = JSON.parse(localStorage.getItem('privileges'));
+    const privileges = JSON.parse(sessionStorage.getItem('privileges'));
     const [canEditFrogs, setCanEditFrogs] = useState(false);
     const { frogId } = useParams();
     const { frog, isLoading, mutate: mutateFrog } = useFrogs(frogId, null, null, null);
     const navigate = useNavigate();
     const { extractionImageURL } = useImage();
     const [showCompareModal, setShowCompareModal] = useState(window.history.state.usr === "from upload" ? true : false);
-    const [confirmationBoxText, setconfirmationBoxText] = useState("");
+    const [confirmationBoxText, setConfirmationBoxText] = useState("");
     const { unsavedChanges, setUnsavedChanges } = useUnsavedChanges();
+    const [showModalButtonsOnce, setShowModalButtonsOnce] = useState(true);
+    const [onConfirmAction, setOnConfirmAction] = useState(null);
 
     useEffect(() => {
         if (organization) {
             setCanEditFrogs(privileges[organization.id]['canEditFrogs']);
         }
-    }, [organization]);
+    }, [organization, privileges]);
 
     async function updateField(event) {
         const name = event.target.name;
@@ -47,34 +53,51 @@ export default function FrogPage({ organization }) {
     }
 
     function saveFrog() {
-        frogPutRequest(frog, organization.id)
-            .then(_ => {
-                addNotification({ text: "Frog saved", type: "success" });
-                setUnsavedChanges(false);
-            })
-            .catch((error) => {
-                addNotification({ text: error.message, type: "error" });
+        if (!unsavedChanges) {
+            setConfirmationBoxText("Are you sure you want to save? There are no new changes.");
+            setOnConfirmAction(() => () => {
+                frogPutRequest(frog, organization.id)
+                    .then(_ => {
+                        addNotification({ text: "Frog saved with no new changes", type: "success" });
+                        setUnsavedChanges(false);
+                    })
+                    .catch((error) => {
+                        addNotification({ text: error.message, type: "error" });
+                    });
             });
+        } else {
+            frogPutRequest(frog, organization.id)
+                .then(_ => {
+                    addNotification({ text: "Frog saved", type: "success" });
+                    setUnsavedChanges(false);
+                })
+                .catch((error) => {
+                    addNotification({ text: error.message, type: "error" });
+                });
+        }
     }
 
     function deleteFrog() {
-        const confirmation = window.confirm("Are you sure you want to delete this frog?");
-        if (!confirmation) return;
-
-        frogDeleteRequest(frog.id, organization.id)
-            .then(_ => {
+        setConfirmationBoxText("Are you sure you want to delete this frog?");
+        setOnConfirmAction(() => async () => {
+            try {
+                await frogDeleteRequest(frog.id, organization.id);
                 addNotification({ text: "Frog deleted", type: "trash" });
                 setUnsavedChanges(false);
                 navigate(-1);
-            })
-            .catch((error) => {
+            } catch (error) {
                 addNotification({ text: error.message, type: "error" });
-            });
+            }
+        });
     }
 
     function checkForChanges() {
         if (unsavedChanges) {
-            setconfirmationBoxText("You have unsaved changes, are you sure you want to leave?");
+            setConfirmationBoxText("You have unsaved changes, are you sure you want to leave?");
+            setOnConfirmAction(() => () => {
+                navigate(-1);
+                setUnsavedChanges(false);
+            });
         } else {
             navigate(-1);
         }
@@ -95,7 +118,10 @@ export default function FrogPage({ organization }) {
     }
 
     if (showHistory) {
-        return <HistoryTable id={frog.id} setShowHistory={setShowHistory} showHistory={showHistory} tanks={tanks} />
+        return <>
+            <HistoryTable id={frog.id} setShowHistory={setShowHistory} showHistory={showHistory} tanks={tanks} />
+            <HistoryImages imageLocations={frog.image_history} />
+        </>
     }
 
     return (
@@ -147,26 +173,23 @@ export default function FrogPage({ organization }) {
                     </div>
                 </div>
                 <div className="rightDetailsContainer">
-                    <button className="saveButton" onClick={() => setShowCompareModal(true)}>Compare</button>
-                    <button className="saveButton" onClick={saveFrog}>Save</button>
-                    <button className="saveButton" onClick={deleteFrog}>Delete</button>
-                    <button className="saveButton" onClick={() => setShowHistory(!showHistory)}>History</button>
+                    <button className="primary-button frog-page-button" onClick={() => setShowCompareModal(true)}>Compare</button>
+                    <button className="primary-button frog-page-button" onClick={saveFrog}>Save</button>
+                    <button className="primary-button frog-page-button" onClick={deleteFrog}>Delete</button>
+                    <button className="primary-button frog-page-button" onClick={() => setShowHistory(!showHistory)}>History</button>
                 </div>
             </div>
-            {showCompareModal && <div className="modalCompareImages">
-                <div className="modalCompareImagesContent">
-                    <span className='closeJoinOrg' onClick={() => setShowCompareModal(false)}>&times;</span>
-                    <div>
-                        <h2>Extraction Image</h2>
-                        <img src={`data:image/png;base64,${extractionImageURL}`} alt="Extraction" />
-                    </div>
-                    <div>
-                        <h2>Reference Image</h2>
-                        <img src={frog.image_path} alt="Reference" />
-                    </div>
-                </div>
-            </div>}
-            {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => { navigate(-1); setUnsavedChanges(false); }} onCancel={() => setconfirmationBoxText("")} />}
+            {showCompareModal && <CompareModal frog={frog} setShowCompareModal={setShowCompareModal} extractionImageURL={extractionImageURL} showButtons={window.history.state.usr === "from upload" && showModalButtonsOnce} setShowModalButtonsOnce={setShowModalButtonsOnce} access={canEditFrogs} />}
+            {confirmationBoxText && <ConfirmationBox message={confirmationBoxText} onConfirm={() => {
+                if (onConfirmAction) {
+                    onConfirmAction();
+                }
+                setConfirmationBoxText("");
+                setOnConfirmAction(null);
+            }} onCancel={() => {
+                setConfirmationBoxText("");
+                setOnConfirmAction(null);
+            }} />}
         </div>
     );
 }

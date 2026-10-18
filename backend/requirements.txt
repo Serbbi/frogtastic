@@ -3,7 +3,7 @@ keras
 numpy
 opencv-python
 scikit-learn
-tensorflow
+tensorflow-cpu
 fastapi
 uvicorn
 sqlalchemy
@@ -16,4 +16,5 @@ python-multipart
 scikit-image
 matplotlib
 pandas
-resend
+boto3
+cachetools

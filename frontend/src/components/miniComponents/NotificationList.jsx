@@ -8,10 +8,10 @@ export default function NotificationList() {
     return (
         <div className="notifications">
             {notifications.map((notification) => (
-                <Notification key={notification.id} 
-                              message={notification.text} 
-                              type={notification.type} 
-                              deleteNotification={() => removeNotification(notification.id)} />
+                <Notification key={notification.id}
+                    message={notification.text}
+                    type={notification.type}
+                    deleteNotification={() => removeNotification(notification.id)} />
             ))}
         </div>
     );
